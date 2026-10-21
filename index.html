@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الحسابات والتأطير المحاسبي المتكامل</title>
+    <title>نظام الحسابات المتكامل</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -103,7 +102,7 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-bold text-white">رمز المزامنة والمشاركة للأجهزة (Sync ID)</h3>
-                        <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز (مثال: <span class="text-indigo-400 font-mono">mycompany2026</span>) في جميع أجهزتك ليتم توحيد قاعدة البيانات بينها فوراً</p>
+                        <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز (مثال: <span class="text-indigo-400 font-mono">MBS</span>) في جميع أجهزتك ليتم توحيد قاعدة البيانات بينها فوراً</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
@@ -538,7 +537,59 @@
             </div>
         </div>
     </div>
+<!-- Firebase Integration Engine -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
+            authDomain: "megabytefawry.firebaseapp.com",
+            projectId: "megabytefawry",
+            storageBucket: "megabytefawry.firebasestorage.app",
+            messagingSenderId: "832804585797",
+            appId: "1:832804585797:web:00637871be12c00157fe2c",
+            measurementId: "G-75PB78K0F4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.db = db;
+        window.dbRef = ref;
+        window.dbSet = set;
+        window.dbOnValue = onValue;
+
+        // Auto Connect Cloud Database
+        window.initCloudSync = function() {
+            const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
+            document.getElementById('roomIdInput').value = roomId;
+
+            const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
+            window.dbOnValue(syncRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    window.appData = data;
+                    localStorage.setItem('app_accounting_db', JSON.stringify(data));
+                } else {
+                    window.pushDataToCloud();
+                }
+                window.renderAllViews();
+                document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                document.getElementById('syncText').innerText = "متصل سحابياً (" + roomId + ")";
+                document.getElementById('syncStatus').className = "flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300";
+            }, (error) => {
+                document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-red-500";
+                document.getElementById('syncText').innerText = "خطأ في الاتصال";
+            });
+        };
+
+        window.pushDataToCloud = function() {
+            const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
+            const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
+            window.dbSet(syncRef, window.appData);
+        };
+    </script>
     <script>
         // --- Core Data Structures & State ---
         let dbState = {
@@ -1264,7 +1315,7 @@
 ```
 
 ### طريقة تفعيل الربط على جهازك الثاني:
-1. افتح الموقع من الجهاز الأول (مثلاً الكمبيوتر) واكتب رمز المزامنة الخاص بك فوق (مثال: `STORE2026`) واضغط **ربط الجهازين**.
-2. افتح الموقع من الجهاز الثاني (مثلاً الهاتف)، واكتب نفس الرمز بالضبط (`STORE2026`) واضغط **ربط الجهازين**.
+1. افتح الموقع من الجهاز الأول (مثلاً الكمبيوتر) واكتب رمز المزامنة الخاص بك فوق (مثال: `MBS`) واضغط **ربط الجهازين**.
+2. افتح الموقع من الجهاز الثاني (مثلاً الهاتف)، واكتب نفس الرمز بالضبط (`MBS`) واضغط **ربط الجهازين**.
 3. ستنزل كافة البيانات فوراً على الجهاز الثاني، وأي تعديل أو إدخال جديد سيتحدث تلقائياً على الشاشتين خلال ثوانٍ.
 ```
