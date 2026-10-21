@@ -30,6 +30,7 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1f2937; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        /* فرض عرض الأرقام بالإنجليزية دائماً */
         .num-en, .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
         @media print {
             .no-print { display: none !important; }
@@ -652,11 +653,13 @@
         let currentRole = sessionStorage.getItem('userRole') || '';
         let selectedCustomerForStatement = null;
 
+        // دالة تحويل وتنسيق كافة الأرقام بالإنجليزية أوتوماتيكياً
         function formatNum(val) {
             const num = Number(val || 0);
             return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        // دالة تنسيق التاريخ بأرقام إنجليزية
         function formatDateEn(dateStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
@@ -1004,4 +1007,257 @@
                     const diff = total - prevSnapTotal;
                     profitDiffText = diff >= 0 
                         ? `<span class="text-emerald-400 font-bold font-mono">+${formatNum(diff)} ج.م</span>`
-                        : `<span class="text-red-40
+                        : `<span class="text-red-400 font-bold font-mono">${formatNum(diff)} ج.م</span>`;
+                } else {
+                    profitDiffText = `<span class="text-slate-500 text-xs">بداية الحسابات</span>`;
+                }
+
+                prevSnapTotal = total;
+
+                return `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(snap.date)}</td>
+                        ${cols}
+                        <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td>
+                        <td class="p-3 font-mono">${profitDiffText}</td>
+                        <td class="p-3 text-center no-print">
+                            <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderCustomers() {
+            const searchField = document.getElementById('customerSearch');
+            const search = searchField ? searchField.value.toLowerCase() : '';
+            const directoryBody = document.getElementById('customersDirectoryBody');
+            if (!directoryBody) return;
+
+            let custMap = {};
+            window.appData.customers.forEach(c => {
+                if (!custMap[c.name]) custMap[c.name] = 0;
+                if (c.type === 'us') custMap[c.name] += c.amount;
+                else custMap[c.name] -= c.amount;
+            });
+
+            const filteredNames = Object.keys(custMap).filter(name => name.toLowerCase().includes(search));
+
+            directoryBody.innerHTML = filteredNames.map(name => {
+                const netBalance = custMap[name];
+                const isDebtOnCustomer = netBalance >= 0; 
+                return `
+                    <tr class="hover:bg-slate-800/80 cursor-pointer transition border-b border-slate-800" onclick="selectCustomer('${name}')">
+                        <td class="p-3 font-semibold text-white flex items-center space-x-2 space-x-reverse">
+                            <i class="fa-solid fa-hand-pointer text-amber-500 text-xs"></i>
+                            <span>${name}</span>
+                        </td>
+                        <td class="p-3 font-mono font-bold ${isDebtOnCustomer ? 'text-emerald-400' : 'text-red-400'}">${formatNum(Math.abs(netBalance))} ج.م</td>
+                        <td class="p-3">
+                            <span class="text-xs px-2.5 py-1 rounded-full ${isDebtOnCustomer ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                                ${isDebtOnCustomer ? 'مبلغ لنا عنده (دين)' : 'مبلغ له عندنا'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center no-print"><button class="text-amber-400 hover:text-amber-300 text-xs font-semibold bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20"><i class="fa-solid fa-pen-to-square ml-1"></i> سدد / كشف</button></td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (selectedCustomerForStatement) selectCustomer(selectedCustomerForStatement);
+        }
+
+        function selectCustomer(name) {
+            selectedCustomerForStatement = name;
+            const custNameInput = document.getElementById('custName');
+            const custTypeSelect = document.getElementById('custType');
+            const quickAlert = document.getElementById('quickAlertMsg');
+            
+            if (custNameInput) custNameInput.value = name;
+            if (custTypeSelect) custTypeSelect.value = 'repayment';
+            if (quickAlert) quickAlert.classList.remove('hidden');
+
+            const nameEl = document.getElementById('selectedCustName');
+            if (nameEl) nameEl.innerText = name;
+
+            const container = document.getElementById('customerStatementLogs');
+            if (!container) return;
+
+            const logs = window.appData.customers.filter(c => c.name === name);
+            logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = logs.map(l => {
+                let badgeText = l.type === 'us' ? 'لنا عنده (+)' : (l.type === 'them' ? 'له عندنا (-)' : 'تسديد من العميل (-)');
+                let badgeClass = l.type === 'us' ? 'text-emerald-400' : (l.type === 'them' ? 'text-red-400' : 'text-blue-400');
+
+                return `
+                    <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
+                        <div>
+                            <span class="font-bold text-xs ${badgeClass}">${badgeText}</span>
+                            <p class="text-[10px] text-slate-500 font-mono">${formatDateEn(l.date)}</p>
+                        </div>
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            <span class="font-bold font-mono text-white">${formatNum(l.amount)} ج.م</span>
+                            <button onclick="deleteCustomerRecord('${l.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderExpensesTable() {
+            const tbody = document.getElementById('expensesTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.appData.expenses.map(e => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(e.date)}</td>
+                    <td class="p-3 font-semibold text-white">${e.title}</td>
+                    <td class="p-3 font-mono font-bold text-red-400">${formatNum(e.amount)} ج.م</td>
+                    <td class="p-3 text-center no-print">
+                        <button onclick="deleteExpense('${e.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderCapitalTable() {
+            const tbody = document.getElementById('capitalTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.appData.capitalLogs.map(c => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(c.date)}</td>
+                    <td class="p-3 font-semibold text-white">${c.investor}</td>
+                    <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
+                    <td class="p-3 font-mono font-bold text-white">${formatNum(c.amount)} ج.م</td>
+                    <td class="p-3 no-print">
+                        <button onclick="deleteCapitalLog('${c.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDashboardCards() {
+            let latestAssets = 0;
+            if (window.appData.snapshots.length > 0) {
+                const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
+                if (latestSnap.balances) Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
+            }
+            document.getElementById('totalAssetsCard').innerHTML = `${formatNum(latestAssets)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            let totalCap = 0;
+            window.appData.capitalLogs.forEach(c => totalCap += (c.type === 'add' ? c.amount : -c.amount));
+            document.getElementById('totalCapitalCard').innerHTML = `${formatNum(totalCap)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            let us = 0, them = 0;
+            window.appData.customers.forEach(c => {
+                if (c.type === 'us') us += c.amount;
+                else them += c.amount;
+            });
+            const netCust = us - them;
+            document.getElementById('netCustomersCard').innerHTML = `${formatNum(netCust)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            
+            document.getElementById('customersUsCard').innerText = formatNum(us) + ' ج.م';
+            document.getElementById('customersThemCard').innerText = formatNum(them) + ' ج.م';
+        }
+
+        function generateProfitReport() {
+            if (currentRole !== 'admin') return;
+            const startInput = document.getElementById('reportStartDate')?.value;
+            const endInput = document.getElementById('reportEndDate')?.value;
+
+            const snapshots = window.appData.snapshots;
+            const expEl = document.getElementById('reportFormulaExplanation');
+            if (snapshots.length < 2) {
+                if (expEl) expEl.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتي رصيد على الأقل لحساب الأرباح.</p>';
+                return;
+            }
+
+            const startSnap = startInput ? snapshots.find(s => s.date >= startInput) || snapshots[0] : snapshots[0];
+            const endSnap = endInput ? snapshots.slice().reverse().find(s => s.date <= endInput) || snapshots[snapshots.length - 1] : snapshots[snapshots.length - 1];
+
+            let startAssets = 0, endAssets = 0;
+            if (startSnap.balances) Object.values(startSnap.balances).forEach(v => startAssets += v);
+            if (endSnap.balances) Object.values(endSnap.balances).forEach(v => endAssets += v);
+
+            let additions = 0, withdrawals = 0;
+            let investorCapMap = {};
+
+            window.appData.capitalLogs.forEach(c => {
+                if (!investorCapMap[c.investor]) investorCapMap[c.investor] = { base: 0, add: 0, withdraw: 0 };
+                if (c.date < startSnap.date) {
+                    investorCapMap[c.investor].base += (c.type === 'add' ? c.amount : -c.amount);
+                } else if (c.date >= startSnap.date && c.date <= endSnap.date) {
+                    if (c.type === 'add') { additions += c.amount; investorCapMap[c.investor].add += c.amount; }
+                    else { withdrawals += c.amount; investorCapMap[c.investor].withdraw += c.amount; }
+                }
+            });
+
+            let totalPeriodExpenses = 0;
+            window.appData.expenses.forEach(e => {
+                if (e.date >= startSnap.date && e.date <= endSnap.date) {
+                    totalPeriodExpenses += e.amount;
+                }
+            });
+
+            const netProfit = (endAssets - startAssets - additions + withdrawals) - totalPeriodExpenses;
+
+            document.getElementById('calculatedProfitCard').innerHTML = `${formatNum(netProfit)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            if (expEl) {
+                expEl.innerHTML = `
+                    <p>• الفارق المالي للأرصدة: <strong class="text-emerald-400 font-mono">${formatNum(endAssets - startAssets)} ج.م</strong></p>
+                    <p>• إجمالي المصروفات التشغيلية المخصومة: <strong class="text-red-400 font-mono">-${formatNum(totalPeriodExpenses)} ج.م</strong></p>
+                    <p class="text-brand-400 font-bold mt-1">صافي الأرباح القابلة للتوزيع = <span class="font-mono">${formatNum(netProfit)} ج.م</span></p>
+                `;
+            }
+
+            let totalCurrentCapital = 0;
+            Object.values(investorCapMap).forEach(data => {
+                totalCurrentCapital += Math.max(0, data.base + data.add - data.withdraw);
+            });
+
+            const tbody = document.getElementById('investorProfitBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = Object.keys(investorCapMap).map(inv => {
+                const data = investorCapMap[inv];
+                const effectiveCap = Math.max(0, data.base + data.add - data.withdraw);
+                const shareRatio = totalCurrentCapital > 0 ? (effectiveCap / totalCurrentCapital) : 0;
+                const profitShare = netProfit * shareRatio;
+
+                return `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-semibold text-white">${inv}</td>
+                        <td class="p-3 font-mono">${formatNum(data.base)}</td>
+                        <td class="p-3 font-mono text-blue-400">+${formatNum(data.add)}</td>
+                        <td class="p-3 font-mono text-red-400">-${formatNum(data.withdraw)}</td>
+                        <td class="p-3 font-mono font-bold">${formatNum(effectiveCap)}</td>
+                        <td class="p-3 font-mono text-indigo-400">${(shareRatio * 100).toFixed(2)}%</td>
+                        <td class="p-3 font-mono font-bold text-brand-400">${formatNum(profitShare)} ج.م</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.onload = function() {
+            const now = new Date().toISOString().slice(0, 16);
+            if (document.getElementById('snapDate')) document.getElementById('snapDate').value = now;
+            if (document.getElementById('custDate')) document.getElementById('custDate').value = now;
+            if (document.getElementById('expDate')) document.getElementById('expDate').value = now;
+            if (document.getElementById('capDate')) document.getElementById('capDate').value = now;
+
+            if (sessionStorage.getItem('userRole')) {
+                currentRole = sessionStorage.getItem('userRole');
+                applyRolePermissions();
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+            }
+
+            if (window.initCloudSync) {
+                window.initCloudSync();
+            } else {
+                renderAllViews();
+            }
+        };
+    </script>
+</body>
+</html>
