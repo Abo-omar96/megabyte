@@ -30,7 +30,6 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1f2937; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
-        /* فرض عرض الأرقام بالإنجليزية دائماً */
         .num-en, .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
         @media print {
             .no-print { display: none !important; }
@@ -653,13 +652,11 @@
         let currentRole = sessionStorage.getItem('userRole') || '';
         let selectedCustomerForStatement = null;
 
-        // دالة تحويل وتنسيق كافة الأرقام بالإنجليزية أوتوماتيكياً
         function formatNum(val) {
             const num = Number(val || 0);
             return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // دالة تنسيق التاريخ بأرقام إنجليزية
         function formatDateEn(dateStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
@@ -1147,16 +1144,26 @@
             window.appData.capitalLogs.forEach(c => totalCap += (c.type === 'add' ? c.amount : -c.amount));
             document.getElementById('totalCapitalCard').innerHTML = `${formatNum(totalCap)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
-            let us = 0, them = 0;
+            let custBalances = {};
             window.appData.customers.forEach(c => {
-                if (c.type === 'us') us += c.amount;
-                else them += c.amount;
+                if (!custBalances[c.name]) custBalances[c.name] = 0;
+                if (c.type === 'us') custBalances[c.name] += c.amount;
+                else custBalances[c.name] -= c.amount;
             });
-            const netCust = us - them;
+
+            let totalUs = 0;
+            let totalThem = 0;
+
+            Object.values(custBalances).forEach(net => {
+                if (net > 0) totalUs += net;
+                else if (net < 0) totalThem += Math.abs(net);
+            });
+
+            const netCust = totalUs - totalThem;
+
             document.getElementById('netCustomersCard').innerHTML = `${formatNum(netCust)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
-            
-            document.getElementById('customersUsCard').innerText = formatNum(us) + ' ج.م';
-            document.getElementById('customersThemCard').innerText = formatNum(them) + ' ج.م';
+            document.getElementById('customersUsCard').innerText = formatNum(totalUs) + ' ج.م';
+            document.getElementById('customersThemCard').innerText = formatNum(totalThem) + ' ج.م';
         }
 
         function generateProfitReport() {
