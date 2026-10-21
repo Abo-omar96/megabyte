@@ -91,14 +91,14 @@
                 <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-slate-400 font-medium">إجمالي الأصول الحالية</p>
+                            <p class="text-xs text-slate-400 font-medium">إجمالي الأصول (بالعادلة الجديدة)</p>
                             <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2 font-mono">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
                         </div>
                         <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
                             <i class="fa-solid fa-vault text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-3">إجمالي الأرصدة الحالية لجميع الحسابات والماكينات</p>
+                    <p class="text-[11px] text-slate-500 mt-3">(الصناديق + لنا عند العملاء) − علينا للعملاء</p>
                 </div>
 
                 <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
@@ -1000,17 +1000,19 @@
         }
 
         function updateDashboardCards() {
+            // 1. حساب إجمالي الصناديق والماكينات من آخر لقطة رصيد
             let latestAssets = 0;
             if (window.appData.snapshots.length > 0) {
                 const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
                 if (latestSnap.balances) Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
             }
-            document.getElementById('totalAssetsCard').innerHTML = `${formatNum(latestAssets)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
+            // 2. حساب إجمالي رأس المال
             let totalCap = 0;
             window.appData.capitalLogs.forEach(c => totalCap += (c.type === 'add' ? c.amount : -c.amount));
             document.getElementById('totalCapitalCard').innerHTML = `${formatNum(totalCap)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
+            // 3. حساب ديون العملاء (لنا / علينا)
             let custBalances = getCustomersBalancesMap();
             let totalUs = 0;
             let totalThem = 0;
@@ -1025,6 +1027,10 @@
             document.getElementById('netCustomersCard').innerHTML = `${formatNum(netCust)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
             document.getElementById('customersUsCard').innerText = formatNum(totalUs) + ' ج.م';
             document.getElementById('customersThemCard').innerText = formatNum(totalThem) + ' ج.م';
+
+            // 4. المعادلة المطلوبة لإجمالي الأصول: (الصناديق والماكينات + لنا عند العملاء) - علينا للعملاء
+            const calculatedTotalAssets = (latestAssets + totalUs) - totalThem;
+            document.getElementById('totalAssetsCard').innerHTML = `${formatNum(calculatedTotalAssets)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
         }
 
         function generateProfitReport() {
