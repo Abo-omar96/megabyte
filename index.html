@@ -1,41 +1,1254 @@
-<!doctype html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ميجابايت ستور رصيدى</title>
-<style>
-:root{--n:#163d5f;--b:#2f75b5;--bg:#eef4f9;--line:#d7e3ed;--g:#168751;--r:#c53d3d;--a:#a87012;--ink:#233748}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--ink)}.app{display:grid;grid-template-columns:255px 1fr;min-height:100vh}aside{background:var(--n);color:#fff;padding:22px 14px}.brand{padding:6px 10px 22px;border-bottom:1px solid #ffffff28;margin-bottom:15px}.brand h1{margin:0;font-size:24px}.brand p{opacity:.73;font-size:12px;margin:7px 0 0}nav button{width:100%;text-align:right;background:none;border:0;color:#dce9f5;padding:12px;border-radius:8px;font:inherit;cursor:pointer}nav button:hover,nav button.on{color:#fff;background:#ffffff1c}.safe{position:fixed;bottom:15px;width:220px;font-size:11px;line-height:1.7;color:#b9d0e4}main{padding:28px;max-width:1550px;width:100%;margin:auto}.page{display:none}.page.on{display:block}.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px;gap:15px}h2{margin:0;color:var(--n);font-size:26px}.sub{margin:6px 0 0;color:#667b8e;font-size:13px}.badge{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:12px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:0 4px 14px #173d5c0a}.card{padding:16px;border-top:4px solid var(--b)}.card.g{border-color:var(--g)}.card.a{border-color:var(--a)}.card.r{border-color:var(--r)}.card span{color:#647a8e;font-size:12px}.card b{display:block;font-size:23px;color:var(--n);margin-top:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}.panel{padding:18px}.panel h3{margin:0 0 14px;color:var(--n);font-size:17px}.note{background:#f2f8fd;border-right:4px solid var(--b);padding:11px;border-radius:6px;color:#46647c;font-size:13px;line-height:1.75}.warn{border-color:var(--a);background:#fff9ed}.list .row{display:flex;justify-content:space-between;border-bottom:1px solid #edf2f6;padding:10px 0;font-size:13px}.list b{color:var(--n)}form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{display:grid;gap:5px;font-size:12px;color:#596f81}.full{grid-column:1/-1}input,select,textarea{width:100%;font:inherit;color:var(--ink);padding:10px;border:1px solid #cbd9e5;border-radius:8px;background:#fff}input:focus,select:focus,textarea:focus{outline:3px solid #2f75b522;border-color:var(--b)}textarea{min-height:70px;resize:vertical}.actions{display:flex;gap:8px;justify-content:flex-end;grid-column:1/-1}button.primary,button.soft,button.danger,.file{border:0;border-radius:8px;padding:10px 13px;font:inherit;cursor:pointer}.primary{background:var(--b);color:#fff}.soft,.file{background:#e7f0f8;color:var(--n)}.danger{background:#fff0ef;color:var(--r)}.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.toolbar h3{flex:1;margin:0}.toolbar input{max-width:280px}.table{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#eaf3fb;color:var(--n);padding:10px;text-align:right;white-space:nowrap}td{padding:10px;border-bottom:1px solid #edf2f6;white-space:nowrap}tr:hover td{background:#fbfdff}.pos{color:var(--g);font-weight:bold}.neg{color:var(--r);font-weight:bold}.due{color:var(--a);font-weight:bold}.small{border:1px solid #cbd9e5;background:#fff;border-radius:6px;padding:5px 8px;color:var(--n);cursor:pointer;font:inherit;font-size:11px}.empty{padding:20px;text-align:center;color:#74889a;border:1px dashed #c6d5e1;border-radius:8px}.report{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.report div{background:#f5f9fd;border-radius:9px;padding:14px}.report span{font-size:12px;color:#697f91}.report b{display:block;color:var(--n);font-size:19px;margin-top:6px}dialog{border:0;border-radius:14px;padding:0;width:min(500px,94vw);box-shadow:0 20px 55px #0004}dialog::backdrop{background:#0d233880}.modal{padding:20px}.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.mhead h3{margin:0;color:var(--n)}.x{border:0;background:none;font-size:23px;color:#6c8192;cursor:pointer}@media(max-width:900px){.app{grid-template-columns:1fr}aside{padding:10px;position:sticky;top:0;z-index:2}.brand{padding:3px 7px 9px;margin:0}.brand p,.safe{display:none}nav{display:flex;overflow:auto}nav button{width:auto;white-space:nowrap;padding:9px}main{padding:18px}.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.cards,.grid,.report,form{grid-template-columns:1fr}.head{align-items:start;flex-direction:column}main{padding:13px}}
-</style></head><body><div class="app"><aside><div class="brand"><h1>ميجابايت ستور رصيدى</h1><p>إدارة الأرصدة والعمولات والمستثمرين</p></div><nav><button class="on" data-p="dash">لوحة المتابعة</button><button data-p="ops">عمليات التحويل</button><button data-p="accounts">الماكينات والمحافظ</button><button data-p="clients">العملاء</button><button data-p="investors">المستثمرون</button><button data-p="reports">التقارير</button><button data-p="backup">النسخ الاحتياطي</button></nav><div class="safe">لا تحفظ كلمات مرور أو بيانات دخول داخل هذا البرنامج. البيانات محفوظة محليًا على المتصفح.</div></aside><main>
-<section id="dash" class="page on"><div class="head"><div><h2>لوحة المتابعة</h2><p class="sub">تسوية أرصدة الصندوق والماكينات والمحافظ ومتابعة عمولة الشهر.</p></div><div class="badge" id="today"></div></div><div class="cards"><div class="card g"><span>إجمالي الأصول النقدية والرقمية</span><b id="totalAssets">0 ج.م</b></div><div class="card"><span>عمولة الشهر الحالي</span><b id="monthFees">0 ج.م</b></div><div class="card a"><span>مستحقات العملاء لهم</span><b id="payables">0 ج.م</b></div><div class="card r"><span>مبالغ العملاء عليهم</span><b id="receivables">0 ج.م</b></div></div><div class="grid"><div class="panel"><h3>أرصدة نقاط التشغيل</h3><div id="accountSummary" class="list"></div></div><div class="panel"><h3>تنبيهات التسوية</h3><div id="alerts"></div><h3 style="margin-top:18px">توزيع ربح المستثمرين هذا الشهر</h3><div id="investorSummary" class="list"></div></div></div></section>
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الحسابات والتأطير المحاسبي المتكامل</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Arabic (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0fdf4', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
 
-<section id="ops" class="page"><div class="head"><div><h2>عمليات التحويل والخدمات</h2><p class="sub">الإيداع والسحب والتحويل الداخلي مع تسجيل العمولة تلقائيًا.</p></div></div><div class="grid"><div class="panel"><h3>تسجيل عملية</h3><div class="note">في الإيداع: اختر مصدر الرصيد الرقمي ثم الصندوق كوجهة. في السحب: اختر الصندوق كمصدر ثم المحفظة أو الماكينة كوجهة. العمولة تُضاف للحساب المحدد.</div><form id="opForm" style="margin-top:13px"><label>التاريخ<input id="opDate" type="date" required></label><label>نوع الخدمة<select id="opKind"><option value="إيداع للعميل">إيداع للعميل</option><option value="سحب للعميل">سحب للعميل</option><option value="تحويل داخلي">تحويل داخلي</option><option value="تسوية رصيد">تسوية رصيد</option></select></label><label>مصدر المبلغ<select id="opSource"></select></label><label>وجهة المبلغ<select id="opTarget"></select></label><label>مبلغ الخدمة<input id="opAmount" type="number" min="0.01" step="0.01" required></label><label>العمولة<input id="opFee" type="number" min="0" step="0.01" value="0"></label><label>حساب إضافة العمولة<select id="opFeeAccount"></select></label><label>العميل (اختياري)<select id="opClient"></select></label><label class="full">البيان<input id="opNote" required placeholder="مثال: إيداع محفظة عميل أو تحويل بين ماكينتين"></label><div class="actions"><button class="primary">حفظ العملية</button></div></form></div><div class="panel"><h3>قاعدة التسوية</h3><div class="note warn">كل عملية تنقل «مبلغ الخدمة» من المصدر إلى الوجهة. العمولة لا تُنقل من حساب آخر، بل تُضاف إلى الحساب الذي اخترته لأنها ربح للمحل. بهذا يطابق مجموع الأصول زيادة العمولة.</div></div></div><div class="panel" style="margin-top:17px"><div class="toolbar"><h3>سجل العمليات</h3><input id="opSearch" placeholder="ابحث في البيان أو نوع الخدمة"></div><div class="table"><table><thead><tr><th>التاريخ</th><th>الخدمة</th><th>من</th><th>إلى</th><th>المبلغ</th><th>العمولة</th><th>البيان</th><th></th></tr></thead><tbody id="opTable"></tbody></table></div></div></section>
+    <!-- Screen Login Lock -->
+    <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center space-y-6">
+            <div class="w-16 h-16 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto text-2xl border border-brand-500/20">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-white">تسجيل الدخول للنظام</h2>
+                <p class="text-xs text-slate-400 mt-1">رمز الدخول الافتراضي: <span class="text-brand-500 font-mono">123456</span></p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <input type="password" id="passInput" placeholder="أدخل كلمة السر" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-lg tracking-widest text-white focus:outline-none focus:border-brand-500 transition">
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-brand-600/20">
+                    <i class="fa-solid fa-key ml-2"></i> تأكيد الدخول
+                </button>
+            </form>
+            <p id="loginError" class="text-red-400 text-xs hidden"><i class="fa-solid fa-triangle-exclamation ml-1"></i> كلمة السر غير صحيحة!</p>
+        </div>
+    </div>
 
-<section id="accounts" class="page"><div class="head"><div><h2>الماكينات والمحافظ والصندوق</h2><p class="sub">أضف جميع نقاط الرصيد التي تستخدمها، ثم تابع رصيد كل نقطة لحظيًا.</p></div></div><div class="grid"><div class="panel"><h3>إضافة حساب رصيد</h3><form id="accountForm"><label>اسم الحساب<input id="accName" required placeholder="مثال: فوري أندرويد أو محفظة فودافون"></label><label>النوع<select id="accType"><option>صندوق نقدي</option><option>ماكينة تحويل</option><option>محفظة إلكترونية</option><option>بنك</option><option>أخرى</option></select></label><label class="full">الرصيد الافتتاحي<input id="accOpening" type="number" min="0" step="0.01" value="0"></label><div class="actions"><button class="primary">إضافة الحساب</button></div></form></div><div class="panel"><h3>الحسابات الأساسية</h3><div class="note">أضفت النظام تلقائيًا: الصندوق النقدي، ماكينة أمان، فوري أندرويد، وفوري عادية. أضف المحافظ التي تتعامل بها من هنا.</div></div></div><div class="panel" style="margin-top:17px"><h3>تفصيل الأرصدة</h3><div class="table"><table><thead><tr><th>الحساب</th><th>النوع</th><th>الرصيد الافتتاحي</th><th>الرصيد الحالي</th><th></th></tr></thead><tbody id="accountTable"></tbody></table></div></div></section>
+    <!-- Main Wrapper -->
+    <div id="appContent" class="blur-md pointer-events-none transition-all duration-300">
+        <!-- Header Nav -->
+        <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-40 no-print">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="bg-brand-500 text-slate-950 p-2.5 rounded-xl font-bold text-xl shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-white leading-none">نظام الحسابات المحاسبي</h1>
+                        <p class="text-xs text-slate-400 mt-1">إدارة الحسابات وتوزيع الأرباح</p>
+                    </div>
+                </div>
 
-<section id="clients" class="page"><div class="head"><div><h2>حسابات العملاء</h2><p class="sub">العميل قد يكون عليه مبلغ للمحل أو له مبلغ عند المحل. النظام يفرق بين الحالتين.</p></div></div><div class="grid"><div class="panel"><h3>إضافة عميل</h3><form id="clientForm"><label>اسم العميل<input id="clientName" required></label><label>رقم الهاتف<input id="clientPhone"></label><label>مبلغ على العميل للمحل<input id="clientOwes" type="number" min="0" step="0.01" value="0"></label><label>مبلغ للعميل عند المحل<input id="clientDue" type="number" min="0" step="0.01" value="0"></label><label class="full">ملاحظات<input id="clientNote"></label><div class="actions"><button class="primary">حفظ العميل</button></div></form></div><div class="panel"><h3>تسوية العميل</h3><div class="note">«تحصيل» يخفض المبلغ الذي على العميل ويضيف نقدية للصندوق. «دفع للعميل» يخفض المبلغ الذي له ويخرج النقدية من الصندوق.</div></div></div><div class="panel" style="margin-top:17px"><div class="toolbar"><h3>قائمة العملاء</h3><input id="clientSearch" placeholder="بحث بالاسم أو الهاتف"></div><div class="table"><table><thead><tr><th>العميل</th><th>الهاتف</th><th>عليه للمحل</th><th>له عند المحل</th><th>الصافي</th><th>إجراء</th></tr></thead><tbody id="clientTable"></tbody></table></div></div></section>
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <!-- Status Indicator -->
+                    <div id="syncStatus" class="flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="syncText">جاهز محلياً</span>
+                    </div>
 
-<section id="investors" class="page"><div class="head"><div><h2>المستثمرون والأرباح</h2><p class="sub">يحسب البرنامج نصيب كل مستثمر من عمولات الشهر بناءً على النسبة التي تحددها.</p></div></div><div class="grid"><div class="panel"><h3>إضافة مستثمر</h3><form id="investorForm"><label>اسم المستثمر<input id="invName" required></label><label>رأس المال<input id="invCapital" type="number" min="0" step="0.01" value="0"></label><label class="full">نسبة من الربح الشهري %<input id="invShare" type="number" min="0" max="100" step="0.01" value="0"></label><div class="actions"><button class="primary">حفظ المستثمر</button></div></form></div><div class="panel"><h3>تنبيه توزيع الأرباح</h3><div class="note warn">يعرض البرنامج نصيب المستثمر من «إجمالي العمولات» فقط. قبل الصرف الفعلي، راجع أي التزامات أو اتفاق خاص بينكم. مجموع النسب لا يجب أن يزيد عن 100%.</div><div id="shareCheck" style="margin-top:14px"></div></div></div><div class="panel" style="margin-top:17px"><h3>توزيع الشهر الحالي</h3><div class="table"><table><thead><tr><th>المستثمر</th><th>رأس المال</th><th>نسبة الربح</th><th>نصيبه هذا الشهر</th><th></th></tr></thead><tbody id="investorTable"></tbody></table></div></div></section>
+                    <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700/60 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs transition" title="تغيير كلمة السر">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
 
-<section id="reports" class="page"><div class="head"><div><h2>تقارير الشهر الحالي</h2><p class="sub">التقرير يتحدث تلقائيًا من العمليات المسجلة.</p></div></div><div class="panel"><h3>ملخص الخدمات والعمولات</h3><div class="report"><div><span>حجم الخدمات المنفذة</span><b id="rVolume">0 ج.م</b></div><div><span>إجمالي العمولات</span><b id="rFees">0 ج.م</b></div><div><span>عدد العمليات</span><b id="rCount">0</b></div></div></div><div class="panel" style="margin-top:17px"><h3>الوضع المالي</h3><div class="report"><div><span>إجمالي أرصدة الحسابات</span><b id="rAssets">0 ج.م</b></div><div><span>مبالغ العملاء عليهم</span><b id="rReceivables">0 ج.م</b></div><div><span>مبالغ العملاء لهم</span><b id="rPayables">0 ج.م</b></div></div></div></section>
+                    <button type="button" onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs transition">
+                        <i class="fa-solid fa-right-from-bracket ml-1"></i> خروج
+                    </button>
+                </div>
+            </div>
+        </header>
 
-<section id="backup" class="page"><div class="head"><div><h2>النسخ الاحتياطي</h2><p class="sub">بيانات البرنامج محلية على جهازك. لا تترك النسخ الاحتياطية في مكان عام.</p></div></div><div class="panel"><h3>حماية بياناتك</h3><div class="note">اضغط «تصدير» بعد كل تسوية يومية أو أسبوعية. الاستيراد يستبدل كل البيانات الحالية بالنسخة المحفوظة.</div><div class="toolbar" style="margin-top:15px"><button class="primary" id="export">تصدير نسخة احتياطية</button><label class="file">استيراد نسخة<input id="import" type="file" accept="application/json" hidden></label><button class="danger" id="reset">مسح البيانات المحلية</button></div></div></section>
-</main></div>
-<dialog id="settle"><div class="modal"><div class="mhead"><h3 id="settleTitle">تسوية عميل</h3><button class="x" onclick="document.getElementById('settle').close()">×</button></div><form id="settleForm"><label class="full">المبلغ<input id="settleAmount" type="number" min="0.01" step="0.01" required></label><label>التاريخ<input id="settleDate" type="date" required></label><label>حساب التسوية<select id="settleAccount"></select></label><div class="actions"><button type="button" class="soft" onclick="document.getElementById('settle').close()">إلغاء</button><button class="primary">تسجيل</button></div></form></div></dialog>
-<script>
-const KEY='transfer-ledger-v2', $=x=>document.getElementById(x), today=()=>new Date().toISOString().slice(0,10), id=()=>Date.now()+'-'+Math.random().toString(16).slice(2), egp=n=>new Intl.NumberFormat('ar-EG',{style:'currency',currency:'EGP',maximumFractionDigits:2}).format(+n||0), esc=x=>String(x??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])), fmt=d=>new Intl.DateTimeFormat('ar-EG',{dateStyle:'medium'}).format(new Date(d+'T12:00:00'));
-const defaults=()=>({accounts:[{id:'cash',name:'الصندوق النقدي',type:'صندوق نقدي',opening:0},{id:'aman',name:'ماكينة أمان',type:'ماكينة تحويل',opening:0},{id:'fawryAndroid',name:'فوري أندرويد',type:'ماكينة تحويل',opening:0},{id:'fawry',name:'فوري عادية',type:'ماكينة تحويل',opening:0}],operations:[],clients:[],investors:[]});let state;try{state={...defaults(),...JSON.parse(localStorage.getItem(KEY)||'{}')};if(!state.accounts?.length)state=defaults()}catch{state=defaults()}let settlement=null;
-function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}function acc(id){return state.accounts.find(a=>a.id===id)}function bal(id){let a=acc(id);return +(Number(a?.opening||0)+state.operations.reduce((s,o)=>s+(o.source===id?-+o.amount:0)+(o.target===id?+o.amount:0)+(o.feeAccount===id?+o.fee:0),0)).toFixed(2)}function assets(){return state.accounts.reduce((s,a)=>s+bal(a.id),0)}function monthOps(){return state.operations.filter(o=>o.date.startsWith(today().slice(0,7)))}function fees(){return monthOps().reduce((s,o)=>s+Number(o.fee||0),0)}function receivables(){return state.clients.reduce((s,c)=>s+Number(c.owes||0),0)}function payables(){return state.clients.reduce((s,c)=>s+Number(c.due||0),0)}function opts(sel,allowEmpty=false){sel.innerHTML=(allowEmpty?'<option value="">— غير مرتبط —</option>':'')+state.accounts.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}
-function render(){const m=monthOps(),f=fees(),as=assets(),rec=receivables(),pay=payables();$('totalAssets').textContent=egp(as);$('monthFees').textContent=egp(f);$('receivables').textContent=egp(rec);$('payables').textContent=egp(pay);$('accountSummary').innerHTML=state.accounts.map(a=>`<div class="row"><span>${esc(a.name)}<br><small>${esc(a.type)}</small></span><b class="${bal(a.id)<0?'neg':''}">${egp(bal(a.id))}</b></div>`).join('')||'<div class="empty">لا توجد حسابات.</div>';
-const share=state.investors.reduce((s,i)=>s+Number(i.share||0),0);$('investorSummary').innerHTML=state.investors.map(i=>`<div class="row"><span>${esc(i.name)} <small>(${i.share}%)</small></span><b>${egp(f*i.share/100)}</b></div>`).join('')||'<div class="empty">أضف المستثمرين لتظهر أنصبتهم.</div>'; $('shareCheck').innerHTML=`<b class="${share>100?'neg':'pos'}">إجمالي النسب: ${share.toFixed(2)}%</b>`;
-$('rVolume').textContent=egp(m.reduce((s,o)=>s+Number(o.amount),0));$('rFees').textContent=egp(f);$('rCount').textContent=m.length;$('rAssets').textContent=egp(as);$('rReceivables').textContent=egp(rec);$('rPayables').textContent=egp(pay);renderOps();renderAccounts();renderClients();renderInvestors();renderAlerts(share);fillSelects()}
-function fillSelects(){['opSource','opTarget','opFeeAccount','settleAccount'].forEach(x=>opts($(x)));$('opClient').innerHTML='<option value="">— غير مرتبط —</option>'+state.clients.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}
-function renderAlerts(share){let x=[];state.accounts.forEach(a=>{if(bal(a.id)<0)x.push(`رصيد «${a.name}» سالب، راجع التسوية.`)});if(share>100)x.push('نسب المستثمرين تجاوزت 100%.');if(!state.operations.length)x.push('لم تسجل عمليات بعد. ابدأ بتسجيل الرصيد الافتتاحي للحسابات ثم العمليات.');$('alerts').innerHTML=x.length?x.map(v=>`<div class="note ${v.includes('تجاوزت')?'warn':''}">${v}</div>`).join(''):'<div class="empty">الأرصدة تبدو متوازنة ولا توجد تنبيهات.</div>'}
-function renderOps(){let q=$('opSearch').value.toLowerCase(),rows=[...state.operations].sort((a,b)=>b.date.localeCompare(a.date)||b.created-a.created).filter(o=>`${o.kind} ${o.note}`.toLowerCase().includes(q));$('opTable').innerHTML=rows.map(o=>`<tr><td>${fmt(o.date)}</td><td>${esc(o.kind)}</td><td>${esc(acc(o.source)?.name||'—')}</td><td>${esc(acc(o.target)?.name||'—')}</td><td>${egp(o.amount)}</td><td class="pos">${egp(o.fee)}</td><td>${esc(o.note)}</td><td><button class="small" onclick="delOp('${o.id}')">حذف</button></td></tr>`).join('')||'<tr><td colspan="8"><div class="empty">لا توجد عمليات.</div></td></tr>'}
-function renderAccounts(){$('accountTable').innerHTML=state.accounts.map(a=>`<tr><td>${esc(a.name)}</td><td>${esc(a.type)}</td><td>${egp(a.opening)}</td><td class="${bal(a.id)<0?'neg':'pos'}">${egp(bal(a.id))}</td><td>${['cash','aman','fawryAndroid','fawry'].includes(a.id)?'أساسي':`<button class="small" onclick="delAcc('${a.id}')">حذف</button>`}</td></tr>`).join('')}
-function renderClients(){let q=$('clientSearch').value.toLowerCase(),rows=state.clients.filter(c=>`${c.name} ${c.phone}`.toLowerCase().includes(q));$('clientTable').innerHTML=rows.map(c=>{let net=+c.owes-+c.due;return `<tr><td>${esc(c.name)}</td><td>${esc(c.phone||'—')}</td><td class="due">${egp(c.owes)}</td><td class="neg">${egp(c.due)}</td><td class="${net>0?'due':net<0?'neg':'pos'}">${egp(net)}</td><td>${c.owes>0?`<button class="small" onclick="openSettle('${c.id}','collect')">تحصيل</button>`:''} ${c.due>0?`<button class="small" onclick="openSettle('${c.id}','pay')">دفع للعميل</button>`:''} <button class="small" onclick="delClient('${c.id}')">حذف</button></td></tr>`}).join('')||'<tr><td colspan="6"><div class="empty">لا يوجد عملاء.</div></td></tr>'}
-function renderInvestors(){let f=fees();$('investorTable').innerHTML=state.investors.map(i=>`<tr><td>${esc(i.name)}</td><td>${egp(i.capital)}</td><td>${Number(i.share).toFixed(2)}%</td><td class="pos">${egp(f*i.share/100)}</td><td><button class="small" onclick="delInv('${i.id}')">حذف</button></td></tr>`).join('')||'<tr><td colspan="5"><div class="empty">لا يوجد مستثمرون.</div></td></tr>'}
-window.delOp=i=>{if(confirm('حذف العملية؟')){state.operations=state.operations.filter(o=>o.id!==i);save()}};window.delAcc=i=>{if(state.operations.some(o=>o.source===i||o.target===i||o.feeAccount===i))return alert('لا يمكن حذف حساب مرتبط بعمليات.');if(confirm('حذف الحساب؟')){state.accounts=state.accounts.filter(a=>a.id!==i);save()}};window.delClient=i=>{if(confirm('حذف العميل؟')){state.clients=state.clients.filter(c=>c.id!==i);save()}};window.delInv=i=>{if(confirm('حذف المستثمر؟')){state.investors=state.investors.filter(x=>x.id!==i);save()}};
-window.openSettle=(cid,type)=>{let c=state.clients.find(x=>x.id===cid);settlement={c,type};$('settleTitle').textContent=type==='collect'?`تحصيل من ${c.name} — المتبقي ${egp(c.owes)}`:`دفع إلى ${c.name} — المتبقي ${egp(c.due)}`;$('settleAmount').value='';$('settleAmount').max=type==='collect'?c.owes:c.due;$('settleDate').value=today();fillSelects();$('settleAccount').value='cash';$('settle').showModal()};
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));$(b.dataset.p).classList.add('on')});$('opDate').value=today();
-$('opForm').onsubmit=e=>{e.preventDefault();let amount=+$('opAmount').value,source=$('opSource').value,target=$('opTarget').value,fee=+$('opFee').value;if(source===target&&amount>0)return alert('المصدر والوجهة يجب أن يكونا مختلفين.');state.operations.push({id:id(),date:$('opDate').value,kind:$('opKind').value,source,target,amount,fee,feeAccount:$('opFeeAccount').value,client:$('opClient').value,note:$('opNote').value.trim(),created:Date.now()});e.target.reset();$('opDate').value=today();$('opFee').value=0;save()};
-$('accountForm').onsubmit=e=>{e.preventDefault();state.accounts.push({id:id(),name:$('accName').value.trim(),type:$('accType').value,opening:+$('accOpening').value||0});e.target.reset();$('accOpening').value=0;save()};$('clientForm').onsubmit=e=>{e.preventDefault();state.clients.push({id:id(),name:$('clientName').value.trim(),phone:$('clientPhone').value.trim(),owes:+$('clientOwes').value||0,due:+$('clientDue').value||0,note:$('clientNote').value.trim()});e.target.reset();$('clientOwes').value=0;$('clientDue').value=0;save()};$('investorForm').onsubmit=e=>{e.preventDefault();state.investors.push({id:id(),name:$('invName').value.trim(),capital:+$('invCapital').value||0,share:+$('invShare').value||0});e.target.reset();$('invCapital').value=0;$('invShare').value=0;save()};
-$('settleForm').onsubmit=e=>{e.preventDefault();let n=+$('settleAmount').value,c=settlement.c,limit=settlement.type==='collect'?+c.owes:+c.due;if(n>limit)return alert('المبلغ أكبر من الرصيد المستحق.');if(settlement.type==='collect'){c.owes=+(c.owes-n).toFixed(2);state.operations.push({id:id(),date:$('settleDate').value,kind:'تحصيل عميل',source:'',target:$('settleAccount').value,amount:n,fee:0,feeAccount:'',note:`تحصيل مديونية — ${c.name}`,created:Date.now()})}else{c.due=+(c.due-n).toFixed(2);state.operations.push({id:id(),date:$('settleDate').value,kind:'دفع للعميل',source:$('settleAccount').value,target:'',amount:n,fee:0,feeAccount:'',note:`سداد للعميل — ${c.name}`,created:Date.now()})}$('settle').close();save()};
-$('opSearch').oninput=renderOps;$('clientSearch').oninput=renderClients;$('export').onclick=()=>{let a=document.createElement('a'),b=new Blob([JSON.stringify({version:2,createdAt:new Date().toISOString(),data:state},null,2)],{type:'application/json'});a.href=URL.createObjectURL(b);a.download=`transfer-ledger-${today()}.json`;a.click();URL.revokeObjectURL(a.href)};$('import').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text()).data;if(!d?.accounts||!d?.operations||!d?.clients||!d?.investors)throw 0;if(confirm('سيتم استبدال كل البيانات الحالية. متابعة؟')){state=d;save()}}catch{alert('ملف النسخة الاحتياطية غير صالح')}e.target.value=''};$('reset').onclick=()=>{if(confirm('سيتم حذف جميع البيانات المحلية. هل أنت متأكد؟')){state=defaults();save()}};$('today').textContent=new Intl.DateTimeFormat('ar-EG',{dateStyle:'full'}).format(new Date());render();
-</script></body></html>
+        <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+            
+            <!-- Room & Cloud Sync Toolbar -->
+            <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print">
+                <div class="flex items-center space-x-3 space-x-reverse flex-1 min-w-[280px]">
+                    <div class="bg-indigo-500/10 text-indigo-400 p-2.5 rounded-xl border border-indigo-500/20">
+                        <i class="fa-solid fa-network-wired text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-white">رمز المزامنة السحابية (Sync ID)</h3>
+                        <p class="text-xs text-slate-400">استخدم نفس الرمز على جميع الأجهزة لتحديث البيانات لحظياً</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <input type="text" id="roomIdInput" placeholder="أدخل رمز الغرفة" class="bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl text-sm text-center font-mono w-40 text-brand-500 focus:outline-none focus:border-brand-500">
+                    <button type="button" onclick="connectCloudRoom()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/20">
+                        <i class="fa-solid fa-plug ml-1"></i> ربط السحابة
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">إجمالي الأصول الحالية</p>
+                            <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                        </div>
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
+                            <i class="fa-solid fa-vault text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3">إجمالي الأرصدة الحالية لجميع الحسابات والماكينات</p>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال</p>
+                            <h3 id="totalCapitalCard" class="text-2xl font-bold text-blue-400 mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                        </div>
+                        <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl">
+                            <i class="fa-solid fa-piggy-bank text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3">إجمالي مساهمات المستثمرين المسجلة</p>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي لنا / علينا)</p>
+                            <h3 id="netCustomersCard" class="text-2xl font-bold text-amber-400 mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                        </div>
+                        <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl">
+                            <i class="fa-solid fa-users text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-[11px] mt-3 text-slate-400">
+                        <span>لنا: <strong id="customersUsCard" class="text-emerald-400">0</strong></span>
+                        <span>علينا: <strong id="customersThemCard" class="text-red-400">0</strong></span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-slate-400 font-medium">أرباح الفترة المحسوبة</p>
+                            <h3 id="calculatedProfitCard" class="text-2xl font-bold text-brand-500 mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                        </div>
+                        <div class="p-3 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3">بناءً على المعادلة المحاسبية المعتمدة</p>
+                </div>
+            </div>
+
+            <!-- Main Tabs Container -->
+            <div class="bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-xl">
+                <!-- Navigation Tabs -->
+                <div class="flex border-b border-slate-700/80 bg-slate-900/50 p-2 overflow-x-auto space-x-2 space-x-reverse no-print">
+                    <button type="button" onclick="switchTab('accounts')" id="tab-accounts" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-building-columns"></i> <span>إدارة الصناديق والماكينات</span>
+                    </button>
+                    <button type="button" onclick="switchTab('snapshots')" id="tab-snapshots" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse bg-brand-600 text-white">
+                        <i class="fa-solid fa-camera"></i> <span>لقطات الرصيد</span>
+                    </button>
+                    <button type="button" onclick="switchTab('customers')" id="tab-customers" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-user-group"></i> <span>قاعدة العملاء</span>
+                    </button>
+                    <button type="button" onclick="switchTab('capital')" id="tab-capital" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> <span>حركات رأس المال</span>
+                    </button>
+                    <button type="button" onclick="switchTab('reports')" id="tab-reports" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-chart-pie"></i> <span>تقرير الأرباح والتوزيع</span>
+                    </button>
+                </div>
+
+                <div class="p-6">
+
+                    <!-- Tab 0: Account & Machine Configuration -->
+                    <div id="content-accounts" class="tab-content space-y-6 hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">إدارة الصناديق والمحافظ وماكينات الدفع</h3>
+                                <p class="text-xs text-slate-400">إضافة أو تعديل أو حذف أي محفظة أو ماكينة أو خزينة ديناميكياً</p>
+                            </div>
+                        </div>
+
+                        <!-- Add / Edit Account Form -->
+                        <form onsubmit="saveAccountConfig(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                            <input type="hidden" id="accEditId" value="">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">اسم الحساب / الماكينة / المحفظة</label>
+                                <input type="text" id="accName" required placeholder="مثال: محفظة اتصالات، فوري 2..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">النوع</label>
+                                <select id="accType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                    <option value="cash">صندوق نقدي (خزينة)</option>
+                                    <option value="ewallet">محفظة إلكترونية</option>
+                                    <option value="pos">ماكينة دفع (فوري / أمان / غيرها)</option>
+                                    <option value="bank">حساب بنكي</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">الحالة</label>
+                                <select id="accStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">معطل / متوقف</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end space-x-2 space-x-reverse">
+                                <button type="submit" id="accBtnText" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/20">
+                                    <i class="fa-solid fa-plus ml-1"></i> إضافة الحساب
+                                </button>
+                                <button type="button" id="accCancelBtn" onclick="resetAccountForm()" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold transition">
+                                    إلغاء
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Accounts Table -->
+                        <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                            <table class="w-full text-right text-sm text-slate-300">
+                                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                    <tr>
+                                        <th class="p-3">اسم الحساب</th>
+                                        <th class="p-3">النوع</th>
+                                        <th class="p-3">الحالة</th>
+                                        <th class="p-3 text-center no-print">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accountsTableBody" class="divide-y divide-slate-800">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 1: Balance Snapshots -->
+                    <div id="content-snapshots" class="tab-content space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">تسجيل لقطة رصيد جديدة (Snapshot)</h3>
+                                <p class="text-xs text-slate-400">سجل أرصدة كافة الصناديق والمحافظ والماكينات النشطة بتاريخ محدد</p>
+                            </div>
+                        </div>
+
+                        <form onsubmit="saveSnapshot(event)" class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/50 space-y-4">
+                            <div class="max-w-xs">
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
+                                <input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <!-- Dynamic Inputs for Active Accounts -->
+                            <div id="dynamicSnapshotInputs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <!-- Generated Dynamic Inputs -->
+                            </div>
+
+                            <div class="flex justify-end pt-2">
+                                <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition shadow-lg shadow-brand-600/20">
+                                    <i class="fa-solid fa-plus ml-1"></i> حفظ لقطة الرصيد
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Historical Snapshots Table -->
+                        <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                            <table class="w-full text-right text-sm text-slate-300">
+                                <thead id="snapshotsTableHeader" class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                    <!-- Dynamic Columns -->
+                                </thead>
+                                <tbody id="snapshotsTableBody" class="divide-y divide-slate-800">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Customers Management Directory -->
+                    <div id="content-customers" class="tab-content space-y-6 hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">قاعدة بيانات وحسابات العملاء</h3>
+                                <p class="text-xs text-slate-400">تسجيل وتتبّع مبالغ العملاء (لنا / علينا) مع إمكانية البحث وكشف الحساب التاريخي</p>
+                            </div>
+                            <!-- Search Input -->
+                            <div class="relative min-w-[240px]">
+                                <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
+                                <input type="text" id="customerSearch" oninput="renderCustomers()" placeholder="بحث باسم العميل..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+
+                        <!-- Add / Update Customer Entry -->
+                        <form onsubmit="saveCustomerRecord(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">اسم العميل</label>
+                                <input type="text" id="custName" required placeholder="مثال: أحمد محمود" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
+                                <input type="datetime-local" id="custDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
+                                <select id="custType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                    <option value="us">مبلغ لنا عند العميل (+)</option>
+                                    <option value="them">مبلغ علينا للعميل (-)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
+                                <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div class="md:col-span-4 flex justify-end">
+                                <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition shadow-lg shadow-amber-600/20">
+                                    <i class="fa-solid fa-user-plus ml-1"></i> تسجيل حركة العميل
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Customers Directory Grid & History -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Customers List Table -->
+                            <div class="lg:col-span-2 border border-slate-700/80 rounded-xl overflow-hidden">
+                                <table class="w-full text-right text-sm text-slate-300">
+                                    <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                        <tr>
+                                            <th class="p-3">اسم العميل</th>
+                                            <th class="p-3">الرصيد الحالي</th>
+                                            <th class="p-3">الحالة</th>
+                                            <th class="p-3 no-print text-center">التفاصيل</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="customersDirectoryBody" class="divide-y divide-slate-800">
+                                        <!-- Dynamic customer rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Selected Customer Statement Details -->
+                            <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 flex flex-col justify-between">
+                                <div>
+                                    <h4 class="font-bold text-white text-base border-b border-slate-700/60 pb-2 mb-3 flex items-center justify-between">
+                                        <span><i class="fa-solid fa-file-invoice-dollar text-amber-500 ml-1"></i> كشف حساب عميل</span>
+                                        <span id="selectedCustName" class="text-xs font-normal text-slate-400">اختر عميلاً</span>
+                                    </h4>
+                                    <div id="customerStatementLogs" class="space-y-2 max-h-72 overflow-y-auto text-xs text-slate-300 pr-1">
+                                        <p class="text-slate-500 text-center py-8">اضغط على أي عميل لعرض سجل حركاته التاريخية بالكامل</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Capital Transactions -->
+                    <div id="content-capital" class="tab-content space-y-6 hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">إدارة حركة رأس المال والمستثمرين</h3>
+                                <p class="text-xs text-slate-400">تسجيل إضافات ومسحوبات المستثمرين مع الحماية من الانخفاض عن صفر</p>
+                            </div>
+                        </div>
+
+                        <form onsubmit="saveCapitalTransaction(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">اسم المستثمر</label>
+                                <input type="text" id="capInvestor" required placeholder="مثال: محمد محسن" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
+                                <select id="capType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                    <option value="add">إضافة رأس مال (+)</option>
+                                    <option value="withdraw">سحب رأس مال (-)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
+                                <input type="number" step="0.01" id="capAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
+                                <input type="datetime-local" id="capDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div class="md:col-span-4 flex justify-end">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition shadow-lg shadow-blue-600/20">
+                                    <i class="fa-solid fa-plus ml-1"></i> تسجيل حركة رأس المال
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                            <table class="w-full text-right text-sm text-slate-300">
+                                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                    <tr>
+                                        <th class="p-3">التاريخ</th>
+                                        <th class="p-3">المستثمر</th>
+                                        <th class="p-3">نوع الحركة</th>
+                                        <th class="p-3">المبلغ</th>
+                                        <th class="p-3 no-print">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="capitalTableBody" class="divide-y divide-slate-800">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Profit Reports & Share Distribution -->
+                    <div id="content-reports" class="tab-content space-y-6 hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">تقرير الأرباح وتوزيع النسب للمستثمرين</h3>
+                                <p class="text-xs text-slate-400">حدد الفترة لحساب صافي الربح الدقيق وتوزيع الأرباح على المشاركين</p>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse no-print">
+                                <button type="button" onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold transition">
+                                    <i class="fa-solid fa-print ml-1"></i> طباعة التقرير
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Date Range Filters -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 no-print">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ</label>
+                                <input type="datetime-local" id="reportStartDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ</label>
+                                <input type="datetime-local" id="reportEndDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" onclick="calculatePeriodReport()" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-bold transition shadow-lg shadow-brand-600/20">
+                                    <i class="fa-solid fa-calculator ml-1"></i> احتساب أرباح الفترة
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Equation Breakdown Display -->
+                        <div class="bg-slate-900/80 border border-slate-700/80 rounded-2xl p-5 space-y-4">
+                            <h4 class="text-sm font-bold text-brand-400 border-b border-slate-800 pb-2">
+                                <i class="fa-solid fa-square-root-variable ml-1"></i> المعادلة المحاسبية المعتمدة للربح الصافي
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-center text-xs">
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                                    <span class="text-slate-400 block mb-1">صافي أصول النهاية</span>
+                                    <strong id="eqEndAssets" class="text-white text-base">0.00</strong>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                                    <span class="text-slate-400 block mb-1">− صافي أصول البداية</span>
+                                    <strong id="eqStartAssets" class="text-red-400 text-base">0.00</strong>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                                    <span class="text-slate-400 block mb-1">− إضافات رأس المال</span>
+                                    <strong id="eqAdditions" class="text-red-400 text-base">0.00</strong>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
+                                    <span class="text-slate-400 block mb-1">+ مسحوبات رأس المال</span>
+                                    <strong id="eqWithdrawals" class="text-emerald-400 text-base">0.00</strong>
+                                </div>
+                                <div class="bg-brand-500/10 p-3 rounded-xl border border-brand-500/30">
+                                    <span class="text-brand-400 block mb-1 font-bold">= صافي الربح المحاسبي</span>
+                                    <strong id="eqNetProfit" class="text-brand-400 text-lg">0.00</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investors Profit Share Table -->
+                        <div class="space-y-3">
+                            <h4 class="text-sm font-bold text-white"><i class="fa-solid fa-users-line ml-1"></i> جدول توزيع الأرباح على المستثمرين حسب الحصة الموزونة</h4>
+                            <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                                <table class="w-full text-right text-sm text-slate-300">
+                                    <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                        <tr>
+                                            <th class="p-3">اسم المستثمر</th>
+                                            <th class="p-3">رأس المال بالفترة</th>
+                                            <th class="p-3">نسبة المشاركة</th>
+                                            <th class="p-3">نصيب الربح الصافي</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="distributionTableBody" class="divide-y divide-slate-800">
+                                        <tr><td colspan="4" class="text-center p-4 text-slate-500">اضغط على "احتساب أرباح الفترة" لعرض التوزيع</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Action Bar: Backup / Export -->
+            <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 text-xs text-slate-400 no-print">
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <button type="button" onclick="exportJSONBackup()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-download ml-1"></i> تحميل نسخه احتياطية (JSON)
+                    </button>
+                    <label class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl transition cursor-pointer">
+                        <i class="fa-solid fa-upload ml-1"></i> استرجاع نسخة
+                        <input type="file" accept=".json" onchange="importJSONBackup(event)" class="hidden">
+                    </label>
+                </div>
+                <div>
+                    <span>نظام الحسابات المحاسبي المطور — Mohamed Mohsen Version 2.0</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div id="passModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full space-y-4">
+            <h3 class="text-lg font-bold text-white">تغيير كلمة السر</h3>
+            <input type="password" id="newPassInput" placeholder="كلمة السر الجديدة" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+            <div class="flex justify-end space-x-2 space-x-reverse">
+                <button type="button" onclick="toggleChangePassModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs">إلغاء</button>
+                <button type="button" onclick="saveNewPassword()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // --- Core Data Structures & State ---
+        let dbState = {
+            accountsConfig: [
+                { id: 'acc_cash', name: 'الصندوق النقدي', type: 'cash', status: 'active' },
+                { id: 'acc_ewallet', name: 'المحافظ الإلكترونية', type: 'ewallet', status: 'active' },
+                { id: 'acc_fawry_android', name: 'فوري Android', type: 'pos', status: 'active' },
+                { id: 'acc_aman', name: 'أمان', type: 'pos', status: 'active' },
+                { id: 'acc_fawry_regular', name: 'فوري العادية', type: 'pos', status: 'active' }
+            ],
+            snapshots: [], // { id, date, balances: { acc_cash: 100, ... }, total }
+            customers: [], // { id, name, date, type: 'us'|'them', amount }
+            capital: [],   // { id, investor, type: 'add'|'withdraw', amount, date }
+            passwordHash: '123456'
+        };
+
+        let currentRoomId = localStorage.getItem('accounting_room_id') || 'DEFAULT_ROOM';
+        let firebaseApp = null;
+        let firebaseDbRef = null;
+
+        const firebaseConfig = {
+            databaseURL: "https://accounting-app-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            initDates();
+            loadLocalStorageData();
+            checkSession();
+            document.getElementById('roomIdInput').value = currentRoomId;
+        });
+
+        function initDates() {
+            const now = new Date();
+            const nowIso = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            
+            if (document.getElementById('snapDate')) document.getElementById('snapDate').value = nowIso;
+            if (document.getElementById('custDate')) document.getElementById('custDate').value = nowIso;
+            if (document.getElementById('capDate')) document.getElementById('capDate').value = nowIso;
+            
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const firstDayIso = new Date(firstDayOfMonth.getTime() - firstDayOfMonth.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            
+            if (document.getElementById('reportStartDate')) document.getElementById('reportStartDate').value = firstDayIso;
+            if (document.getElementById('reportEndDate')) document.getElementById('reportEndDate').value = nowIso;
+        }
+
+        // Auth
+        function checkSession() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+                renderAll();
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const val = document.getElementById('passInput').value;
+            if (val === dbState.passwordHash) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+                renderAll();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        function toggleChangePassModal() {
+            const m = document.getElementById('passModal');
+            m.classList.toggle('hidden');
+            m.classList.toggle('flex');
+        }
+
+        function saveNewPassword() {
+            const np = document.getElementById('newPassInput').value;
+            if (np && np.length >= 4) {
+                dbState.passwordHash = np;
+                persistData();
+                toggleChangePassModal();
+                alert('تم تغيير كلمة السر بنجاح!');
+            } else {
+                alert('يرجى إدخال كلمة سر لا تقل عن 4 أرقام');
+            }
+        }
+
+        // Data Storage
+        function loadLocalStorageData() {
+            const local = localStorage.getItem('accounting_db_data');
+            if (local) {
+                try {
+                    const parsed = JSON.parse(local);
+                    dbState = Object.assign(dbState, parsed);
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function persistData() {
+            localStorage.setItem('accounting_db_data', JSON.stringify(dbState));
+            if (firebaseDbRef) {
+                firebaseDbRef.set(dbState);
+            }
+            renderAll();
+        }
+
+        function connectCloudRoom() {
+            const rid = document.getElementById('roomIdInput').value.trim();
+            if (!rid) return;
+            currentRoomId = rid;
+            localStorage.setItem('accounting_room_id', currentRoomId);
+
+            try {
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                }
+                firebaseDbRef = firebase.database().ref('accounting_rooms/' + currentRoomId);
+                
+                document.getElementById('syncStatus').className = "flex items-center space-x-1.5 space-x-reverse text-xs bg-indigo-950 border border-indigo-700 px-3 py-1.5 rounded-lg text-indigo-300";
+                document.getElementById('syncText').innerText = "متصل بالسحابة (" + currentRoomId + ")";
+
+                firebaseDbRef.on('value', (snapshot) => {
+                    const val = snapshot.val();
+                    if (val) {
+                        dbState = val;
+                        localStorage.setItem('accounting_db_data', JSON.stringify(dbState));
+                        renderAll();
+                    }
+                });
+            } catch(e) {
+                alert('عذراً، فشل الاتصال بالسحابة. سيتم العمل في الوضع المحلي.');
+            }
+        }
+
+        // Render Orchestrator
+        function renderAll() {
+            renderAccountsConfig();
+            renderSnapshotFormInputs();
+            renderSnapshots();
+            renderCustomers();
+            renderCapital();
+            updateSummaryCards();
+            calculatePeriodReport();
+        }
+
+        // --- Accounts Configuration Management ---
+        function saveAccountConfig(e) {
+            e.preventDefault();
+            const editId = document.getElementById('accEditId').value;
+            const name = document.getElementById('accName').value.trim();
+            const type = document.getElementById('accType').value;
+            const status = document.getElementById('accStatus').value;
+
+            if (!name) return;
+
+            if (editId) {
+                const item = dbState.accountsConfig.find(a => a.id === editId);
+                if (item) {
+                    item.name = name;
+                    item.type = type;
+                    item.status = status;
+                }
+            } else {
+                dbState.accountsConfig.push({
+                    id: 'acc_' + Date.now(),
+                    name, type, status
+                });
+            }
+
+            persistData();
+            resetAccountForm();
+        }
+
+        function editAccountConfig(id) {
+            const acc = dbState.accountsConfig.find(a => a.id === id);
+            if (!acc) return;
+
+            document.getElementById('accEditId').value = acc.id;
+            document.getElementById('accName').value = acc.name;
+            document.getElementById('accType').value = acc.type;
+            document.getElementById('accStatus').value = acc.status;
+
+            document.getElementById('accBtnText').innerHTML = `<i class="fa-solid fa-floppy-disk ml-1"></i> حفظ التعديل`;
+            document.getElementById('accCancelBtn').classList.remove('hidden');
+        }
+
+        function resetAccountForm() {
+            document.getElementById('accEditId').value = '';
+            document.getElementById('accName').value = '';
+            document.getElementById('accType').value = 'cash';
+            document.getElementById('accStatus').value = 'active';
+
+            document.getElementById('accBtnText').innerHTML = `<i class="fa-solid fa-plus ml-1"></i> إضافة الحساب`;
+            document.getElementById('accCancelBtn').classList.add('hidden');
+        }
+
+        function deleteAccountConfig(id) {
+            if (confirm('هل أنت تأكيد تريد حذف هذا الحساب/الماكينة؟ السجلات السابقة ستستمر بالظهور.')) {
+                dbState.accountsConfig = dbState.accountsConfig.filter(a => a.id !== id);
+                persistData();
+            }
+        }
+
+        function getAccountTypeName(type) {
+            switch(type) {
+                case 'cash': return 'صندوق نقدي (خزينة)';
+                case 'ewallet': return 'محفظة إلكترونية';
+                case 'pos': return 'ماكينة دفع (POS)';
+                case 'bank': return 'حساب بنكي';
+                default: return 'حساب آخر';
+            }
+        }
+
+        function renderAccountsConfig() {
+            const body = document.getElementById('accountsTableBody');
+            body.innerHTML = '';
+
+            dbState.accountsConfig.forEach(acc => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition";
+                
+                const isAct = acc.status === 'active';
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white">${acc.name}</td>
+                    <td class="p-3 text-xs text-slate-400">${getAccountTypeName(acc.type)}</td>
+                    <td class="p-3">
+                        <span class="${isAct ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-700 text-slate-400'} border px-2 py-0.5 rounded text-xs font-semibold">
+                            ${isAct ? 'نشط' : 'معطل'}
+                        </span>
+                    </td>
+                    <td class="p-3 no-print text-center space-x-2 space-x-reverse">
+                        <button type="button" onclick="editAccountConfig('${acc.id}')" class="text-indigo-400 hover:text-indigo-300 p-1">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" onclick="deleteAccountConfig('${acc.id}')" class="text-red-400 hover:text-red-300 p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        // --- Snapshots with Dynamic Fields ---
+        function renderSnapshotFormInputs() {
+            const container = document.getElementById('dynamicSnapshotInputs');
+            container.innerHTML = '';
+
+            const activeAccs = dbState.accountsConfig.filter(a => a.status === 'active');
+
+            if (activeAccs.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-amber-400 text-xs py-4">لا توجد أصل أو ماكينة نشطة حالياً. يرجى إضافة حسابات من تبويب "إدارة الصناديق والماكينات".</div>`;
+                return;
+            }
+
+            activeAccs.forEach(acc => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">${acc.name}</label>
+                    <input type="number" step="0.01" min="0" data-acc-id="${acc.id}" placeholder="0.00" required class="snap-acc-input w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function saveSnapshot(e) {
+            e.preventDefault();
+            const date = document.getElementById('snapDate').value;
+
+            if (dbState.snapshots.some(s => s.date === date)) {
+                alert('يوجد لقطة رصيد مسجلة بنفس التاريخ والوقت بالفعل!');
+                return;
+            }
+
+            const balances = {};
+            let total = 0;
+
+            document.querySelectorAll('.snap-acc-input').forEach(input => {
+                const accId = input.getAttribute('data-acc-id');
+                const val = parseFloat(input.value) || 0;
+                balances[accId] = val;
+                total += val;
+            });
+
+            dbState.snapshots.push({
+                id: Date.now(),
+                date,
+                balances,
+                total
+            });
+
+            dbState.snapshots.sort((a, b) => new Date(b.date) - new Date(a.date));
+            persistData();
+            e.target.reset();
+            initDates();
+        }
+
+        function renderSnapshots() {
+            const thead = document.getElementById('snapshotsTableHeader');
+            const tbody = document.getElementById('snapshotsTableBody');
+            
+            // Re-build Headers based on accountsConfig
+            let headerHTML = `<tr><th class="p-3">التاريخ</th>`;
+            dbState.accountsConfig.forEach(acc => {
+                headerHTML += `<th class="p-3">${acc.name}</th>`;
+            });
+            headerHTML += `<th class="p-3">الإجمالي</th><th class="p-3 no-print">إجراءات</th></tr>`;
+            thead.innerHTML = headerHTML;
+
+            tbody.innerHTML = '';
+
+            if (dbState.snapshots.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${dbState.accountsConfig.length + 3}" class="text-center p-4 text-slate-500">لا توجد لقطات رصيد مسجلة حتى الآن</td></tr>`;
+                return;
+            }
+
+            dbState.snapshots.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition";
+                
+                let rowHTML = `<td class="p-3 font-mono text-xs">${formatDate(s.date)}</td>`;
+                
+                let snapTotal = 0;
+                dbState.accountsConfig.forEach(acc => {
+                    let val = 0;
+                    if (s.balances && s.balances[acc.id] !== undefined) {
+                        val = s.balances[acc.id];
+                    } else if (s[acc.id] !== undefined) {
+                        val = s[acc.id];
+                    } else {
+                        // Backward Compatibility
+                        if (acc.id === 'acc_cash' && s.cash) val = s.cash;
+                        if (acc.id === 'acc_ewallet' && s.ewallets) val = s.ewallets;
+                        if (acc.id === 'acc_fawry_android' && s.fawryAndroid) val = s.fawryAndroid;
+                        if (acc.id === 'acc_aman' && s.aman) val = s.aman;
+                        if (acc.id === 'acc_fawry_regular' && s.fawryRegular) val = s.fawryRegular;
+                    }
+                    snapTotal += val;
+                    rowHTML += `<td class="p-3 font-mono">${val.toFixed(2)}</td>`;
+                });
+
+                rowHTML += `<td class="p-3 font-bold text-brand-400 font-mono">${(s.total || snapTotal).toFixed(2)}</td>`;
+                rowHTML += `<td class="p-3 no-print">
+                    <button type="button" onclick="deleteRecord('snapshots', ${s.id})" class="text-red-400 hover:text-red-300 p-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>`;
+
+                tr.innerHTML = rowHTML;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Customers ---
+        function saveCustomerRecord(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value.trim();
+            const date = document.getElementById('custDate').value;
+            const type = document.getElementById('custType').value;
+            const amount = parseFloat(document.getElementById('custAmount').value) || 0;
+
+            if (!name || amount <= 0) return;
+
+            dbState.customers.push({
+                id: Date.now(),
+                name, date, type, amount
+            });
+
+            dbState.customers.sort((a, b) => new Date(b.date) - new Date(a.date));
+            persistData();
+            document.getElementById('custAmount').value = '';
+            initDates();
+        }
+
+        function getCustomerBalances() {
+            const map = {};
+            dbState.customers.forEach(c => {
+                if (!map[c.name]) map[c.name] = { name: c.name, us: 0, them: 0, net: 0, logs: [] };
+                if (c.type === 'us') map[c.name].us += c.amount;
+                else map[c.name].them += c.amount;
+                map[c.name].net = map[c.name].us - map[c.name].them;
+                map[c.name].logs.push(c);
+            });
+            return Object.values(map);
+        }
+
+        function renderCustomers() {
+            const body = document.getElementById('customersDirectoryBody');
+            const search = (document.getElementById('customerSearch').value || '').toLowerCase();
+            body.innerHTML = '';
+
+            const list = getCustomerBalances().filter(c => c.name.toLowerCase().includes(search));
+
+            if (list.length === 0) {
+                body.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-slate-500">لا يوجد عملاء مطابقون للبحث</td></tr>`;
+                return;
+            }
+
+            list.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition cursor-pointer";
+                
+                let badge = '';
+                if (c.net > 0) {
+                    badge = `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-xs font-semibold">مبلغ لنا (${c.net.toFixed(2)})</span>`;
+                } else if (c.net < 0) {
+                    badge = `<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded text-xs font-semibold">مبلغ علينا (${Math.abs(c.net).toFixed(2)})</span>`;
+                } else {
+                    badge = `<span class="bg-slate-700 text-slate-300 px-2 py-0.5 rounded text-xs">خالص الرصيد (0)</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white">${c.name}</td>
+                    <td class="p-3 font-mono">${Math.abs(c.net).toFixed(2)} ج.م</td>
+                    <td class="p-3">${badge}</td>
+                    <td class="p-3 no-print text-center">
+                        <button type="button" onclick="viewCustomerLogs('${c.name}')" class="text-amber-400 hover:text-amber-300 px-2 py-1 bg-amber-500/10 rounded-lg text-xs">
+                            <i class="fa-solid fa-eye ml-1"></i> الكشف
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function viewCustomerLogs(custName) {
+            document.getElementById('selectedCustName').innerText = custName;
+            const container = document.getElementById('customerStatementLogs');
+            container.innerHTML = '';
+
+            const custData = getCustomerBalances().find(c => c.name === custName);
+            if (!custData || !custData.logs) return;
+
+            custData.logs.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(log => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-800 p-2.5 rounded-xl border border-slate-700/60 flex justify-between items-center";
+                
+                const isUs = log.type === 'us';
+                div.innerHTML = `
+                    <div>
+                        <span class="block font-mono text-[10px] text-slate-400">${formatDate(log.date)}</span>
+                        <span class="font-semibold ${isUs ? 'text-emerald-400' : 'text-red-400'}">${isUs ? 'مبلغ لنا (+)' : 'مبلغ علينا (-)'}</span>
+                    </div>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="font-bold text-sm text-white">${log.amount.toFixed(2)} ج.م</span>
+                        <button type="button" onclick="deleteRecord('customers', ${log.id})" class="text-red-400 hover:text-red-300 p-1 no-print">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- Capital Transactions ---
+        function saveCapitalTransaction(e) {
+            e.preventDefault();
+            const investor = document.getElementById('capInvestor').value.trim();
+            const type = document.getElementById('capType').value;
+            const amount = parseFloat(document.getElementById('capAmount').value) || 0;
+            const date = document.getElementById('capDate').value;
+
+            if (!investor || amount <= 0) return;
+
+            if (type === 'withdraw') {
+                const currentInvestorCap = dbState.capital
+                    .filter(c => c.investor === investor)
+                    .reduce((acc, curr) => curr.type === 'add' ? acc + curr.amount : acc - curr.amount, 0);
+
+                if (amount > currentInvestorCap) {
+                    alert(`خطأ: رأس مال المستثمر (${investor}) الحالي هو ${currentInvestorCap.toFixed(2)} ج.م. لا يمكن سحب مبلغ أكبر من ذلك!`);
+                    return;
+                }
+            }
+
+            dbState.capital.push({
+                id: Date.now(),
+                investor, type, amount, date
+            });
+
+            dbState.capital.sort((a, b) => new Date(b.date) - new Date(a.date));
+            persistData();
+            document.getElementById('capAmount').value = '';
+            initDates();
+        }
+
+        function renderCapital() {
+            const body = document.getElementById('capitalTableBody');
+            body.innerHTML = '';
+
+            if (dbState.capital.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد حركات رأس مال مسجلة</td></tr>`;
+                return;
+            }
+
+            dbState.capital.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition";
+                const isAdd = c.type === 'add';
+                tr.innerHTML = `
+                    <td class="p-3 font-mono text-xs">${formatDate(c.date)}</td>
+                    <td class="p-3 font-bold text-white">${c.investor}</td>
+                    <td class="p-3">
+                        <span class="${isAdd ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'} border px-2 py-0.5 rounded text-xs font-semibold">
+                            ${isAdd ? 'إضافة رأس مال (+)' : 'سحب رأس مال (-)'}
+                        </span>
+                    </td>
+                    <td class="p-3 font-bold ${isAdd ? 'text-blue-400' : 'text-amber-400'}">${c.amount.toFixed(2)}</td>
+                    <td class="p-3 no-print">
+                        <button type="button" onclick="deleteRecord('capital', ${c.id})" class="text-red-400 hover:text-red-300 p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        // --- Summary Cards ---
+        function updateSummaryCards() {
+            const latestSnap = dbState.snapshots[0];
+            const assets = latestSnap ? latestSnap.total : 0;
+            document.getElementById('totalAssetsCard').innerText = assets.toFixed(2);
+
+            const capTotal = dbState.capital.reduce((acc, curr) => curr.type === 'add' ? acc + curr.amount : acc - curr.amount, 0);
+            document.getElementById('totalCapitalCard').innerText = capTotal.toFixed(2);
+
+            let usTotal = 0;
+            let themTotal = 0;
+            getCustomerBalances().forEach(c => {
+                usTotal += c.us;
+                themTotal += c.them;
+            });
+            const netCust = usTotal - themTotal;
+            document.getElementById('netCustomersCard').innerText = netCust.toFixed(2);
+            document.getElementById('customersUsCard').innerText = usTotal.toFixed(2);
+            document.getElementById('customersThemCard').innerText = themTotal.toFixed(2);
+        }
+
+        // --- Profit Engine ---
+        function calculatePeriodReport() {
+            const startVal = document.getElementById('reportStartDate').value;
+            const endVal = document.getElementById('reportEndDate').value;
+
+            if (!startVal || !endVal) return;
+
+            const startDate = new Date(startVal);
+            const endDate = new Date(endVal);
+
+            const startSnap = getClosestSnapshot(startDate);
+            const endSnap = getClosestSnapshot(endDate);
+
+            const startAssets = startSnap ? startSnap.total : 0;
+            const endAssets = endSnap ? endSnap.total : 0;
+
+            const startCustNet = getCustomerNetAtDate(startDate);
+            const endCustNet = getCustomerNetAtDate(endDate);
+
+            const totalStartNetAssets = startAssets + startCustNet;
+            const totalEndNetAssets = endAssets + endCustNet;
+
+            let additions = 0;
+            let withdrawals = 0;
+
+            dbState.capital.forEach(c => {
+                const d = new Date(c.date);
+                if (d >= startDate && d <= endDate) {
+                    if (c.type === 'add') additions += c.amount;
+                    else withdrawals += c.amount;
+                }
+            });
+
+            const netProfit = totalEndNetAssets - totalStartNetAssets - additions + withdrawals;
+
+            document.getElementById('eqEndAssets').innerText = totalEndNetAssets.toFixed(2);
+            document.getElementById('eqStartAssets').innerText = totalStartNetAssets.toFixed(2);
+            document.getElementById('eqAdditions').innerText = additions.toFixed(2);
+            document.getElementById('eqWithdrawals').innerText = withdrawals.toFixed(2);
+            document.getElementById('eqNetProfit').innerText = netProfit.toFixed(2);
+            document.getElementById('calculatedProfitCard').innerText = netProfit.toFixed(2);
+
+            distributeProfitToInvestors(startDate, endDate, netProfit);
+        }
+
+        function getClosestSnapshot(targetDate) {
+            const eligible = dbState.snapshots.filter(s => new Date(s.date) <= targetDate);
+            if (eligible.length > 0) return eligible[0];
+            return dbState.snapshots[dbState.snapshots.length - 1] || null;
+        }
+
+        function getCustomerNetAtDate(targetDate) {
+            let us = 0, them = 0;
+            dbState.customers.forEach(c => {
+                if (new Date(c.date) <= targetDate) {
+                    if (c.type === 'us') us += c.amount;
+                    else them += c.amount;
+                }
+            });
+            return us - them;
+        }
+
+        function distributeProfitToInvestors(startDate, endDate, netProfit) {
+            const tbody = document.getElementById('distributionTableBody');
+            tbody.innerHTML = '';
+
+            const investorCapMap = {};
+
+            dbState.capital.forEach(c => {
+                if (!investorCapMap[c.investor]) investorCapMap[c.investor] = 0;
+                
+                const d = new Date(c.date);
+                if (d <= endDate) {
+                    if (c.type === 'add') investorCapMap[c.investor] += c.amount;
+                    else investorCapMap[c.investor] -= c.amount;
+                }
+            });
+
+            const totalCapInPeriod = Object.values(investorCapMap).reduce((a, b) => a + b, 0);
+
+            if (totalCapInPeriod <= 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-slate-500">لا يوجد رأس مال مسجل للمستثمرين في هذه الفترة</td></tr>`;
+                return;
+            }
+
+            Object.keys(investorCapMap).forEach(investor => {
+                const cap = investorCapMap[investor];
+                if (cap <= 0) return;
+
+                const ratio = cap / totalCapInPeriod;
+                const share = netProfit * ratio;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-white">${investor}</td>
+                    <td class="p-3 font-mono">${cap.toFixed(2)} ج.م</td>
+                    <td class="p-3 font-mono text-indigo-400 font-semibold">${(ratio * 100).toFixed(2)}%</td>
+                    <td class="p-3 font-bold ${share >= 0 ? 'text-brand-400' : 'text-red-400'}">${share.toFixed(2)} ج.م</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Global Delete
+        function deleteRecord(collection, id) {
+            if (confirm('هل أنت تأكيد تريد حذف هذا السجل نهائياً؟')) {
+                dbState[collection] = dbState[collection].filter(item => item.id !== id);
+                persistData();
+                if (collection === 'customers') {
+                    document.getElementById('customerStatementLogs').innerHTML = '<p class="text-slate-500 text-center py-8">اضغط على أي عميل لعرض سجل حركاته التاريخية بالكامل</p>';
+                    document.getElementById('selectedCustName').innerText = 'اختر عميلاً';
+                }
+            }
+        }
+
+        // Navigation Tabs
+        function switchTab(tabKey) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800";
+            });
+
+            document.getElementById(`content-${tabKey}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabKey}`).className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse bg-brand-600 text-white";
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function exportJSONBackup() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbState, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `Accounting_Backup_${new Date().toISOString().slice(0, 10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importJSONBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    if (imported && confirm('هل تريد استبدال كافة البيانات الحالية بالنسخة المسترجعة؟')) {
+                        dbState = imported;
+                        persistData();
+                        alert('تم استرجاع النسخة الاحتياطية بنجاح!');
+                    }
+                } catch(err) {
+                    alert('ملف النسخة الاحتياطية غير صالحة!');
+                }
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
+```
