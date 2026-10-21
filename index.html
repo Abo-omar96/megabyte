@@ -521,24 +521,23 @@
         window.dbSet = set;
         window.dbOnValue = onValue;
 
-        let activeSyncUnsubscribe = null;
-
         window.initCloudSync = function() {
             const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
             document.getElementById('roomIdInput').value = roomId;
 
             const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
-            
-            // إلغاء الاستماع القديم لتجنب التكرار
-            if (window.activeSyncUnsubscribe) {
-                // Firebase onValue returns unsubscribe function if supported or managed directly
-            }
 
             window.dbOnValue(syncRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    window.appData = data;
-                    localStorage.setItem('app_accounting_db', JSON.stringify(data));
+                    window.appData = {
+                        password: data.password || '123456',
+                        accounts: data.accounts || defaultAccounts,
+                        snapshots: data.snapshots || [],
+                        customers: data.customers || [],
+                        capitalLogs: data.capitalLogs || []
+                    };
+                    localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
                 } else {
                     window.pushDataToCloud();
                 }
@@ -547,6 +546,7 @@
                 document.getElementById('syncText').innerText = "متصل سحابياً (" + roomId + ")";
                 document.getElementById('syncStatus').className = "flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300";
             }, (error) => {
+                console.error("Firebase Read Error:", error);
                 document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('syncText').innerText = "خطأ في الاتصال";
             });
@@ -555,7 +555,10 @@
         window.pushDataToCloud = function() {
             const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
             const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
-            window.dbSet(syncRef, window.appData).catch(err => {
+            
+            // تنظيف الكائن لضمان عدم تمرير قيم غير صالحة للسيرفر
+            const cleanData = JSON.parse(JSON.stringify(window.appData));
+            window.dbSet(syncRef, cleanData).catch(err => {
                 console.error("Cloud push failed:", err);
             });
         };
@@ -571,13 +574,19 @@
             { id: 'acc_fawry_std', name: 'فوري العادية', type: 'pos', status: 'active' }
         ];
 
-        window.appData = JSON.parse(localStorage.getItem('app_accounting_db')) || {
+        let localRaw = localStorage.getItem('app_accounting_db');
+        window.appData = localRaw ? JSON.parse(localRaw) : {
             password: '123456',
             accounts: defaultAccounts,
             snapshots: [],
             customers: [],
             capitalLogs: []
         };
+
+        if (!window.appData.accounts) window.appData.accounts = defaultAccounts;
+        if (!window.appData.snapshots) window.appData.snapshots = [];
+        if (!window.appData.customers) window.appData.customers = [];
+        if (!window.appData.capitalLogs) window.appData.capitalLogs = [];
 
         let selectedCustomerForStatement = null;
 
@@ -643,8 +652,10 @@
 
             document.getElementById('content-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('tab-' + tabId);
-            activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
-            activeBtn.classList.add('bg-brand-600', 'text-white');
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                activeBtn.classList.add('bg-brand-600', 'text-white');
+            }
         }
 
         // Account Configurations (Add / Edit / Delete)
@@ -709,7 +720,7 @@
             let balances = {};
             window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
                 const input = document.getElementById('snap_acc_' + acc.id);
-                balances[acc.id] = input ? parseFloat(input.value) || 0 : 0;
+                balances[acc.id] = input ? (parseFloat(input.value) || 0) : 0;
             });
 
             window.appData.snapshots.push({
@@ -720,6 +731,13 @@
 
             window.appData.snapshots.sort((a, b) => new Date(a.date) - new Date(b.date));
             saveLocalData();
+            
+            // تفريغ المدخلات بعد الحفظ
+            window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
+                const input = document.getElementById('snap_acc_' + acc.id);
+                if (input) input.value = '';
+            });
+            alert('تم حفظ لقطة الرصيد بنجاح');
         }
 
         function deleteSnapshot(id) {
@@ -749,6 +767,7 @@
 
             saveLocalData();
             document.getElementById('custAmount').value = '';
+            alert('تم تسجيل حركة العميل بنجاح');
         }
 
         function deleteCustomerRecord(id) {
@@ -778,6 +797,7 @@
 
             saveLocalData();
             document.getElementById('capAmount').value = '';
+            alert('تم تسجيل حركة رأس المال بنجاح');
         }
 
         function deleteCapitalLog(id) {
@@ -800,6 +820,7 @@
 
         function renderAccountsTable() {
             const tbody = document.getElementById('accountsTableBody');
+            if (!tbody) return;
             tbody.innerHTML = window.appData.accounts.map(acc => `
                 <tr class="hover:bg-slate-800/50">
                     <td class="p-3 font-semibold text-white">${acc.name}</td>
@@ -819,6 +840,7 @@
 
         function renderDynamicSnapshotInputs() {
             const container = document.getElementById('dynamicSnapshotInputs');
+            if (!container) return;
             const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
 
             container.innerHTML = activeAccs.map(acc => `
@@ -833,6 +855,7 @@
             const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
             const header = document.getElementById('snapshotsTableHeader');
             const tbody = document.getElementById('snapshotsTableBody');
+            if (!header || !tbody) return;
 
             header.innerHTML = `
                 <tr>
@@ -846,7 +869,7 @@
             tbody.innerHTML = window.appData.snapshots.map(snap => {
                 let total = 0;
                 const cols = activeAccs.map(acc => {
-                    const val = snap.balances[acc.id] || 0;
+                    const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
                     total += val;
                     return `<td class="p-3 font-mono">${val.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>`;
                 }).join('');
@@ -868,6 +891,7 @@
             const searchField = document.getElementById('customerSearch');
             const search = searchField ? searchField.value.toLowerCase() : '';
             const directoryBody = document.getElementById('customersDirectoryBody');
+            if (!directoryBody) return;
 
             let custMap = {};
             window.appData.customers.forEach(c => {
@@ -897,10 +921,13 @@
 
         function selectCustomer(name) {
             selectedCustomerForStatement = name;
-            document.getElementById('selectedCustName').innerText = name;
-            const container = document.getElementById('customerStatementLogs');
-            const logs = window.appData.customers.filter(c => c.name === name);
+            const nameEl = document.getElementById('selectedCustName');
+            if (nameEl) nameEl.innerText = name;
 
+            const container = document.getElementById('customerStatementLogs');
+            if (!container) return;
+
+            const logs = window.appData.customers.filter(c => c.name === name);
             logs.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             container.innerHTML = logs.map(l => `
@@ -919,6 +946,7 @@
 
         function renderCapitalTable() {
             const tbody = document.getElementById('capitalTableBody');
+            if (!tbody) return;
             tbody.innerHTML = window.appData.capitalLogs.map(c => `
                 <tr class="hover:bg-slate-800/50">
                     <td class="p-3 font-mono text-xs text-slate-400">${new Date(c.date).toLocaleString('ar-EG')}</td>
@@ -936,15 +964,19 @@
             let latestAssets = 0;
             if (window.appData.snapshots.length > 0) {
                 const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
-                Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
+                if (latestSnap.balances) {
+                    Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
+                }
             }
-            document.getElementById('totalAssetsCard').innerHTML = `${latestAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            const assetsEl = document.getElementById('totalAssetsCard');
+            if (assetsEl) assetsEl.innerHTML = `${latestAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
             let totalCap = 0;
             window.appData.capitalLogs.forEach(c => {
                 totalCap += (c.type === 'add' ? c.amount : -c.amount);
             });
-            document.getElementById('totalCapitalCard').innerHTML = `${totalCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            const capEl = document.getElementById('totalCapitalCard');
+            if (capEl) capEl.innerHTML = `${totalCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
             let us = 0, them = 0;
             window.appData.customers.forEach(c => {
@@ -952,18 +984,23 @@
                 else them += c.amount;
             });
             const netCust = us - them;
-            document.getElementById('netCustomersCard').innerHTML = `${netCust.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
-            document.getElementById('customersUsCard').innerText = us.toLocaleString('ar-EG');
-            document.getElementById('customersThemCard').innerText = them.toLocaleString('ar-EG');
+            const netCustEl = document.getElementById('netCustomersCard');
+            if (netCustEl) netCustEl.innerHTML = `${netCust.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            
+            const usEl = document.getElementById('customersUsCard');
+            const themEl = document.getElementById('customersThemCard');
+            if (usEl) usEl.innerText = us.toLocaleString('ar-EG');
+            if (themEl) themEl.innerText = them.toLocaleString('ar-EG');
         }
 
         function generateProfitReport() {
-            const startInput = document.getElementById('reportStartDate').value;
-            const endInput = document.getElementById('reportEndDate').value;
+            const startInput = document.getElementById('reportStartDate')?.value;
+            const endInput = document.getElementById('reportEndDate')?.value;
 
             const snapshots = window.appData.snapshots;
+            const expEl = document.getElementById('reportFormulaExplanation');
             if (snapshots.length < 2) {
-                document.getElementById('reportFormulaExplanation').innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتين رصيد على الأقل لحساب نتائج الفترة المحاسبية.</p>';
+                if (expEl) expEl.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتين رصيد على الأقل لحساب نتائج الفترة المحاسبية.</p>';
                 return;
             }
 
@@ -971,8 +1008,8 @@
             const endSnap = endInput ? snapshots.slice().reverse().find(s => s.date <= endInput) || snapshots[snapshots.length - 1] : snapshots[snapshots.length - 1];
 
             let startAssets = 0, endAssets = 0;
-            Object.values(startSnap.balances).forEach(v => startAssets += v);
-            Object.values(endSnap.balances).forEach(v => endAssets += v);
+            if (startSnap.balances) Object.values(startSnap.balances).forEach(v => startAssets += v);
+            if (endSnap.balances) Object.values(endSnap.balances).forEach(v => endAssets += v);
 
             let additions = 0, withdrawals = 0;
             let investorCapMap = {};
@@ -995,13 +1032,16 @@
 
             const netProfit = endAssets - startAssets - additions + withdrawals;
 
-            document.getElementById('calculatedProfitCard').innerHTML = `${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            const profitEl = document.getElementById('calculatedProfitCard');
+            if (profitEl) profitEl.innerHTML = `${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
-            document.getElementById('reportFormulaExplanation').innerHTML = `
-                <p>• أصول بداية الفترة: <strong class="text-white">${startAssets.toLocaleString('ar-EG')}</strong> | أصول نهاية الفترة: <strong class="text-white">${endAssets.toLocaleString('ar-EG')}</strong></p>
-                <p>• إضافات رأس المال: <strong class="text-blue-400">${additions.toLocaleString('ar-EG')}</strong> | مسحوبات رأس المال: <strong class="text-red-400">${withdrawals.toLocaleString('ar-EG')}</strong></p>
-                <p class="text-brand-400 font-bold mt-1">الربح الصافي المحسوب للفترة = ${netProfit.toLocaleString('ar-EG')} ج.م</p>
-            `;
+            if (expEl) {
+                expEl.innerHTML = `
+                    <p>• أصول بداية الفترة: <strong class="text-white">${startAssets.toLocaleString('ar-EG')}</strong> | أصول نهاية الفترة: <strong class="text-white">${endAssets.toLocaleString('ar-EG')}</strong></p>
+                    <p>• إضافات رأس المال: <strong class="text-blue-400">${additions.toLocaleString('ar-EG')}</strong> | مسحوبات رأس المال: <strong class="text-red-400">${withdrawals.toLocaleString('ar-EG')}</strong></p>
+                    <p class="text-brand-400 font-bold mt-1">الربح الصافي المحسوب للفترة = ${netProfit.toLocaleString('ar-EG')} ج.م</p>
+                `;
+            }
 
             let totalEffectiveCapital = 0;
             Object.keys(investorCapMap).forEach(inv => {
@@ -1011,6 +1051,8 @@
             });
 
             const tbody = document.getElementById('investorProfitBody');
+            if (!tbody) return;
+
             tbody.innerHTML = Object.keys(investorCapMap).map(inv => {
                 const data = investorCapMap[inv];
                 const effective = Math.max(0, data.base + data.add - data.withdraw);
