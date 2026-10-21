@@ -50,7 +50,7 @@
                 <h2 class="text-2xl font-bold text-white">تسجيل الدخول للنظام</h2>
                 <p class="text-xs text-slate-400 mt-1">حساب المدير الافتراضي: <span class="text-brand-500 font-mono">admin</span> / السر: <span class="text-brand-500 font-mono">123456</span></p>
             </div>
-            <form onsubmit="handleLogin(event)" class="space-y-4 text-right">
+            <form id="loginForm" class="space-y-4 text-right">
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">اسم المستخدم</label>
                     <input type="text" id="loginUser" required placeholder="admin أو cashier" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
@@ -59,7 +59,7 @@
                     <label class="block text-xs text-slate-400 mb-1">كلمة السر</label>
                     <input type="password" id="passInput" required placeholder="أدخل كلمة السر" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-brand-600/20 mt-2">
+                <button type="button" onclick="handleLogin()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-brand-600/20 mt-2">
                     <i class="fa-solid fa-key ml-2"></i> تأكيد الدخول
                 </button>
             </form>
@@ -669,20 +669,24 @@
             renderAllViews();
         }
 
-        function handleLogin(e) {
-            e.preventDefault();
+        function handleLogin() {
             const username = document.getElementById('loginUser').value.trim().toLowerCase();
             const pass = document.getElementById('passInput').value;
+            const errorMsg = document.getElementById('loginError');
 
-            if (username === 'admin' && pass === window.appData.adminPass) {
+            const actualAdminPass = (window.appData && window.appData.adminPass) ? window.appData.adminPass : '123456';
+            const actualCashierPass = (window.appData && window.appData.cashierPass) ? window.appData.cashierPass : '123456';
+
+            if (username === 'admin' && pass === actualAdminPass) {
                 currentRole = 'admin';
-            } else if (username === 'cashier' && pass === window.appData.cashierPass) {
+            } else if (username === 'cashier' && pass === actualCashierPass) {
                 currentRole = 'cashier';
             } else {
-                document.getElementById('loginError').classList.remove('hidden');
+                errorMsg.classList.remove('hidden');
                 return;
             }
 
+            errorMsg.classList.add('hidden');
             sessionStorage.setItem('userRole', currentRole);
             applyRolePermissions();
             document.getElementById('loginOverlay').classList.add('hidden');
@@ -975,73 +979,4 @@
 
         function renderSnapshotsTable() {
             const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
-            const header = document.getElementById('snapshotsTableHeader');
-            const tbody = document.getElementById('snapshotsTableBody');
-            if (!header || !tbody) return;
-
-            header.innerHTML = `
-                <tr>
-                    <th class="p-3">التاريخ والوقت</th>
-                    ${activeAccs.map(acc => `<th class="p-3">${acc.name}</th>`).join('')}
-                    <th class="p-3 font-bold text-emerald-400">إجمالي الأصول</th>
-                    <th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل</th>
-                    <th class="p-3 text-center no-print">حذف</th>
-                </tr>
-            `;
-
-            let prevSnapTotal = null;
-
-            tbody.innerHTML = window.appData.snapshots.map(snap => {
-                let total = 0;
-                const cols = activeAccs.map(acc => {
-                    const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
-                    total += val;
-                    return `<td class="p-3 font-mono">${formatNum(val)}</td>`;
-                }).join('');
-
-                let profitDiffText = '-';
-                if (prevSnapTotal !== null) {
-                    const diff = total - prevSnapTotal;
-                    profitDiffText = diff >= 0 
-                        ? `<span class="text-emerald-400 font-bold font-mono">+${formatNum(diff)} ج.م</span>`
-                        : `<span class="text-red-400 font-bold font-mono">${formatNum(diff)} ج.م</span>`;
-                } else {
-                    profitDiffText = `<span class="text-slate-500 text-xs">بداية الحسابات</span>`;
-                }
-
-                prevSnapTotal = total;
-
-                return `
-                    <tr class="hover:bg-slate-800/50">
-                        <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(snap.date)}</td>
-                        ${cols}
-                        <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td>
-                        <td class="p-3 font-mono">${profitDiffText}</td>
-                        <td class="p-3 text-center no-print">
-                            <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // حساب رصيد كل عميل بناءً على صافي حركاته (لنا - علينا - تسديد)
-        function getCustomersBalancesMap() {
-            let custMap = {};
-            window.appData.customers.forEach(c => {
-                if (!custMap[c.name]) custMap[c.name] = 0;
-                if (c.type === 'us') custMap[c.name] += c.amount;
-                else if (c.type === 'them') custMap[c.name] -= c.amount;
-                else if (c.type === 'repayment') custMap[c.name] -= c.amount;
-            });
-            return custMap;
-        }
-
-        function renderCustomers() {
-            const searchField = document.getElementById('customerSearch');
-            const search = searchField ? searchField.value.toLowerCase() : '';
-            const directoryBody = document.getElementById('customersDirectoryBody');
-            if (!directoryBody) return;
-
-            let custMap = getCustomersBalancesMap();
-            const filteredNames = Object.keys(custMap).filter(name => name.toLowerCase
+            const header = document.getElementById('snapshots
