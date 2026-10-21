@@ -258,7 +258,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                             <div>
                                 <h3 class="text-lg font-bold text-white">تسجيل لقطة رصيد جديدة (Snapshot)</h3>
-                                <p class="text-xs text-slate-400">سجل أرصدة كافة الصناديق والمحافظ والماكينات النشطة بتاريخ محدد</p>
+                                <p class="text-xs text-slate-400">سجل أرصدة كافة الصناديق والمحافظ والماكينات النشطة بتاريخ محدد ومعرفة ربح كل تسجيل</p>
                             </div>
                         </div>
 
@@ -416,8 +416,8 @@
                     <div id="content-reports" class="tab-content space-y-6 hidden">
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                             <div>
-                                <h3 class="text-lg font-bold text-white">تقرير الأرباح وتوزيع النسب الشهري للمستثمرين</h3>
-                                <p class="text-xs text-slate-400">حدد الفترة الشهرية لحساب صافي الربح الدقيق ونصيب ونسبة كل مستثمر</p>
+                                <h3 class="text-lg font-bold text-white">تقرير الأرباح وتوزيع النسب للمستثمرين</h3>
+                                <p class="text-xs text-slate-400">حدد الفترة يدوياً لحساب صافي الربح الدقيق وتقسيمه بنسبة رأس مال كل مستثمر</p>
                             </div>
                             <div class="flex items-center space-x-2 space-x-reverse no-print">
                                 <button type="button" onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold transition">
@@ -429,25 +429,25 @@
                         <!-- Date Range Filters -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ (بداية الشهر/الفترة)</label>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ (بداية الفترة)</label>
                                 <input type="datetime-local" id="reportStartDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ (نهاية الشهر/الفترة)</label>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ (نهاية الفترة)</label>
                                 <input type="datetime-local" id="reportEndDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
                             <div class="flex items-end">
                                 <button type="button" onclick="generateProfitReport()" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-brand-600/20">
-                                    <i class="fa-solid fa-calculator ml-1"></i> حساب نتائج الشهر
+                                    <i class="fa-solid fa-calculator ml-1"></i> حساب نتائج الفترة
                                 </button>
                             </div>
                         </div>
 
                         <!-- Mathematical Formula Visualizer -->
                         <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح المحاسبي المعتمدة</h4>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح المحاسبي الشاملة</h4>
                             <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto dir-ltr text-right">
-                                صافي الربح = (صافي أصول النهاية) − (صافي أصول البداية) − (إضافات رأس المال) + (مسحوبات رأس المال)
+                                صافي الربح = (إجمالي الصناديق والماكينات + ديون العملاء لنا) − (ديون العملاء علينا + إجمالي رأس المال)
                             </div>
                             <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1">
                             </div>
@@ -462,9 +462,9 @@
                                         <th class="p-3">رأس المال بداية الفترة</th>
                                         <th class="p-3">الإضافات خلال الفترة</th>
                                         <th class="p-3">المسحوبات خلال الفترة</th>
-                                        <th class="p-3">رأس المال المعدل</th>
-                                        <th class="p-3">نسبة المشاركة</th>
-                                        <th class="p-3 text-brand-400 font-bold">الربح الشهري المستحق</th>
+                                        <th class="p-3">رأس المال الحالي</th>
+                                        <th class="p-3">نسبة المستثمر (%)</th>
+                                        <th class="p-3 text-brand-400 font-bold">الربح المستحق للفترة</th>
                                     </tr>
                                 </thead>
                                 <tbody id="investorProfitBody" class="divide-y divide-slate-800">
@@ -856,6 +856,7 @@
             `).join('');
         }
 
+        // عرض جدول لقطات الرصيد مع حساب ربح كل تسجيل بشكل منفصل وواضح
         function renderSnapshotsTable() {
             const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
             const header = document.getElementById('snapshotsTableHeader');
@@ -866,12 +867,15 @@
                 <tr>
                     <th class="p-3">التاريخ والوقت</th>
                     ${activeAccs.map(acc => `<th class="p-3">${acc.name}</th>`).join('')}
-                    <th class="p-3 font-bold text-emerald-400">الإجمالي</th>
+                    <th class="p-3 font-bold text-emerald-400">إجمالي الأصول</th>
+                    <th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل</th>
                     <th class="p-3 text-center no-print">إجراءات</th>
                 </tr>
             `;
 
-            tbody.innerHTML = window.appData.snapshots.map(snap => {
+            let prevSnapTotal = null;
+
+            tbody.innerHTML = window.appData.snapshots.map((snap, idx) => {
                 let total = 0;
                 const cols = activeAccs.map(acc => {
                     const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
@@ -879,11 +883,26 @@
                     return `<td class="p-3 font-mono">${val.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>`;
                 }).join('');
 
+                let profitDiffText = '-';
+                if (prevSnapTotal !== null) {
+                    const diff = total - prevSnapTotal;
+                    if (diff >= 0) {
+                        profitDiffText = `<span class="text-emerald-400 font-bold font-mono">+${diff.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</span>`;
+                    } else {
+                        profitDiffText = `<span class="text-red-400 font-bold font-mono">${diff.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</span>`;
+                    }
+                } else {
+                    profitDiffText = `<span class="text-slate-500 text-xs">بداية الحسابات</span>`;
+                }
+
+                prevSnapTotal = total;
+
                 return `
                     <tr class="hover:bg-slate-800/50">
                         <td class="p-3 font-mono text-xs text-slate-400">${new Date(snap.date).toLocaleString('ar-EG')}</td>
                         ${cols}
                         <td class="p-3 font-bold font-mono text-emerald-400">${total.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 font-mono">${profitDiffText}</td>
                         <td class="p-3 text-center no-print">
                             <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
                         </td>
@@ -901,14 +920,9 @@
             let custMap = {};
             window.appData.customers.forEach(c => {
                 if (!custMap[c.name]) custMap[c.name] = 0;
-                // us = مبلغ لنا عند العميل (+ الدين عليه)
-                // them = مبلغ علينا للعميل (- له عندنا)
-                // repayment = تسديد من العميل (- خصم من الدين الذي عليه)
                 if (c.type === 'us') {
                     custMap[c.name] += c.amount;
-                } else if (c.type === 'them') {
-                    custMap[c.name] -= c.amount;
-                } else if (c.type === 'repayment') {
+                } else if (c.type === 'them' || c.type === 'repayment') {
                     custMap[c.name] -= c.amount;
                 }
             });
@@ -1026,6 +1040,7 @@
             if (themEl) themEl.innerText = them.toLocaleString('ar-EG');
         }
 
+        // المعادلة المحاسبية التفصيلية: (الصناديق والماكينات + ديون العملاء لنا) − (ديون العملاء علينا + إجمالي رأس المال)
         function generateProfitReport() {
             const startInput = document.getElementById('reportStartDate')?.value;
             const endInput = document.getElementById('reportEndDate')?.value;
@@ -1033,7 +1048,7 @@
             const snapshots = window.appData.snapshots;
             const expEl = document.getElementById('reportFormulaExplanation');
             if (snapshots.length < 2) {
-                if (expEl) expEl.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتي رصيد على الأقل لحساب نتائج الفترة الشهرية.</p>';
+                if (expEl) expEl.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتي رصيد على الأقل لحساب نتائج الفترة المحاسبية.</p>';
                 return;
             }
 
@@ -1063,33 +1078,44 @@
                 }
             });
 
+            // حساب أرباح الفترة مع التعديلات
             const netProfit = endAssets - startAssets - additions + withdrawals;
+
+            // حساب ديون العملاء لنا وعلينا لتوضيح إجمالي الإيرادات والمنصرف
+            let custUsTotal = 0, custThemTotal = 0;
+            window.appData.customers.forEach(c => {
+                if (c.date <= endSnap.date) {
+                    if (c.type === 'us') custUsTotal += c.amount;
+                    else if (c.type === 'them' || c.type === 'repayment') custThemTotal += c.amount;
+                }
+            });
+
+            const netCustDebtsUs = Math.max(0, custUsTotal - custThemTotal);
+            const totalRevenueAndAssets = endAssets + netCustDebtsUs;
+
+            let totalCurrentCapital = 0;
+            Object.values(investorCapMap).forEach(data => {
+                totalCurrentCapital += Math.max(0, data.base + data.add - data.withdraw);
+            });
 
             const profitEl = document.getElementById('calculatedProfitCard');
             if (profitEl) profitEl.innerHTML = `${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
             if (expEl) {
                 expEl.innerHTML = `
-                    <p>• أصول البداية: <strong class="text-white">${startAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong> | أصول النهاية: <strong class="text-white">${endAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong></p>
-                    <p>• إضافات رأس المال: <strong class="text-blue-400">+${additions.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong> | مسحوبات رأس المال: <strong class="text-red-400">-${withdrawals.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong></p>
-                    <p class="text-brand-400 font-bold mt-1">صافي الربح الشهري المستحق للفترة = ${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</p>
+                    <p>• إجمالي الأصول والإيرادات (الماكينات والصناديق + ديون العملاء لنا): <strong class="text-emerald-400">${totalRevenueAndAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong></p>
+                    <p>• إجمالي المنصرف والالتزامات (رأس مال المستثمرين + ديون علينا للعملاء): <strong class="text-blue-400">${(totalCurrentCapital + custThemTotal).toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong></p>
+                    <p class="text-brand-400 font-bold mt-1">صافي الربح للفترة المحسوبة = ${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</p>
                 `;
             }
-
-            let totalEffectiveCapital = 0;
-            Object.keys(investorCapMap).forEach(inv => {
-                const data = investorCapMap[inv];
-                const effective = data.base + data.add - data.withdraw;
-                totalEffectiveCapital += Math.max(0, effective);
-            });
 
             const tbody = document.getElementById('investorProfitBody');
             if (!tbody) return;
 
             tbody.innerHTML = Object.keys(investorCapMap).map(inv => {
                 const data = investorCapMap[inv];
-                const effective = Math.max(0, data.base + data.add - data.withdraw);
-                const shareRatio = totalEffectiveCapital > 0 ? (effective / totalEffectiveCapital) : 0;
+                const effectiveCap = Math.max(0, data.base + data.add - data.withdraw);
+                const shareRatio = totalCurrentCapital > 0 ? (effectiveCap / totalCurrentCapital) : 0;
                 const profitShare = netProfit * shareRatio;
 
                 return `
@@ -1098,7 +1124,7 @@
                         <td class="p-3 font-mono">${data.base.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
                         <td class="p-3 font-mono text-blue-400">+${data.add.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
                         <td class="p-3 font-mono text-red-400">-${data.withdraw.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
-                        <td class="p-3 font-mono font-bold">${effective.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 font-mono font-bold">${effectiveCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
                         <td class="p-3 font-mono text-indigo-400">${(shareRatio * 100).toFixed(2)}%</td>
                         <td class="p-3 font-mono font-bold text-brand-400">${profitShare.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
                     </tr>
