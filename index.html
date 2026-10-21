@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الحسابات المتكامل</title>
+    <title>نظام الحسابات المحاسبي المعتمد - Mohamed Mohsen</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -46,7 +46,7 @@
                 <i class="fa-solid fa-lock"></i>
             </div>
             <div>
-                <h2 class="text-2xl font-bold text-white">تسجيل الدخول للنظام</h2>
+                <h2 class="text-2xl font-bold text-white">تسجيل الدخول للنظام المحاسبي</h2>
                 <p class="text-xs text-slate-400 mt-1">رمز الدخول الافتراضي: <span class="text-brand-500 font-mono">123456</span></p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
@@ -69,8 +69,8 @@
                         <i class="fa-solid fa-calculator"></i>
                     </div>
                     <div>
-                        <h1 class="font-bold text-lg text-white leading-none">نظام الحسابات المحاسبي</h1>
-                        <p class="text-xs text-slate-400 mt-1">إدارة الحسابات وتوزيع الأرباح</p>
+                        <h1 class="font-bold text-lg text-white leading-none">نظام Mohamed Mohsen المحاسبي</h1>
+                        <p class="text-xs text-slate-400 mt-1">النسخة المحاسبية المطورة والمدققة</p>
                     </div>
                 </div>
 
@@ -102,7 +102,7 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-bold text-white">رمز المزامنة والمشاركة للأجهزة (Sync ID)</h3>
-                        <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز (مثال: <span class="text-indigo-400 font-mono">MBS</span>) في جميع أجهزتك ليتم توحيد قاعدة البيانات بينها فوراً</p>
+                        <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز (مثال: <span class="text-indigo-400 font-mono">MBS</span>) في جميع أجهزتك لتوحيد البيانات فوراً</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
@@ -402,4 +402,710 @@
                                         <th class="p-3">المستثمر</th>
                                         <th class="p-3">نوع الحركة</th>
                                         <th class="p-3">المبلغ</th>
-                                        <th class="p-3 no-print">
+                                        <th class="p-3 no-print">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="capitalTableBody" class="divide-y divide-slate-800">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Profit Reports & Share Distribution -->
+                    <div id="content-reports" class="tab-content space-y-6 hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-white">تقرير الأرباح وتوزيع النسب للمستثمرين</h3>
+                                <p class="text-xs text-slate-400">حدد الفترة لحساب صافي الربح الدقيق وتوزيع الأرباح على المشاركين</p>
+                            </div>
+                            <div class="flex items-center space-x-2 space-x-reverse no-print">
+                                <button type="button" onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold transition">
+                                    <i class="fa-solid fa-print ml-1"></i> طباعة التقرير
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Date Range Filters -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ (بداية الفترة)</label>
+                                <input type="datetime-local" id="reportStartDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ (نهاية الفترة)</label>
+                                <input type="datetime-local" id="reportEndDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" onclick="generateProfitReport()" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-brand-600/20">
+                                    <i class="fa-solid fa-calculator ml-1"></i> حساب نتائج الفترة
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical Formula Visualizer -->
+                        <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح المحاسبي المعتمدة</h4>
+                            <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto dir-ltr text-right">
+                                صافي الربح = (صافي أصول النهاية) − (صافي أصول البداية) − (إضافات رأس المال) + (مسحوبات رأس المال)
+                            </div>
+                            <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1">
+                            </div>
+                        </div>
+
+                        <!-- Investor Profits Table -->
+                        <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                            <table class="w-full text-right text-sm text-slate-300">
+                                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                    <tr>
+                                        <th class="p-3">اسم المستثمر</th>
+                                        <th class="p-3">رأس المال بداية الفترة</th>
+                                        <th class="p-3">الإضافات خلال الفترة</th>
+                                        <th class="p-3">المسحوبات خلال الفترة</th>
+                                        <th class="p-3">رأس المال المعدل</th>
+                                        <th class="p-3">نسبة المشاركة</th>
+                                        <th class="p-3 text-brand-400 font-bold">الربح المستحق</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="investorProfitBody" class="divide-y divide-slate-800">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print">
+            <p>نظام Mohamed Mohsen المحاسبي المالي المتكامل © 2026 — مصمم وفق المعايير الدقيقة</p>
+        </footer>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div id="changePassModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-brand-500 ml-1"></i> تغيير كلمة السر</h3>
+            <form onsubmit="saveNewPassword(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">كلمة السر الجديدة</label>
+                    <input type="password" id="newPassInput" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div class="flex justify-end space-x-2 space-x-reverse pt-2">
+                    <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">إلغاء</button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Integration Engine -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
+            authDomain: "megabytefawry.firebaseapp.com",
+            projectId: "megabytefawry",
+            storageBucket: "megabytefawry.firebasestorage.app",
+            messagingSenderId: "832804585797",
+            appId: "1:832804585797:web:00637871be12c00157fe2c",
+            measurementId: "G-75PB78K0F4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.db = db;
+        window.dbRef = ref;
+        window.dbSet = set;
+        window.dbOnValue = onValue;
+
+        window.initCloudSync = function() {
+            const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
+            document.getElementById('roomIdInput').value = roomId;
+
+            const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
+
+            window.dbOnValue(syncRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    window.appData = {
+                        password: data.password || '123456',
+                        accounts: data.accounts || defaultAccounts,
+                        snapshots: data.snapshots || [],
+                        customers: data.customers || [],
+                        capitalLogs: data.capitalLogs || []
+                    };
+                    localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+                } else {
+                    window.pushDataToCloud();
+                }
+                renderAllViews();
+                document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                document.getElementById('syncText').innerText = "متصل سحابياً (" + roomId + ")";
+                document.getElementById('syncStatus').className = "flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300";
+            }, (error) => {
+                console.error("Firebase Read Error:", error);
+                document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-red-500";
+                document.getElementById('syncText').innerText = "خطأ في الاتصال";
+            });
+        };
+
+        window.pushDataToCloud = function() {
+            const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
+            const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
+            const cleanData = JSON.parse(JSON.stringify(window.appData));
+            window.dbSet(syncRef, cleanData).catch(err => {
+                console.error("Cloud push failed:", err);
+            });
+        };
+    </script>
+
+    <script>
+        let defaultAccounts = [
+            { id: 'acc_cash', name: 'الصندوق النقدي (الخزينة)', type: 'cash', status: 'active' },
+            { id: 'acc_ewallet', name: 'المحافظ الإلكترونية', type: 'ewallet', status: 'active' },
+            { id: 'acc_fawry_android', name: 'فوري Android', type: 'pos', status: 'active' },
+            { id: 'acc_aman', name: 'ماكينة أمان', type: 'pos', status: 'active' },
+            { id: 'acc_fawry_std', name: 'فوري العادية', type: 'pos', status: 'active' }
+        ];
+
+        let localRaw = localStorage.getItem('app_accounting_db');
+        window.appData = localRaw ? JSON.parse(localRaw) : {
+            password: '123456',
+            accounts: defaultAccounts,
+            snapshots: [],
+            customers: [],
+            capitalLogs: []
+        };
+
+        if (!window.appData.accounts) window.appData.accounts = defaultAccounts;
+        if (!window.appData.snapshots) window.appData.snapshots = [];
+        if (!window.appData.customers) window.appData.customers = [];
+        if (!window.appData.capitalLogs) window.appData.capitalLogs = [];
+
+        let selectedCustomerForStatement = null;
+
+        function saveLocalData() {
+            localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+            if (window.pushDataToCloud) {
+                window.pushDataToCloud();
+            }
+            renderAllViews();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('passInput').value;
+            if (input === window.appData.password) {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+                sessionStorage.setItem('isLoggedIn', 'true');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        function toggleChangePassModal() {
+            document.getElementById('changePassModal').classList.toggle('hidden');
+        }
+
+        function saveNewPassword(e) {
+            e.preventDefault();
+            const newPass = document.getElementById('newPassInput').value;
+            if (newPass) {
+                window.appData.password = newPass;
+                saveLocalData();
+                toggleChangePassModal();
+                alert('تم تغيير كلمة السر بنجاح');
+            }
+        }
+
+        function connectCloudRoom() {
+            const room = document.getElementById('roomIdInput').value.trim();
+            if (room) {
+                localStorage.setItem('app_sync_room_id', room);
+                if (window.initCloudSync) {
+                    window.initCloudSync();
+                    alert('تم ربط الجهاز بنجاح برمز الغرفة: ' + room);
+                }
+            } else {
+                alert('يرجى إدخال رمز مزامنة صحيح');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('bg-brand-600', 'text-white');
+                el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+            });
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                activeBtn.classList.add('bg-brand-600', 'text-white');
+            }
+        }
+
+        function saveAccountConfig(e) {
+            e.preventDefault();
+            const id = document.getElementById('accEditId').value;
+            const name = document.getElementById('accName').value.trim();
+            const type = document.getElementById('accType').value;
+            const status = document.getElementById('accStatus').value;
+
+            if (id) {
+                const acc = window.appData.accounts.find(a => a.id === id);
+                if (acc) {
+                    acc.name = name;
+                    acc.type = type;
+                    acc.status = status;
+                }
+            } else {
+                window.appData.accounts.push({
+                    id: 'acc_' + Date.now(),
+                    name: name,
+                    type: type,
+                    status: status
+                });
+            }
+            resetAccountForm();
+            saveLocalData();
+        }
+
+        function editAccount(id) {
+            const acc = window.appData.accounts.find(a => a.id === id);
+            if (acc) {
+                document.getElementById('accEditId').value = acc.id;
+                document.getElementById('accName').value = acc.name;
+                document.getElementById('accType').value = acc.type;
+                document.getElementById('accStatus').value = acc.status;
+                document.getElementById('accBtnText').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل الحساب';
+                document.getElementById('accCancelBtn').classList.remove('hidden');
+            }
+        }
+
+        function resetAccountForm() {
+            document.getElementById('accEditId').value = '';
+            document.getElementById('accName').value = '';
+            document.getElementById('accBtnText').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> إضافة الحساب';
+            document.getElementById('accCancelBtn').classList.add('hidden');
+        }
+
+        function deleteAccount(id) {
+            if (confirm('هل أنت تأكد من حذف هذا الحساب؟')) {
+                window.appData.accounts = window.appData.accounts.filter(a => a.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function saveSnapshot(e) {
+            e.preventDefault();
+            const date = document.getElementById('snapDate').value;
+            if (!date) return;
+
+            let balances = {};
+            window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
+                const input = document.getElementById('snap_acc_' + acc.id);
+                balances[acc.id] = input ? (parseFloat(input.value) || 0) : 0;
+            });
+
+            window.appData.snapshots.push({
+                id: 'snap_' + Date.now(),
+                date: date,
+                balances: balances
+            });
+
+            window.appData.snapshots.sort((a, b) => new Date(a.date) - new Date(b.date));
+            saveLocalData();
+            
+            window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
+                const input = document.getElementById('snap_acc_' + acc.id);
+                if (input) input.value = '';
+            });
+            alert('تم حفظ لقطة الرصيد بنجاح');
+        }
+
+        function deleteSnapshot(id) {
+            if (confirm('هل ترغب في حذف لقطة الرصيد هذه؟')) {
+                window.appData.snapshots = window.appData.snapshots.filter(s => s.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function saveCustomerRecord(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value.trim();
+            const date = document.getElementById('custDate').value;
+            const type = document.getElementById('custType').value;
+            const amount = parseFloat(document.getElementById('custAmount').value) || 0;
+
+            if (!name || !date || amount <= 0) return;
+
+            window.appData.customers.push({
+                id: 'cust_' + Date.now(),
+                name: name,
+                date: date,
+                type: type,
+                amount: amount
+            });
+
+            saveLocalData();
+            document.getElementById('custAmount').value = '';
+            alert('تم تسجيل حركة العميل بنجاح');
+        }
+
+        function deleteCustomerRecord(id) {
+            if (confirm('تأكيد حذف الحركة؟')) {
+                window.appData.customers = window.appData.customers.filter(c => c.id !== id);
+                saveLocalData();
+            }
+        }
+
+        // الحماية المحاسبية: منع نزول رأس المال عن صفر
+        function saveCapitalTransaction(e) {
+            e.preventDefault();
+            const investor = document.getElementById('capInvestor').value.trim();
+            const type = document.getElementById('capType').value;
+            const amount = parseFloat(document.getElementById('capAmount').value) || 0;
+            const date = document.getElementById('capDate').value;
+
+            if (!investor || !date || amount <= 0) return;
+
+            // التحقق المحاسبي من رصيد رأس المال الحالي للمستثمر قبل السحب
+            if (type === 'withdraw') {
+                let currentInvestorCap = 0;
+                window.appData.capitalLogs.forEach(c => {
+                    if (c.investor === investor) {
+                        currentInvestorCap += (c.type === 'add' ? c.amount : -c.amount);
+                    }
+                });
+                if (amount > currentInvestorCap) {
+                    alert('خطأ محاسبي: لا يمكن سحب مبلغ أكبر من رأس المال الحالي للمستثمر (' + currentInvestorCap.toLocaleString() + ' ج.م)!');
+                    return;
+                }
+            }
+
+            window.appData.capitalLogs.push({
+                id: 'cap_' + Date.now(),
+                investor: investor,
+                type: type,
+                amount: amount,
+                date: date
+            });
+
+            saveLocalData();
+            document.getElementById('capAmount').value = '';
+            alert('تم تسجيل حركة رأس المال بنجاح');
+        }
+
+        function deleteCapitalLog(id) {
+            if (confirm('تأكيد حذف حركة رأس المال هذه؟')) {
+                window.appData.capitalLogs = window.appData.capitalLogs.filter(c => c.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function renderAllViews() {
+            renderAccountsTable();
+            renderDynamicSnapshotInputs();
+            renderSnapshotsTable();
+            renderCustomers();
+            renderCapitalTable();
+            updateDashboardCards();
+            generateProfitReport();
+        }
+
+        function renderAccountsTable() {
+            const tbody = document.getElementById('accountsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.appData.accounts.map(acc => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-semibold text-white">${acc.name}</td>
+                    <td class="p-3"><span class="bg-slate-800 border border-slate-700 text-xs px-2.5 py-1 rounded-lg">${acc.type}</span></td>
+                    <td class="p-3">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${acc.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                            ${acc.status === 'active' ? 'نشط' : 'معطل'}
+                        </span>
+                    </td>
+                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                        <button onclick="editAccount('${acc.id}')" class="text-indigo-400 hover:text-indigo-300 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteAccount('${acc.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderDynamicSnapshotInputs() {
+            const container = document.getElementById('dynamicSnapshotInputs');
+            if (!container) return;
+            const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
+
+            container.innerHTML = activeAccs.map(acc => `
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">${acc.name}</label>
+                    <input type="number" step="0.01" id="snap_acc_${acc.id}" min="0" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+            `).join('');
+        }
+
+        function renderSnapshotsTable() {
+            const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
+            const header = document.getElementById('snapshotsTableHeader');
+            const tbody = document.getElementById('snapshotsTableBody');
+            if (!header || !tbody) return;
+
+            header.innerHTML = `
+                <tr>
+                    <th class="p-3">التاريخ والوقت</th>
+                    ${activeAccs.map(acc => `<th class="p-3">${acc.name}</th>`).join('')}
+                    <th class="p-3 font-bold text-emerald-400">الإجمالي</th>
+                    <th class="p-3 text-center no-print">إجراءات</th>
+                </tr>
+            `;
+
+            tbody.innerHTML = window.appData.snapshots.map(snap => {
+                let total = 0;
+                const cols = activeAccs.map(acc => {
+                    const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
+                    total += val;
+                    return `<td class="p-3 font-mono">${val.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>`;
+                }).join('');
+
+                return `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-mono text-xs text-slate-400">${new Date(snap.date).toLocaleString('ar-EG')}</td>
+                        ${cols}
+                        <td class="p-3 font-bold font-mono text-emerald-400">${total.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 text-center no-print">
+                            <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderCustomers() {
+            const searchField = document.getElementById('customerSearch');
+            const search = searchField ? searchField.value.toLowerCase() : '';
+            const directoryBody = document.getElementById('customersDirectoryBody');
+            if (!directoryBody) return;
+
+            let custMap = {};
+            window.appData.customers.forEach(c => {
+                if (!custMap[c.name]) custMap[c.name] = 0;
+                custMap[c.name] += (c.type === 'us' ? c.amount : -c.amount);
+            });
+
+            const filteredNames = Object.keys(custMap).filter(name => name.toLowerCase().includes(search));
+
+            directoryBody.innerHTML = filteredNames.map(name => {
+                const netBalance = custMap[name];
+                const isDebtOnCustomer = netBalance >= 0; 
+                return `
+                    <tr class="hover:bg-slate-800/50 cursor-pointer" onclick="selectCustomer('${name}')">
+                        <td class="p-3 font-semibold text-white">${name}</td>
+                        <td class="p-3 font-mono font-bold ${isDebtOnCustomer ? 'text-emerald-400' : 'text-red-400'}">${Math.abs(netBalance).toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                        <td class="p-3">
+                            <span class="text-xs px-2.5 py-1 rounded-full ${isDebtOnCustomer ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                                ${isDebtOnCustomer ? 'مبلغ لنا عنده (عليه دين)' : 'مبلغ له عندنا (علينا)'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center no-print"><button class="text-amber-400 hover:text-amber-300 text-xs"><i class="fa-solid fa-eye ml-1"></i> الكشف</button></td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (selectedCustomerForStatement) {
+                selectCustomer(selectedCustomerForStatement);
+            }
+        }
+
+        function selectCustomer(name) {
+            selectedCustomerForStatement = name;
+            const nameEl = document.getElementById('selectedCustName');
+            if (nameEl) nameEl.innerText = name;
+
+            const container = document.getElementById('customerStatementLogs');
+            if (!container) return;
+
+            const logs = window.appData.customers.filter(c => c.name === name);
+            logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = logs.map(l => `
+                <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
+                    <div>
+                        <span class="font-bold text-xs ${l.type === 'us' ? 'text-emerald-400' : 'text-red-400'}">
+                            ${l.type === 'us' ? 'لنا عنده (+)' : 'له عندنا (-)'}
+                        </span>
+                        <p class="text-[10px] text-slate-500 font-mono">${new Date(l.date).toLocaleString('ar-EG')}</p>
+                    </div>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="font-bold font-mono text-white">${l.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</span>
+                        <button onclick="deleteCustomerRecord('${l.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCapitalTable() {
+            const tbody = document.getElementById('capitalTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.appData.capitalLogs.map(c => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(c.date).toLocaleString('ar-EG')}</td>
+                    <td class="p-3 font-semibold text-white">${c.investor}</td>
+                    <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
+                    <td class="p-3 font-mono font-bold text-white">${c.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                    <td class="p-3 no-print">
+                        <button onclick="deleteCapitalLog('${c.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDashboardCards() {
+            let latestAssets = 0;
+            if (window.appData.snapshots.length > 0) {
+                const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
+                if (latestSnap.balances) {
+                    Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
+                }
+            }
+            const assetsEl = document.getElementById('totalAssetsCard');
+            if (assetsEl) assetsEl.innerHTML = `${latestAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            let totalCap = 0;
+            window.appData.capitalLogs.forEach(c => {
+                totalCap += (c.type === 'add' ? c.amount : -c.amount);
+            });
+            const capEl = document.getElementById('totalCapitalCard');
+            if (capEl) capEl.innerHTML = `${totalCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            let us = 0, them = 0;
+            window.appData.customers.forEach(c => {
+                if (c.type === 'us') us += c.amount;
+                else them += c.amount;
+            });
+            const netCust = us - them;
+            const netCustEl = document.getElementById('netCustomersCard');
+            if (netCustEl) netCustEl.innerHTML = `${netCust.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            
+            const usEl = document.getElementById('customersUsCard');
+            const themEl = document.getElementById('customersThemCard');
+            if (usEl) usEl.innerText = us.toLocaleString('ar-EG');
+            if (themEl) themEl.innerText = them.toLocaleString('ar-EG');
+        }
+
+        // المحرك المحاسبي المدقق لنتائج الفترة والأرباح
+        function generateProfitReport() {
+            const startInput = document.getElementById('reportStartDate')?.value;
+            const endInput = document.getElementById('reportEndDate')?.value;
+
+            const snapshots = window.appData.snapshots;
+            const expEl = document.getElementById('reportFormulaExplanation');
+            if (snapshots.length < 2) {
+                if (expEl) expEl.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتين رصيد على الأقل لحساب نتائج الفترة المحاسبية.</p>';
+                return;
+            }
+
+            // اختيار اللقطات بناءً على الفلتر الزمني بدقة محاسبية
+            const startSnap = startInput ? snapshots.find(s => s.date >= startInput) || snapshots[0] : snapshots[0];
+            const endSnap = endInput ? snapshots.slice().reverse().find(s => s.date <= endInput) || snapshots[snapshots.length - 1] : snapshots[snapshots.length - 1];
+
+            let startAssets = 0, endAssets = 0;
+            if (startSnap.balances) Object.values(startSnap.balances).forEach(v => startAssets += v);
+            if (endSnap.balances) Object.values(endSnap.balances).forEach(v => endAssets += v);
+
+            let additions = 0, withdrawals = 0;
+            let investorCapMap = {};
+
+            window.appData.capitalLogs.forEach(c => {
+                if (!investorCapMap[c.investor]) investorCapMap[c.investor] = { base: 0, add: 0, withdraw: 0 };
+
+                if (c.date < startSnap.date) {
+                    investorCapMap[c.investor].base += (c.type === 'add' ? c.amount : -c.amount);
+                } else if (c.date >= startSnap.date && c.date <= endSnap.date) {
+                    if (c.type === 'add') {
+                        additions += c.amount;
+                        investorCapMap[c.investor].add += c.amount;
+                    } else {
+                        withdrawals += c.amount;
+                        investorCapMap[c.investor].withdraw += c.amount;
+                    }
+                }
+            });
+
+            // المعادلة المحاسبية المعتمدة للربح الصافي
+            const netProfit = endAssets - startAssets - additions + withdrawals;
+
+            const profitEl = document.getElementById('calculatedProfitCard');
+            if (profitEl) profitEl.innerHTML = `${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            if (expEl) {
+                expEl.innerHTML = `
+                    <p>• أصول بداية الفترة (${new Date(startSnap.date).toLocaleString('ar-EG')}): <strong class="text-white">${startAssets.toLocaleString('ar-EG')} ج.م</strong></p>
+                    <p>• أصول نهاية الفترة (${new Date(endSnap.date).toLocaleString('ar-EG')}): <strong class="text-white">${endAssets.toLocaleString('ar-EG')} ج.م</strong></p>
+                    <p>• إضافات رأس المال خلال الفترة: <strong class="text-blue-400">+${additions.toLocaleString('ar-EG')} ج.م</strong> | مسحوبات رأس المال: <strong class="text-red-400">-${withdrawals.toLocaleString('ar-EG')} ج.م</strong></p>
+                    <p class="text-brand-400 font-bold mt-1">الربح الصافي للفترة = (${endAssets.toLocaleString()} - ${startAssets.toLocaleString()} - ${additions.toLocaleString()} + ${withdrawals.toLocaleString()}) = ${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</p>
+                `;
+            }
+
+            let totalEffectiveCapital = 0;
+            Object.keys(investorCapMap).forEach(inv => {
+                const data = investorCapMap[inv];
+                const effective = data.base + data.add - data.withdraw;
+                totalEffectiveCapital += Math.max(0, effective);
+            });
+
+            const tbody = document.getElementById('investorProfitBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = Object.keys(investorCapMap).map(inv => {
+                const data = investorCapMap[inv];
+                const effective = Math.max(0, data.base + data.add - data.withdraw);
+                const shareRatio = totalEffectiveCapital > 0 ? (effective / totalEffectiveCapital) : 0;
+                const profitShare = netProfit * shareRatio;
+
+                return `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-semibold text-white">${inv}</td>
+                        <td class="p-3 font-mono">${data.base.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-blue-400">+${data.add.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-red-400">-${data.withdraw.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono font-bold">${effective.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-indigo-400">${(shareRatio * 100).toFixed(2)}%</td>
+                        <td class="p-3 font-mono font-bold text-brand-400">${profitShare.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.onload = function() {
+            const now = new Date().toISOString().slice(0, 16);
+            if (document.getElementById('snapDate')) document.getElementById('snapDate').value = now;
+            if (document.getElementById('custDate')) document.getElementById('custDate').value = now;
+            if (document.getElementById('capDate')) document.getElementById('capDate').value = now;
+
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+            }
+
+            if (window.initCloudSync) {
+                window.initCloudSync();
+            } else {
+                renderAllViews();
+            }
+        };
+    </script>
+</body>
+</html>
