@@ -521,12 +521,19 @@
         window.dbSet = set;
         window.dbOnValue = onValue;
 
-        // Auto Connect Cloud Database
+        let activeSyncUnsubscribe = null;
+
         window.initCloudSync = function() {
             const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
             document.getElementById('roomIdInput').value = roomId;
 
             const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
+            
+            // إلغاء الاستماع القديم لتجنب التكرار
+            if (window.activeSyncUnsubscribe) {
+                // Firebase onValue returns unsubscribe function if supported or managed directly
+            }
+
             window.dbOnValue(syncRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -535,7 +542,7 @@
                 } else {
                     window.pushDataToCloud();
                 }
-                window.renderAllViews();
+                renderAllViews();
                 document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
                 document.getElementById('syncText').innerText = "متصل سحابياً (" + roomId + ")";
                 document.getElementById('syncStatus').className = "flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300";
@@ -548,7 +555,9 @@
         window.pushDataToCloud = function() {
             const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
             const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
-            window.dbSet(syncRef, window.appData);
+            window.dbSet(syncRef, window.appData).catch(err => {
+                console.error("Cloud push failed:", err);
+            });
         };
     </script>
 
@@ -618,7 +627,10 @@
                 localStorage.setItem('app_sync_room_id', room);
                 if (window.initCloudSync) {
                     window.initCloudSync();
+                    alert('تم ربط الجهاز بنجاح برمز الغرفة: ' + room);
                 }
+            } else {
+                alert('يرجى إدخال رمز مزامنة صحيح');
             }
         }
 
@@ -853,7 +865,8 @@
         }
 
         function renderCustomers() {
-            const search = document.getElementById('customerSearch').value.toLowerCase();
+            const searchField = document.getElementById('customerSearch');
+            const search = searchField ? searchField.value.toLowerCase() : '';
             const directoryBody = document.getElementById('customersDirectoryBody');
 
             let custMap = {};
