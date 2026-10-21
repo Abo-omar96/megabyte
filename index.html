@@ -788,4 +788,220 @@
             if (currentRole !== 'admin') return;
             const acc = window.appData.accounts.find(a => a.id === id);
             if (acc) {
-                document.getElementById('accEditId').value = acc.id
+                document.getElementById('accEditId').value = acc.id;
+                document.getElementById('accName').value = acc.name;
+                document.getElementById('accType').value = acc.type;
+                document.getElementById('accStatus').value = acc.status;
+                document.getElementById('accBtnText').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل';
+                document.getElementById('accCancelBtn').classList.remove('hidden');
+            }
+        }
+
+        function resetAccountForm() {
+            document.getElementById('accEditId').value = '';
+            document.getElementById('accName').value = '';
+            document.getElementById('accBtnText').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> حفظ';
+            document.getElementById('accCancelBtn').classList.add('hidden');
+        }
+
+        function deleteAccount(id) {
+            if (currentRole !== 'admin') return;
+            if (confirm('تأكيد الحذف؟')) {
+                window.appData.accounts = window.appData.accounts.filter(a => a.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function saveSnapshot(e) {
+            e.preventDefault();
+            const date = document.getElementById('snapDate').value;
+            if (!date) return;
+
+            let balances = {};
+            window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
+                const input = document.getElementById('snap_acc_' + acc.id);
+                balances[acc.id] = input ? (parseFloat(input.value) || 0) : 0;
+            });
+
+            window.appData.snapshots.push({ id: 'snap_' + Date.now(), date: date, balances: balances });
+            window.appData.snapshots.sort((a, b) => new Date(a.date) - new Date(b.date));
+            saveLocalData();
+            
+            window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
+                const input = document.getElementById('snap_acc_' + acc.id);
+                if (input) input.value = '';
+            });
+            alert('تم حفظ لقطة الرصيد بنجاح');
+        }
+
+        function deleteSnapshot(id) {
+            if (confirm('تأكيد الحذف؟')) {
+                window.appData.snapshots = window.appData.snapshots.filter(s => s.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function saveCustomerRecord(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value.trim();
+            const date = document.getElementById('custDate').value;
+            const type = document.getElementById('custType').value;
+            const amount = parseFloat(document.getElementById('custAmount').value) || 0;
+
+            if (!name || !date || amount <= 0) return;
+
+            window.appData.customers.push({ id: 'cust_' + Date.now(), name: name, date: date, type: type, amount: amount });
+            saveLocalData();
+            document.getElementById('custAmount').value = '';
+            document.getElementById('quickAlertMsg').classList.add('hidden');
+            alert('تم تسجيل العملية بنجاح للعميل: ' + name);
+        }
+
+        function deleteCustomerRecord(id) {
+            if (confirm('تأكيد حذف الحركة؟')) {
+                window.appData.customers = window.appData.customers.filter(c => c.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function saveExpense(e) {
+            e.preventDefault();
+            const title = document.getElementById('expTitle').value.trim();
+            const amount = parseFloat(document.getElementById('expAmount').value) || 0;
+            const date = document.getElementById('expDate').value;
+
+            if (!title || !date || amount <= 0) return;
+
+            window.appData.expenses.push({ id: 'exp_' + Date.now(), title: title, amount: amount, date: date });
+            saveLocalData();
+            document.getElementById('expTitle').value = '';
+            document.getElementById('expAmount').value = '';
+            alert('تم تسجيل المصروف بنجاح');
+        }
+
+        function deleteExpense(id) {
+            if (confirm('تأكيد الحذف؟')) {
+                window.appData.expenses = window.appData.expenses.filter(e => e.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function saveCapitalTransaction(e) {
+            e.preventDefault();
+            if (currentRole !== 'admin') return;
+            const investor = document.getElementById('capInvestor').value.trim();
+            const type = document.getElementById('capType').value;
+            const amount = parseFloat(document.getElementById('capAmount').value) || 0;
+            const date = document.getElementById('capDate').value;
+
+            if (!investor || !date || amount <= 0) return;
+
+            if (type === 'withdraw') {
+                let currentCap = 0;
+                window.appData.capitalLogs.forEach(c => {
+                    if (c.investor === investor) currentCap += (c.type === 'add' ? c.amount : -c.amount);
+                });
+                if (amount > currentCap) {
+                    alert('المبلغ أكبر من رأس المال المتاح للمستثمر!');
+                    return;
+                }
+            }
+
+            window.appData.capitalLogs.push({ id: 'cap_' + Date.now(), investor: investor, type: type, amount: amount, date: date });
+            saveLocalData();
+            document.getElementById('capAmount').value = '';
+            alert('تم تسجيل حركة رأس المال بنجاح');
+        }
+
+        function deleteCapitalLog(id) {
+            if (currentRole !== 'admin') return;
+            if (confirm('تأكيد الحذف؟')) {
+                window.appData.capitalLogs = window.appData.capitalLogs.filter(c => c.id !== id);
+                saveLocalData();
+            }
+        }
+
+        function exportToExcel(tableId, filename) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+            XLSX.writeFile(wb, (filename || 'بيانات') + '.xlsx');
+        }
+
+        function renderAllViews() {
+            renderAccountsTable();
+            renderDynamicSnapshotInputs();
+            renderSnapshotsTable();
+            renderCustomers();
+            renderExpensesTable();
+            renderCapitalTable();
+            updateDashboardCards();
+            if (currentRole === 'admin') generateProfitReport();
+        }
+
+        function renderAccountsTable() {
+            const tbody = document.getElementById('accountsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.appData.accounts.map(acc => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-semibold text-white">${acc.name}</td>
+                    <td class="p-3"><span class="bg-slate-800 border border-slate-700 text-xs px-2.5 py-1 rounded-lg">${acc.type}</span></td>
+                    <td class="p-3">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${acc.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                            ${acc.status === 'active' ? 'نشط' : 'معطل'}
+                        </span>
+                    </td>
+                    <td class="p-3 text-center no-print admin-only space-x-2 space-x-reverse">
+                        <button onclick="editAccount('${acc.id}')" class="text-indigo-400 hover:text-indigo-300 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteAccount('${acc.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            applyRolePermissions();
+        }
+
+        function renderDynamicSnapshotInputs() {
+            const container = document.getElementById('dynamicSnapshotInputs');
+            if (!container) return;
+            const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
+
+            container.innerHTML = activeAccs.map(acc => `
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">${acc.name}</label>
+                    <input type="number" step="0.01" id="snap_acc_${acc.id}" min="0" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
+                </div>
+            `).join('');
+        }
+
+        function renderSnapshotsTable() {
+            const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
+            const header = document.getElementById('snapshotsTableHeader');
+            const tbody = document.getElementById('snapshotsTableBody');
+            if (!header || !tbody) return;
+
+            header.innerHTML = `
+                <tr>
+                    <th class="p-3">التاريخ والوقت</th>
+                    ${activeAccs.map(acc => `<th class="p-3">${acc.name}</th>`).join('')}
+                    <th class="p-3 font-bold text-emerald-400">إجمالي الأصول</th>
+                    <th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل</th>
+                    <th class="p-3 text-center no-print">حذف</th>
+                </tr>
+            `;
+
+            let prevSnapTotal = null;
+
+            tbody.innerHTML = window.appData.snapshots.map(snap => {
+                let total = 0;
+                const cols = activeAccs.map(acc => {
+                    const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
+                    total += val;
+                    return `<td class="p-3 font-mono">${formatNum(val)}</td>`;
+                }).join('');
+
+                let profitDiffText = '-';
+                if (prevSnapTotal !== null) {
+                    const diff = total - prevSnapTotal;
+                    profitDiffText = diff >= 0 
+                        ? `<span class="text-emerald-400 font-bold font-mono">+${formatNum(diff)} ج.م</span>`
+                        : `<span class="text-red-40
