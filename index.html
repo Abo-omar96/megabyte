@@ -30,6 +30,8 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1f2937; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        /* فرض عرض الأرقام بالإنجليزية دائماً */
+        .num-en, .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; }
@@ -126,7 +128,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-slate-400 font-medium">إجمالي الأصول الحالية</p>
-                            <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                            <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2 font-mono">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
                         </div>
                         <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
                             <i class="fa-solid fa-vault text-xl"></i>
@@ -139,7 +141,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال</p>
-                            <h3 id="totalCapitalCard" class="text-2xl font-bold text-blue-400 mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                            <h3 id="totalCapitalCard" class="text-2xl font-bold text-blue-400 mt-2 font-mono">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
                         </div>
                         <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl">
                             <i class="fa-solid fa-piggy-bank text-xl"></i>
@@ -152,15 +154,15 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي لنا / علينا)</p>
-                            <h3 id="netCustomersCard" class="text-2xl font-bold text-amber-400 mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                            <h3 id="netCustomersCard" class="text-2xl font-bold text-amber-400 mt-2 font-mono">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
                         </div>
                         <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl">
                             <i class="fa-solid fa-users text-xl"></i>
                         </div>
                     </div>
                     <div class="flex justify-between text-[11px] mt-3 text-slate-400">
-                        <span>لنا (عند العملاء): <strong id="customersUsCard" class="text-emerald-400">0</strong></span>
-                        <span>علينا (للعملاء): <strong id="customersThemCard" class="text-red-400">0</strong></span>
+                        <span>لنا (عند العملاء): <strong id="customersUsCard" class="text-emerald-400 font-mono">0.00</strong></span>
+                        <span>علينا (للعملاء): <strong id="customersThemCard" class="text-red-400 font-mono">0.00</strong></span>
                     </div>
                 </div>
 
@@ -168,7 +170,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-xs text-slate-400 font-medium">صافي أرباح الفترة</p>
-                            <h3 id="calculatedProfitCard" class="text-2xl font-bold text-brand-500 mt-2">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
+                            <h3 id="calculatedProfitCard" class="text-2xl font-bold text-brand-500 mt-2 font-mono">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
                         </div>
                         <div class="p-3 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-xl">
                             <i class="fa-solid fa-chart-line text-xl"></i>
@@ -271,7 +273,7 @@
                         <form onsubmit="saveSnapshot(event)" class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/50 space-y-4">
                             <div class="max-w-xs">
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
-                                <input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
 
                             <div id="dynamicSnapshotInputs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -312,7 +314,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
-                                <input type="datetime-local" id="custDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="datetime-local" id="custDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
@@ -324,7 +326,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                                <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div class="md:col-span-4 flex justify-between items-center pt-1">
                                 <span id="quickAlertMsg" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل، أدخل مبلغ التسديد واضغط حفظ.</span>
@@ -382,11 +384,11 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                                <input type="number" step="0.01" id="expAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="number" step="0.01" id="expAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
-                                <input type="datetime-local" id="expDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="datetime-local" id="expDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div class="flex items-end">
                                 <button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-red-600/20">
@@ -433,11 +435,11 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                                <input type="number" step="0.01" id="capAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="number" step="0.01" id="capAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
-                                <input type="datetime-local" id="capDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="datetime-local" id="capDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div class="md:col-span-4 flex justify-end">
                                 <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition shadow-lg shadow-blue-600/20">
@@ -483,11 +485,11 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ (بداية الفترة)</label>
-                                <input type="datetime-local" id="reportStartDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="datetime-local" id="reportStartDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ (نهاية الفترة)</label>
-                                <input type="datetime-local" id="reportEndDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="datetime-local" id="reportEndDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                             </div>
                             <div class="flex items-end">
                                 <button type="button" onclick="generateProfitReport()" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-brand-600/20">
@@ -651,8 +653,17 @@
         let currentRole = sessionStorage.getItem('userRole') || '';
         let selectedCustomerForStatement = null;
 
+        // دالة تحويل وتنسيق كافة الأرقام بالإنجليزية أوتوماتيكياً
         function formatNum(val) {
-            return Number(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const num = Number(val || 0);
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // دالة تنسيق التاريخ بأرقام إنجليزية
+        function formatDateEn(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleString('en-US', { hour12: true });
         }
 
         function saveLocalData() {
@@ -688,7 +699,6 @@
             if (currentRole === 'cashier') {
                 if (badge) badge.innerText = "المستخدم الحالي: كاشير (صلاحيات محدودة)";
                 adminElements.forEach(el => el.classList.add('hidden'));
-                // إذا كان في تبويب غير مصرح به، انقله للعملاء
                 const activeTab = document.querySelector('.tab-content:not(.hidden)');
                 if (activeTab && (activeTab.id === 'content-capital' || activeTab.id === 'content-reports')) {
                     switchTab('customers');
@@ -961,7 +971,7 @@
             container.innerHTML = activeAccs.map(acc => `
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">${acc.name}</label>
-                    <input type="number" step="0.01" id="snap_acc_${acc.id}" min="0" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <input type="number" step="0.01" id="snap_acc_${acc.id}" min="0" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 font-mono">
                 </div>
             `).join('');
         }
@@ -1006,7 +1016,7 @@
 
                 return `
                     <tr class="hover:bg-slate-800/50">
-                        <td class="p-3 font-mono text-xs text-slate-400">${new Date(snap.date).toLocaleString('en-US')}</td>
+                        <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(snap.date)}</td>
                         ${cols}
                         <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td>
                         <td class="p-3 font-mono">${profitDiffText}</td>
@@ -1083,7 +1093,7 @@
                     <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
                         <div>
                             <span class="font-bold text-xs ${badgeClass}">${badgeText}</span>
-                            <p class="text-[10px] text-slate-500 font-mono">${new Date(l.date).toLocaleString('en-US')}</p>
+                            <p class="text-[10px] text-slate-500 font-mono">${formatDateEn(l.date)}</p>
                         </div>
                         <div class="flex items-center space-x-2 space-x-reverse">
                             <span class="font-bold font-mono text-white">${formatNum(l.amount)} ج.م</span>
@@ -1099,7 +1109,7 @@
             if (!tbody) return;
             tbody.innerHTML = window.appData.expenses.map(e => `
                 <tr class="hover:bg-slate-800/50">
-                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(e.date).toLocaleString('en-US')}</td>
+                    <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(e.date)}</td>
                     <td class="p-3 font-semibold text-white">${e.title}</td>
                     <td class="p-3 font-mono font-bold text-red-400">${formatNum(e.amount)} ج.م</td>
                     <td class="p-3 text-center no-print">
@@ -1114,7 +1124,7 @@
             if (!tbody) return;
             tbody.innerHTML = window.appData.capitalLogs.map(c => `
                 <tr class="hover:bg-slate-800/50">
-                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(c.date).toLocaleString('en-US')}</td>
+                    <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(c.date)}</td>
                     <td class="p-3 font-semibold text-white">${c.investor}</td>
                     <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
                     <td class="p-3 font-mono font-bold text-white">${formatNum(c.amount)} ج.م</td>
@@ -1145,8 +1155,8 @@
             const netCust = us - them;
             document.getElementById('netCustomersCard').innerHTML = `${formatNum(netCust)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
             
-            document.getElementById('customersUsCard').innerText = formatNum(us);
-            document.getElementById('customersThemCard').innerText = formatNum(them);
+            document.getElementById('customersUsCard').innerText = formatNum(us) + ' ج.م';
+            document.getElementById('customersThemCard').innerText = formatNum(them) + ' ج.م';
         }
 
         function generateProfitReport() {
@@ -1194,9 +1204,9 @@
 
             if (expEl) {
                 expEl.innerHTML = `
-                    <p>• الفارق المالي للأرصدة: <strong class="text-emerald-400">${formatNum(endAssets - startAssets)} ج.م</strong></p>
-                    <p>• إجمالي المصروفات التشغيلية المخصومة: <strong class="text-red-400">-${formatNum(totalPeriodExpenses)} ج.م</strong></p>
-                    <p class="text-brand-400 font-bold mt-1">صافي الأرباح القابلة للتوزيع = ${formatNum(netProfit)} ج.م</p>
+                    <p>• الفارق المالي للأرصدة: <strong class="text-emerald-400 font-mono">${formatNum(endAssets - startAssets)} ج.م</strong></p>
+                    <p>• إجمالي المصروفات التشغيلية المخصومة: <strong class="text-red-400 font-mono">-${formatNum(totalPeriodExpenses)} ج.م</strong></p>
+                    <p class="text-brand-400 font-bold mt-1">صافي الأرباح القابلة للتوزيع = <span class="font-mono">${formatNum(netProfit)} ج.م</span></p>
                 `;
             }
 
