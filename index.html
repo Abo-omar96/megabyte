@@ -78,7 +78,7 @@
                     <!-- Status Indicator -->
                     <div id="syncStatus" class="flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400">
                         <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
-                        <span id="syncText">وضع محلي</span>
+                        <span id="syncText">جاري الاتصال بالسحابة...</span>
                     </div>
 
                     <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700/60 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs transition" title="تغيير كلمة السر">
@@ -248,7 +248,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="accountsTableBody" class="divide-y divide-slate-800">
-                                    <!-- Dynamic Rows -->
                                 </tbody>
                             </table>
                         </div>
@@ -269,9 +268,7 @@
                                 <input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
 
-                            <!-- Dynamic Inputs for Active Accounts -->
                             <div id="dynamicSnapshotInputs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <!-- Generated Dynamic Inputs -->
                             </div>
 
                             <div class="flex justify-end pt-2">
@@ -281,14 +278,11 @@
                             </div>
                         </form>
 
-                        <!-- Historical Snapshots Table -->
                         <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
                             <table class="w-full text-right text-sm text-slate-300">
                                 <thead id="snapshotsTableHeader" class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
-                                    <!-- Dynamic Columns -->
                                 </thead>
                                 <tbody id="snapshotsTableBody" class="divide-y divide-slate-800">
-                                    <!-- Dynamic rows -->
                                 </tbody>
                             </table>
                         </div>
@@ -301,14 +295,12 @@
                                 <h3 class="text-lg font-bold text-white">قاعدة بيانات وحسابات العملاء</h3>
                                 <p class="text-xs text-slate-400">تسجيل وتتبّع مبالغ العملاء (لنا / علينا) مع إمكانية البحث وكشف الحساب التاريخي</p>
                             </div>
-                            <!-- Search Input -->
                             <div class="relative min-w-[240px]">
                                 <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
                                 <input type="text" id="customerSearch" oninput="renderCustomers()" placeholder="بحث باسم العميل..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
                             </div>
                         </div>
 
-                        <!-- Add / Update Customer Entry -->
                         <form onsubmit="saveCustomerRecord(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">اسم العميل</label>
@@ -336,9 +328,7 @@
                             </div>
                         </form>
 
-                        <!-- Customers Directory Grid & History -->
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Customers List Table -->
                             <div class="lg:col-span-2 border border-slate-700/80 rounded-xl overflow-hidden">
                                 <table class="w-full text-right text-sm text-slate-300">
                                     <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
@@ -350,12 +340,10 @@
                                         </tr>
                                     </thead>
                                     <tbody id="customersDirectoryBody" class="divide-y divide-slate-800">
-                                        <!-- Dynamic customer rows -->
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Selected Customer Statement Details -->
                             <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 flex flex-col justify-between">
                                 <div>
                                     <h4 class="font-bold text-white text-base border-b border-slate-700/60 pb-2 mb-3 flex items-center justify-between">
@@ -418,7 +406,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="capitalTableBody" class="divide-y divide-slate-800">
-                                    <!-- Dynamic rows -->
                                 </tbody>
                             </table>
                         </div>
@@ -439,105 +426,79 @@
                         </div>
 
                         <!-- Date Range Filters -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 no-print">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ</label>
-                                <input type="datetime-local" id="reportStartDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ (بداية الفترة)</label>
+                                <input type="datetime-local" id="reportStartDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ</label>
-                                <input type="datetime-local" id="reportEndDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ (نهاية الفترة)</label>
+                                <input type="datetime-local" id="reportEndDate" onchange="generateProfitReport()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
                             <div class="flex items-end">
-                                <button type="button" onclick="calculatePeriodReport()" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-bold transition shadow-lg shadow-brand-600/20">
-                                    <i class="fa-solid fa-calculator ml-1"></i> احتساب أرباح الفترة
+                                <button type="button" onclick="generateProfitReport()" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-brand-600/20">
+                                    <i class="fa-solid fa-calculator ml-1"></i> حساب نتائج الفترة
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Equation Breakdown Display -->
-                        <div class="bg-slate-900/80 border border-slate-700/80 rounded-2xl p-5 space-y-4">
-                            <h4 class="text-sm font-bold text-brand-400 border-b border-slate-800 pb-2">
-                                <i class="fa-solid fa-square-root-variable ml-1"></i> المعادلة المحاسبية المعتمدة للربح الصافي
-                            </h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-center text-xs">
-                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                                    <span class="text-slate-400 block mb-1">صافي أصول النهاية</span>
-                                    <strong id="eqEndAssets" class="text-white text-base">0.00</strong>
-                                </div>
-                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                                    <span class="text-slate-400 block mb-1">− صافي أصول البداية</span>
-                                    <strong id="eqStartAssets" class="text-red-400 text-base">0.00</strong>
-                                </div>
-                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                                    <span class="text-slate-400 block mb-1">− إضافات رأس المال</span>
-                                    <strong id="eqAdditions" class="text-red-400 text-base">0.00</strong>
-                                </div>
-                                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700">
-                                    <span class="text-slate-400 block mb-1">+ مسحوبات رأس المال</span>
-                                    <strong id="eqWithdrawals" class="text-emerald-400 text-base">0.00</strong>
-                                </div>
-                                <div class="bg-brand-500/10 p-3 rounded-xl border border-brand-500/30">
-                                    <span class="text-brand-400 block mb-1 font-bold">= صافي الربح المحاسبي</span>
-                                    <strong id="eqNetProfit" class="text-brand-400 text-lg">0.00</strong>
-                                </div>
+                        <!-- Mathematical Formula Visualizer -->
+                        <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح المحاسبي المعتمدة</h4>
+                            <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto dir-ltr text-right">
+                                صافي الربح = (صافي أصول النهاية) − (صافي أصول البداية) − (إضافات رأس المال) + (مسحوبات رأس المال)
+                            </div>
+                            <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1">
                             </div>
                         </div>
 
-                        <!-- Investors Profit Share Table -->
-                        <div class="space-y-3">
-                            <h4 class="text-sm font-bold text-white"><i class="fa-solid fa-users-line ml-1"></i> جدول توزيع الأرباح على المستثمرين حسب الحصة الموزونة</h4>
-                            <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
-                                <table class="w-full text-right text-sm text-slate-300">
-                                    <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
-                                        <tr>
-                                            <th class="p-3">اسم المستثمر</th>
-                                            <th class="p-3">رأس المال بالفترة</th>
-                                            <th class="p-3">نسبة المشاركة</th>
-                                            <th class="p-3">نصيب الربح الصافي</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="distributionTableBody" class="divide-y divide-slate-800">
-                                        <tr><td colspan="4" class="text-center p-4 text-slate-500">اضغط على "احتساب أرباح الفترة" لعرض التوزيع</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <!-- Investor Profits Table -->
+                        <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                            <table class="w-full text-right text-sm text-slate-300">
+                                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700">
+                                    <tr>
+                                        <th class="p-3">اسم المستثمر</th>
+                                        <th class="p-3">رأس المال بداية الفترة</th>
+                                        <th class="p-3">الإضافات خلال الفترة</th>
+                                        <th class="p-3">المسحوبات خلال الفترة</th>
+                                        <th class="p-3">رأس المال المعدل</th>
+                                        <th class="p-3">نسبة المشاركة</th>
+                                        <th class="p-3 text-brand-400 font-bold">الربح المستحق</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="investorProfitBody" class="divide-y divide-slate-800">
+                                </tbody>
+                            </table>
                         </div>
-
                     </div>
-                </div>
-            </div>
 
-            <!-- Global Action Bar: Backup / Export -->
-            <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/50 text-xs text-slate-400 no-print">
-                <div class="flex items-center space-x-2 space-x-reverse">
-                    <button type="button" onclick="exportJSONBackup()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl transition">
-                        <i class="fa-solid fa-download ml-1"></i> تحميل نسخه احتياطية (JSON)
-                    </button>
-                    <label class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl transition cursor-pointer">
-                        <i class="fa-solid fa-upload ml-1"></i> استرجاع نسخة
-                        <input type="file" accept=".json" onchange="importJSONBackup(event)" class="hidden">
-                    </label>
-                </div>
-                <div>
-                    <span>نظام الحسابات المحاسبي المطور — Mohamed Mohsen Version 2.0</span>
                 </div>
             </div>
         </main>
+
+        <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print">
+            <p>نظام الحسابات المالي المحاسبي المطور © 2026 — مصمم للعمل الفوري والمتزامن على جميع الأجهزة</p>
+        </footer>
     </div>
 
     <!-- Password Change Modal -->
-    <div id="passModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full space-y-4">
-            <h3 class="text-lg font-bold text-white">تغيير كلمة السر</h3>
-            <input type="password" id="newPassInput" placeholder="كلمة السر الجديدة" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
-            <div class="flex justify-end space-x-2 space-x-reverse">
-                <button type="button" onclick="toggleChangePassModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs">إلغاء</button>
-                <button type="button" onclick="saveNewPassword()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold">حفظ</button>
-            </div>
+    <div id="changePassModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-brand-500 ml-1"></i> تغيير كلمة السر</h3>
+            <form onsubmit="saveNewPassword(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">كلمة السر الجديدة</label>
+                    <input type="password" id="newPassInput" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div class="flex justify-end space-x-2 space-x-reverse pt-2">
+                    <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">إلغاء</button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">حفظ</button>
+                </div>
+            </form>
         </div>
     </div>
-<!-- Firebase Integration Engine -->
+
+    <!-- Firebase Integration Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
@@ -590,66 +551,42 @@
             window.dbSet(syncRef, window.appData);
         };
     </script>
+
     <script>
-        // --- Core Data Structures & State ---
-        let dbState = {
-            accountsConfig: [
-                { id: 'acc_cash', name: 'الصندوق النقدي', type: 'cash', status: 'active' },
-                { id: 'acc_ewallet', name: 'المحافظ الإلكترونية', type: 'ewallet', status: 'active' },
-                { id: 'acc_fawry_android', name: 'فوري Android', type: 'pos', status: 'active' },
-                { id: 'acc_aman', name: 'أمان', type: 'pos', status: 'active' },
-                { id: 'acc_fawry_regular', name: 'فوري العادية', type: 'pos', status: 'active' }
-            ],
+        // Data Structures Initialization
+        let defaultAccounts = [
+            { id: 'acc_cash', name: 'الصندوق النقدي (الخزينة)', type: 'cash', status: 'active' },
+            { id: 'acc_ewallet', name: 'المحافظ الإلكترونية', type: 'ewallet', status: 'active' },
+            { id: 'acc_fawry_android', name: 'فوري Android', type: 'pos', status: 'active' },
+            { id: 'acc_aman', name: 'ماكينة أمان', type: 'pos', status: 'active' },
+            { id: 'acc_fawry_std', name: 'فوري العادية', type: 'pos', status: 'active' }
+        ];
+
+        window.appData = JSON.parse(localStorage.getItem('app_accounting_db')) || {
+            password: '123456',
+            accounts: defaultAccounts,
             snapshots: [],
             customers: [],
-            capital: [],
-            passwordHash: '123456'
+            capitalLogs: []
         };
 
-        let currentRoomId = localStorage.getItem('accounting_room_id') || 'MOHAMED_STORE_2026';
-        let isSyncingRemote = false;
+        let selectedCustomerForStatement = null;
 
-        // Initialize Application
-        window.addEventListener('DOMContentLoaded', () => {
-            initDates();
-            loadLocalStorageData();
-            checkSession();
-            document.getElementById('roomIdInput').value = currentRoomId;
-            connectCloudRoom();
-        });
-
-        function initDates() {
-            const now = new Date();
-            const nowIso = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            
-            if (document.getElementById('snapDate')) document.getElementById('snapDate').value = nowIso;
-            if (document.getElementById('custDate')) document.getElementById('custDate').value = nowIso;
-            if (document.getElementById('capDate')) document.getElementById('capDate').value = nowIso;
-            
-            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-            const firstDayIso = new Date(firstDayOfMonth.getTime() - firstDayOfMonth.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            
-            if (document.getElementById('reportStartDate')) document.getElementById('reportStartDate').value = firstDayIso;
-            if (document.getElementById('reportEndDate')) document.getElementById('reportEndDate').value = nowIso;
-        }
-
-        // Auth
-        function checkSession() {
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
-                renderAll();
+        function saveLocalData() {
+            localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+            if (window.pushDataToCloud) {
+                window.pushDataToCloud();
             }
+            renderAllViews();
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            const val = document.getElementById('passInput').value;
-            if (val === dbState.passwordHash) {
-                sessionStorage.setItem('isLoggedIn', 'true');
+            const input = document.getElementById('passInput').value;
+            if (input === window.appData.password) {
                 document.getElementById('loginOverlay').classList.add('hidden');
                 document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
-                renderAll();
+                sessionStorage.setItem('isLoggedIn', 'true');
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
@@ -661,308 +598,126 @@
         }
 
         function toggleChangePassModal() {
-            const m = document.getElementById('passModal');
-            m.classList.toggle('hidden');
-            m.classList.toggle('flex');
+            document.getElementById('changePassModal').classList.toggle('hidden');
         }
 
-        function saveNewPassword() {
-            const np = document.getElementById('newPassInput').value;
-            if (np && np.length >= 4) {
-                dbState.passwordHash = np;
-                persistData();
+        function saveNewPassword(e) {
+            e.preventDefault();
+            const newPass = document.getElementById('newPassInput').value;
+            if (newPass) {
+                window.appData.password = newPass;
+                saveLocalData();
                 toggleChangePassModal();
-                alert('تم تغيير كلمة السر بنجاح!');
-            } else {
-                alert('يرجى إدخال كلمة سر لا تقل عن 4 أرقام');
+                alert('تم تغيير كلمة السر بنجاح');
             }
-        }
-
-        // Data Storage & Synchronization Engine
-        function loadLocalStorageData() {
-            const local = localStorage.getItem('accounting_db_data');
-            if (local) {
-                try {
-                    const parsed = JSON.parse(local);
-                    dbState = Object.assign(dbState, parsed);
-                } catch(e) { console.error(e); }
-            }
-        }
-
-        function persistData() {
-            localStorage.setItem('accounting_db_data', JSON.stringify(dbState));
-            pushToCloud();
-            renderAll();
-        }
-
-        function pushToCloud() {
-            if (!currentRoomId || isSyncingRemote) return;
-            
-            // Use JSONBin free public endpoint for seamless multi-device synchronization without config
-            fetch(`https://api.jsonbin.io/v3/b/${encodeURIComponent(currentRoomId)}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': '$2a$10$wT0C/C8oO1BpxTIsm8sJ0.aC9r7dY5c5wD2JgI5O6R0B2Z1'
-                },
-                body: JSON.stringify(dbState)
-            }).catch(err => console.log('Sync push error:', err));
         }
 
         function connectCloudRoom() {
-            const rid = document.getElementById('roomIdInput').value.trim();
-            if (!rid) return;
-            currentRoomId = rid.toUpperCase().replace(/[^A-Z0-9_]/g, '');
-            document.getElementById('roomIdInput').value = currentRoomId;
-            localStorage.setItem('accounting_room_id', currentRoomId);
-
-            document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-            document.getElementById('syncText').innerText = "متصل (" + currentRoomId + ")";
-
-            // Fetch latest data from shared cloud room
-            pullFromCloud();
-
-            // Set auto polling every 5 seconds for live sync across devices
-            if (window.syncInterval) clearInterval(window.syncInterval);
-            window.syncInterval = setInterval(pullFromCloud, 5000);
+            const room = document.getElementById('roomIdInput').value.trim();
+            if (room) {
+                localStorage.setItem('app_sync_room_id', room);
+                if (window.initCloudSync) {
+                    window.initCloudSync();
+                }
+            }
         }
 
-        function pullFromCloud() {
-            if (!currentRoomId) return;
-            
-            fetch(`https://api.jsonbin.io/v3/b/${encodeURIComponent(currentRoomId)}/latest`, {
-                headers: {
-                    'X-Master-Key': '$2a$10$wT0C/C8oO1BpxTIsm8sJ0.aC9r7dY5c5wD2JgI5O6R0B2Z1'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.record) {
-                    isSyncingRemote = true;
-                    dbState = Object.assign(dbState, data.record);
-                    localStorage.setItem('accounting_db_data', JSON.stringify(dbState));
-                    renderAll();
-                    isSyncingRemote = false;
-                }
-            })
-            .catch(err => {
-                // If bin does not exist yet, push local state to initialize room
-                pushToCloud();
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.classList.remove('bg-brand-600', 'text-white');
+                el.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
             });
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+            activeBtn.classList.add('bg-brand-600', 'text-white');
         }
 
-        // Render Orchestrator
-        function renderAll() {
-            renderAccountsConfig();
-            renderSnapshotFormInputs();
-            renderSnapshots();
-            renderCustomers();
-            renderCapital();
-            updateSummaryCards();
-            calculatePeriodReport();
-        }
-
-        // --- Accounts Configuration Management ---
+        // Account Configurations (Add / Edit / Delete)
         function saveAccountConfig(e) {
             e.preventDefault();
-            const editId = document.getElementById('accEditId').value;
+            const id = document.getElementById('accEditId').value;
             const name = document.getElementById('accName').value.trim();
             const type = document.getElementById('accType').value;
             const status = document.getElementById('accStatus').value;
 
-            if (!name) return;
-
-            if (editId) {
-                const item = dbState.accountsConfig.find(a => a.id === editId);
-                if (item) {
-                    item.name = name;
-                    item.type = type;
-                    item.status = status;
+            if (id) {
+                const acc = window.appData.accounts.find(a => a.id === id);
+                if (acc) {
+                    acc.name = name;
+                    acc.type = type;
+                    acc.status = status;
                 }
             } else {
-                dbState.accountsConfig.push({
+                window.appData.accounts.push({
                     id: 'acc_' + Date.now(),
-                    name, type, status
+                    name: name,
+                    type: type,
+                    status: status
                 });
             }
-
-            persistData();
             resetAccountForm();
+            saveLocalData();
         }
 
-        function editAccountConfig(id) {
-            const acc = dbState.accountsConfig.find(a => a.id === id);
-            if (!acc) return;
-
-            document.getElementById('accEditId').value = acc.id;
-            document.getElementById('accName').value = acc.name;
-            document.getElementById('accType').value = acc.type;
-            document.getElementById('accStatus').value = acc.status;
-
-            document.getElementById('accBtnText').innerHTML = `<i class="fa-solid fa-floppy-disk ml-1"></i> حفظ التعديل`;
-            document.getElementById('accCancelBtn').classList.remove('hidden');
+        function editAccount(id) {
+            const acc = window.appData.accounts.find(a => a.id === id);
+            if (acc) {
+                document.getElementById('accEditId').value = acc.id;
+                document.getElementById('accName').value = acc.name;
+                document.getElementById('accType').value = acc.type;
+                document.getElementById('accStatus').value = acc.status;
+                document.getElementById('accBtnText').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل الحساب';
+                document.getElementById('accCancelBtn').classList.remove('hidden');
+            }
         }
 
         function resetAccountForm() {
             document.getElementById('accEditId').value = '';
             document.getElementById('accName').value = '';
-            document.getElementById('accType').value = 'cash';
-            document.getElementById('accStatus').value = 'active';
-
-            document.getElementById('accBtnText').innerHTML = `<i class="fa-solid fa-plus ml-1"></i> إضافة الحساب`;
+            document.getElementById('accBtnText').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> إضافة الحساب';
             document.getElementById('accCancelBtn').classList.add('hidden');
         }
 
-        function deleteAccountConfig(id) {
-            if (confirm('هل أنت تأكيد تريد حذف هذا الحساب/الماكينة؟ السجلات السابقة ستستمر بالظهور.')) {
-                dbState.accountsConfig = dbState.accountsConfig.filter(a => a.id !== id);
-                persistData();
+        function deleteAccount(id) {
+            if (confirm('هل أنت تأكد من حذف هذا الحساب؟')) {
+                window.appData.accounts = window.appData.accounts.filter(a => a.id !== id);
+                saveLocalData();
             }
         }
 
-        function getAccountTypeName(type) {
-            switch(type) {
-                case 'cash': return 'صندوق نقدي (خزينة)';
-                case 'ewallet': return 'محفظة إلكترونية';
-                case 'pos': return 'ماكينة دفع (POS)';
-                case 'bank': return 'حساب بنكي';
-                default: return 'حساب آخر';
-            }
-        }
-
-        function renderAccountsConfig() {
-            const body = document.getElementById('accountsTableBody');
-            body.innerHTML = '';
-
-            dbState.accountsConfig.forEach(acc => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/50 transition";
-                
-                const isAct = acc.status === 'active';
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-white">${acc.name}</td>
-                    <td class="p-3 text-xs text-slate-400">${getAccountTypeName(acc.type)}</td>
-                    <td class="p-3">
-                        <span class="${isAct ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-700 text-slate-400'} border px-2 py-0.5 rounded text-xs font-semibold">
-                            ${isAct ? 'نشط' : 'معطل'}
-                        </span>
-                    </td>
-                    <td class="p-3 no-print text-center space-x-2 space-x-reverse">
-                        <button type="button" onclick="editAccountConfig('${acc.id}')" class="text-indigo-400 hover:text-indigo-300 p-1">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button type="button" onclick="deleteAccountConfig('${acc.id}')" class="text-red-400 hover:text-red-300 p-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                body.appendChild(tr);
-            });
-        }
-
-        // --- Snapshots with Dynamic Fields ---
-        function renderSnapshotFormInputs() {
-            const container = document.getElementById('dynamicSnapshotInputs');
-            container.innerHTML = '';
-
-            const activeAccs = dbState.accountsConfig.filter(a => a.status === 'active');
-
-            if (activeAccs.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center text-amber-400 text-xs py-4">لا توجد أصل أو ماكينة نشطة حالياً. يرجى إضافة حسابات من تبويب "إدارة الصناديق والماكينات".</div>`;
-                return;
-            }
-
-            activeAccs.forEach(acc => {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">${acc.name}</label>
-                    <input type="number" step="0.01" min="0" data-acc-id="${acc.id}" placeholder="0.00" required class="snap-acc-input w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-                `;
-                container.appendChild(div);
-            });
-        }
-
+        // Snapshots Management
         function saveSnapshot(e) {
             e.preventDefault();
             const date = document.getElementById('snapDate').value;
+            if (!date) return;
 
-            if (dbState.snapshots.some(s => s.date === date)) {
-                alert('يوجد لقطة رصيد مسجلة بنفس التاريخ والوقت بالفعل!');
-                return;
-            }
-
-            const balances = {};
-            let total = 0;
-
-            document.querySelectorAll('.snap-acc-input').forEach(input => {
-                const accId = input.getAttribute('data-acc-id');
-                const val = parseFloat(input.value) || 0;
-                balances[accId] = val;
-                total += val;
+            let balances = {};
+            window.appData.accounts.filter(a => a.status === 'active').forEach(acc => {
+                const input = document.getElementById('snap_acc_' + acc.id);
+                balances[acc.id] = input ? parseFloat(input.value) || 0 : 0;
             });
 
-            dbState.snapshots.push({
-                id: Date.now(),
-                date,
-                balances,
-                total
+            window.appData.snapshots.push({
+                id: 'snap_' + Date.now(),
+                date: date,
+                balances: balances
             });
 
-            dbState.snapshots.sort((a, b) => new Date(b.date) - new Date(a.date));
-            persistData();
-            e.target.reset();
-            initDates();
+            window.appData.snapshots.sort((a, b) => new Date(a.date) - new Date(b.date));
+            saveLocalData();
         }
 
-        function renderSnapshots() {
-            const thead = document.getElementById('snapshotsTableHeader');
-            const tbody = document.getElementById('snapshotsTableBody');
-            
-            let headerHTML = `<tr><th class="p-3">التاريخ</th>`;
-            dbState.accountsConfig.forEach(acc => {
-                headerHTML += `<th class="p-3">${acc.name}</th>`;
-            });
-            headerHTML += `<th class="p-3">الإجمالي</th><th class="p-3 no-print">إجراءات</th></tr>`;
-            thead.innerHTML = headerHTML;
-
-            tbody.innerHTML = '';
-
-            if (dbState.snapshots.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${dbState.accountsConfig.length + 3}" class="text-center p-4 text-slate-500">لا توجد لقطات رصيد مسجلة حتى الآن</td></tr>`;
-                return;
+        function deleteSnapshot(id) {
+            if (confirm('هل ترغب في حذف لقطة الرصيد هذه؟')) {
+                window.appData.snapshots = window.appData.snapshots.filter(s => s.id !== id);
+                saveLocalData();
             }
-
-            dbState.snapshots.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/50 transition";
-                
-                let rowHTML = `<td class="p-3 font-mono text-xs">${formatDate(s.date)}</td>`;
-                
-                let snapTotal = 0;
-                dbState.accountsConfig.forEach(acc => {
-                    let val = 0;
-                    if (s.balances && s.balances[acc.id] !== undefined) {
-                        val = s.balances[acc.id];
-                    } else if (s[acc.id] !== undefined) {
-                        val = s[acc.id];
-                    }
-                    snapTotal += val;
-                    rowHTML += `<td class="p-3 font-mono">${val.toFixed(2)}</td>`;
-                });
-
-                rowHTML += `<td class="p-3 font-bold text-brand-400 font-mono">${(s.total || snapTotal).toFixed(2)}</td>`;
-                rowHTML += `<td class="p-3 no-print">
-                    <button type="button" onclick="deleteRecord('snapshots', ${s.id})" class="text-red-400 hover:text-red-300 p-1">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </td>`;
-
-                tr.innerHTML = rowHTML;
-                tbody.appendChild(tr);
-            });
         }
 
-        // --- Customers ---
+        // Customers Management
         function saveCustomerRecord(e) {
             e.preventDefault();
             const name = document.getElementById('custName').value.trim();
@@ -970,100 +725,28 @@
             const type = document.getElementById('custType').value;
             const amount = parseFloat(document.getElementById('custAmount').value) || 0;
 
-            if (!name || amount <= 0) return;
+            if (!name || !date || amount <= 0) return;
 
-            dbState.customers.push({
-                id: Date.now(),
-                name, date, type, amount
+            window.appData.customers.push({
+                id: 'cust_' + Date.now(),
+                name: name,
+                date: date,
+                type: type,
+                amount: amount
             });
 
-            dbState.customers.sort((a, b) => new Date(b.date) - new Date(a.date));
-            persistData();
+            saveLocalData();
             document.getElementById('custAmount').value = '';
-            initDates();
         }
 
-        function getCustomerBalances() {
-            const map = {};
-            dbState.customers.forEach(c => {
-                if (!map[c.name]) map[c.name] = { name: c.name, us: 0, them: 0, net: 0, logs: [] };
-                if (c.type === 'us') map[c.name].us += c.amount;
-                else map[c.name].them += c.amount;
-                map[c.name].net = map[c.name].us - map[c.name].them;
-                map[c.name].logs.push(c);
-            });
-            return Object.values(map);
-        }
-
-        function renderCustomers() {
-            const body = document.getElementById('customersDirectoryBody');
-            const search = (document.getElementById('customerSearch').value || '').toLowerCase();
-            body.innerHTML = '';
-
-            const list = getCustomerBalances().filter(c => c.name.toLowerCase().includes(search));
-
-            if (list.length === 0) {
-                body.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-slate-500">لا يوجد عملاء مطابقون للبحث</td></tr>`;
-                return;
+        function deleteCustomerRecord(id) {
+            if (confirm('تأكيد حذف الحركة؟')) {
+                window.appData.customers = window.appData.customers.filter(c => c.id !== id);
+                saveLocalData();
             }
-
-            list.forEach(c => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/50 transition cursor-pointer";
-                
-                let badge = '';
-                if (c.net > 0) {
-                    badge = `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-xs font-semibold">مبلغ لنا (${c.net.toFixed(2)})</span>`;
-                } else if (c.net < 0) {
-                    badge = `<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded text-xs font-semibold">مبلغ علينا (${Math.abs(c.net).toFixed(2)})</span>`;
-                } else {
-                    badge = `<span class="bg-slate-700 text-slate-300 px-2 py-0.5 rounded text-xs">خالص الرصيد (0)</span>`;
-                }
-
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-white">${c.name}</td>
-                    <td class="p-3 font-mono">${Math.abs(c.net).toFixed(2)} ج.م</td>
-                    <td class="p-3">${badge}</td>
-                    <td class="p-3 no-print text-center">
-                        <button type="button" onclick="viewCustomerLogs('${c.name}')" class="text-amber-400 hover:text-amber-300 px-2 py-1 bg-amber-500/10 rounded-lg text-xs">
-                            <i class="fa-solid fa-eye ml-1"></i> الكشف
-                        </button>
-                    </td>
-                `;
-                body.appendChild(tr);
-            });
         }
 
-        function viewCustomerLogs(custName) {
-            document.getElementById('selectedCustName').innerText = custName;
-            const container = document.getElementById('customerStatementLogs');
-            container.innerHTML = '';
-
-            const custData = getCustomerBalances().find(c => c.name === custName);
-            if (!custData || !custData.logs) return;
-
-            custData.logs.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(log => {
-                const div = document.createElement('div');
-                div.className = "bg-slate-800 p-2.5 rounded-xl border border-slate-700/60 flex justify-between items-center";
-                
-                const isUs = log.type === 'us';
-                div.innerHTML = `
-                    <div>
-                        <span class="block font-mono text-[10px] text-slate-400">${formatDate(log.date)}</span>
-                        <span class="font-semibold ${isUs ? 'text-emerald-400' : 'text-red-400'}">${isUs ? 'مبلغ لنا (+)' : 'مبلغ علينا (-)'}</span>
-                    </div>
-                    <div class="flex items-center space-x-2 space-x-reverse">
-                        <span class="font-bold text-sm text-white">${log.amount.toFixed(2)} ج.م</span>
-                        <button type="button" onclick="deleteRecord('customers', ${log.id})" class="text-red-400 hover:text-red-300 p-1 no-print">
-                            <i class="fa-solid fa-trash text-xs"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // --- Capital Transactions ---
+        // Capital Transactions Management
         function saveCapitalTransaction(e) {
             e.preventDefault();
             const investor = document.getElementById('capInvestor').value.trim();
@@ -1071,251 +754,287 @@
             const amount = parseFloat(document.getElementById('capAmount').value) || 0;
             const date = document.getElementById('capDate').value;
 
-            if (!investor || amount <= 0) return;
+            if (!investor || !date || amount <= 0) return;
 
-            if (type === 'withdraw') {
-                const currentInvestorCap = dbState.capital
-                    .filter(c => c.investor === investor)
-                    .reduce((acc, curr) => curr.type === 'add' ? acc + curr.amount : acc - curr.amount, 0);
-
-                if (amount > currentInvestorCap) {
-                    alert(`خطأ: رأس مال المستثمر (${investor}) الحالي هو ${currentInvestorCap.toFixed(2)} ج.م. لا يمكن سحب مبلغ أكبر من ذلك!`);
-                    return;
-                }
-            }
-
-            dbState.capital.push({
-                id: Date.now(),
-                investor, type, amount, date
+            window.appData.capitalLogs.push({
+                id: 'cap_' + Date.now(),
+                investor: investor,
+                type: type,
+                amount: amount,
+                date: date
             });
 
-            dbState.capital.sort((a, b) => new Date(b.date) - new Date(a.date));
-            persistData();
+            saveLocalData();
             document.getElementById('capAmount').value = '';
-            initDates();
         }
 
-        function renderCapital() {
-            const body = document.getElementById('capitalTableBody');
-            body.innerHTML = '';
-
-            if (dbState.capital.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-slate-500">لا توجد حركات رأس مال مسجلة</td></tr>`;
-                return;
+        function deleteCapitalLog(id) {
+            if (confirm('تأكيد حذف حركة رأس المال هذه؟')) {
+                window.appData.capitalLogs = window.appData.capitalLogs.filter(c => c.id !== id);
+                saveLocalData();
             }
+        }
 
-            dbState.capital.forEach(c => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/50 transition";
-                const isAdd = c.type === 'add';
-                tr.innerHTML = `
-                    <td class="p-3 font-mono text-xs">${formatDate(c.date)}</td>
-                    <td class="p-3 font-bold text-white">${c.investor}</td>
+        // Render Views
+        function renderAllViews() {
+            renderAccountsTable();
+            renderDynamicSnapshotInputs();
+            renderSnapshotsTable();
+            renderCustomers();
+            renderCapitalTable();
+            updateDashboardCards();
+            generateProfitReport();
+        }
+
+        function renderAccountsTable() {
+            const tbody = document.getElementById('accountsTableBody');
+            tbody.innerHTML = window.appData.accounts.map(acc => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-semibold text-white">${acc.name}</td>
+                    <td class="p-3"><span class="bg-slate-800 border border-slate-700 text-xs px-2.5 py-1 rounded-lg">${acc.type}</span></td>
                     <td class="p-3">
-                        <span class="${isAdd ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'} border px-2 py-0.5 rounded text-xs font-semibold">
-                            ${isAdd ? 'إضافة رأس مال (+)' : 'سحب رأس مال (-)'}
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${acc.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                            ${acc.status === 'active' ? 'نشط' : 'معطل'}
                         </span>
                     </td>
-                    <td class="p-3 font-bold ${isAdd ? 'text-blue-400' : 'text-amber-400'}">${c.amount.toFixed(2)}</td>
-                    <td class="p-3 no-print">
-                        <button type="button" onclick="deleteRecord('capital', ${c.id})" class="text-red-400 hover:text-red-300 p-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                        <button onclick="editAccount('${acc.id}')" class="text-indigo-400 hover:text-indigo-300 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteAccount('${acc.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderDynamicSnapshotInputs() {
+            const container = document.getElementById('dynamicSnapshotInputs');
+            const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
+
+            container.innerHTML = activeAccs.map(acc => `
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">${acc.name}</label>
+                    <input type="number" step="0.01" id="snap_acc_${acc.id}" min="0" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+            `).join('');
+        }
+
+        function renderSnapshotsTable() {
+            const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
+            const header = document.getElementById('snapshotsTableHeader');
+            const tbody = document.getElementById('snapshotsTableBody');
+
+            header.innerHTML = `
+                <tr>
+                    <th class="p-3">التاريخ والوقت</th>
+                    ${activeAccs.map(acc => `<th class="p-3">${acc.name}</th>`).join('')}
+                    <th class="p-3 font-bold text-emerald-400">الإجمالي</th>
+                    <th class="p-3 text-center no-print">إجراءات</th>
+                </tr>
+            `;
+
+            tbody.innerHTML = window.appData.snapshots.map(snap => {
+                let total = 0;
+                const cols = activeAccs.map(acc => {
+                    const val = snap.balances[acc.id] || 0;
+                    total += val;
+                    return `<td class="p-3 font-mono">${val.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>`;
+                }).join('');
+
+                return `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-mono text-xs text-slate-400">${new Date(snap.date).toLocaleString('ar-EG')}</td>
+                        ${cols}
+                        <td class="p-3 font-bold font-mono text-emerald-400">${total.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 text-center no-print">
+                            <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
                 `;
-                body.appendChild(tr);
-            });
+            }).join('');
         }
 
-        // --- Summary Cards ---
-        function updateSummaryCards() {
-            const latestSnap = dbState.snapshots[0];
-            const assets = latestSnap ? latestSnap.total : 0;
-            document.getElementById('totalAssetsCard').innerText = assets.toFixed(2);
+        function renderCustomers() {
+            const search = document.getElementById('customerSearch').value.toLowerCase();
+            const directoryBody = document.getElementById('customersDirectoryBody');
 
-            const capTotal = dbState.capital.reduce((acc, curr) => curr.type === 'add' ? acc + curr.amount : acc - curr.amount, 0);
-            document.getElementById('totalCapitalCard').innerText = capTotal.toFixed(2);
-
-            let usTotal = 0;
-            let themTotal = 0;
-            getCustomerBalances().forEach(c => {
-                usTotal += c.us;
-                themTotal += c.them;
-            });
-            const netCust = usTotal - themTotal;
-            document.getElementById('netCustomersCard').innerText = netCust.toFixed(2);
-            document.getElementById('customersUsCard').innerText = usTotal.toFixed(2);
-            document.getElementById('customersThemCard').innerText = themTotal.toFixed(2);
-        }
-
-        // --- Profit Engine ---
-        function calculatePeriodReport() {
-            const startVal = document.getElementById('reportStartDate').value;
-            const endVal = document.getElementById('reportEndDate').value;
-
-            if (!startVal || !endVal) return;
-
-            const startDate = new Date(startVal);
-            const endDate = new Date(endVal);
-
-            const startSnap = getClosestSnapshot(startDate);
-            const endSnap = getClosestSnapshot(endDate);
-
-            const startAssets = startSnap ? startSnap.total : 0;
-            const endAssets = endSnap ? endSnap.total : 0;
-
-            const startCustNet = getCustomerNetAtDate(startDate);
-            const endCustNet = getCustomerNetAtDate(endDate);
-
-            const totalStartNetAssets = startAssets + startCustNet;
-            const totalEndNetAssets = endAssets + endCustNet;
-
-            let additions = 0;
-            let withdrawals = 0;
-
-            dbState.capital.forEach(c => {
-                const d = new Date(c.date);
-                if (d >= startDate && d <= endDate) {
-                    if (c.type === 'add') additions += c.amount;
-                    else withdrawals += c.amount;
-                }
+            let custMap = {};
+            window.appData.customers.forEach(c => {
+                if (!custMap[c.name]) custMap[c.name] = 0;
+                custMap[c.name] += (c.type === 'us' ? c.amount : -c.amount);
             });
 
-            const netProfit = totalEndNetAssets - totalStartNetAssets - additions + withdrawals;
+            const filteredNames = Object.keys(custMap).filter(name => name.toLowerCase().includes(search));
 
-            document.getElementById('eqEndAssets').innerText = totalEndNetAssets.toFixed(2);
-            document.getElementById('eqStartAssets').innerText = totalStartNetAssets.toFixed(2);
-            document.getElementById('eqAdditions').innerText = additions.toFixed(2);
-            document.getElementById('eqWithdrawals').innerText = withdrawals.toFixed(2);
-            document.getElementById('eqNetProfit').innerText = netProfit.toFixed(2);
-            document.getElementById('calculatedProfitCard').innerText = netProfit.toFixed(2);
+            directoryBody.innerHTML = filteredNames.map(name => {
+                const balance = custMap[name];
+                const isUs = balance >= 0;
+                return `
+                    <tr class="hover:bg-slate-800/50 cursor-pointer" onclick="selectCustomer('${name}')">
+                        <td class="p-3 font-semibold text-white">${name}</td>
+                        <td class="p-3 font-mono font-bold ${isUs ? 'text-emerald-400' : 'text-red-400'}">${Math.abs(balance).toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                        <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${isUs ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${isUs ? 'له عندنا (علينا)' : 'عليه لنا (لنا)'}</span></td>
+                        <td class="p-3 text-center no-print"><button class="text-amber-400 hover:text-amber-300 text-xs"><i class="fa-solid fa-eye ml-1"></i> الكشف</button></td>
+                    </tr>
+                `;
+            }).join('');
 
-            distributeProfitToInvestors(startDate, endDate, netProfit);
+            if (selectedCustomerForStatement) {
+                selectCustomer(selectedCustomerForStatement);
+            }
         }
 
-        function getClosestSnapshot(targetDate) {
-            const eligible = dbState.snapshots.filter(s => new Date(s.date) <= targetDate);
-            if (eligible.length > 0) return eligible[0];
-            return dbState.snapshots[dbState.snapshots.length - 1] || null;
+        function selectCustomer(name) {
+            selectedCustomerForStatement = name;
+            document.getElementById('selectedCustName').innerText = name;
+            const container = document.getElementById('customerStatementLogs');
+            const logs = window.appData.customers.filter(c => c.name === name);
+
+            logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = logs.map(l => `
+                <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
+                    <div>
+                        <span class="font-bold text-xs ${l.type === 'us' ? 'text-emerald-400' : 'text-red-400'}">${l.type === 'us' ? 'لنا (+)' : 'علينا (-)'}</span>
+                        <p class="text-[10px] text-slate-500 font-mono">${new Date(l.date).toLocaleString('ar-EG')}</p>
+                    </div>
+                    <div class="flex items-center space-x-2 space-x-reverse">
+                        <span class="font-bold font-mono text-white">${l.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</span>
+                        <button onclick="deleteCustomerRecord('${l.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function getCustomerNetAtDate(targetDate) {
+        function renderCapitalTable() {
+            const tbody = document.getElementById('capitalTableBody');
+            tbody.innerHTML = window.appData.capitalLogs.map(c => `
+                <tr class="hover:bg-slate-800/50">
+                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(c.date).toLocaleString('ar-EG')}</td>
+                    <td class="p-3 font-semibold text-white">${c.investor}</td>
+                    <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
+                    <td class="p-3 font-mono font-bold text-white">${c.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                    <td class="p-3 no-print">
+                        <button onclick="deleteCapitalLog('${c.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDashboardCards() {
+            let latestAssets = 0;
+            if (window.appData.snapshots.length > 0) {
+                const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
+                Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
+            }
+            document.getElementById('totalAssetsCard').innerHTML = `${latestAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            let totalCap = 0;
+            window.appData.capitalLogs.forEach(c => {
+                totalCap += (c.type === 'add' ? c.amount : -c.amount);
+            });
+            document.getElementById('totalCapitalCard').innerHTML = `${totalCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
             let us = 0, them = 0;
-            dbState.customers.forEach(c => {
-                if (new Date(c.date) <= targetDate) {
-                    if (c.type === 'us') us += c.amount;
-                    else them += c.amount;
-                }
+            window.appData.customers.forEach(c => {
+                if (c.type === 'us') us += c.amount;
+                else them += c.amount;
             });
-            return us - them;
+            const netCust = us - them;
+            document.getElementById('netCustomersCard').innerHTML = `${netCust.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            document.getElementById('customersUsCard').innerText = us.toLocaleString('ar-EG');
+            document.getElementById('customersThemCard').innerText = them.toLocaleString('ar-EG');
         }
 
-        function distributeProfitToInvestors(startDate, endDate, netProfit) {
-            const tbody = document.getElementById('distributionTableBody');
-            tbody.innerHTML = '';
+        function generateProfitReport() {
+            const startInput = document.getElementById('reportStartDate').value;
+            const endInput = document.getElementById('reportEndDate').value;
 
-            const investorCapMap = {};
-
-            dbState.capital.forEach(c => {
-                if (!investorCapMap[c.investor]) investorCapMap[c.investor] = 0;
-                
-                const d = new Date(c.date);
-                if (d <= endDate) {
-                    if (c.type === 'add') investorCapMap[c.investor] += c.amount;
-                    else investorCapMap[c.investor] -= c.amount;
-                }
-            });
-
-            const totalCapInPeriod = Object.values(investorCapMap).reduce((a, b) => a + b, 0);
-
-            if (totalCapInPeriod <= 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-slate-500">لا يوجد رأس مال مسجل للمستثمرين في هذه الفترة</td></tr>`;
+            const snapshots = window.appData.snapshots;
+            if (snapshots.length < 2) {
+                document.getElementById('reportFormulaExplanation').innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتين رصيد على الأقل لحساب نتائج الفترة المحاسبية.</p>';
                 return;
             }
 
-            Object.keys(investorCapMap).forEach(investor => {
-                const cap = investorCapMap[investor];
-                if (cap <= 0) return;
+            const startSnap = startInput ? snapshots.find(s => s.date >= startInput) || snapshots[0] : snapshots[0];
+            const endSnap = endInput ? snapshots.slice().reverse().find(s => s.date <= endInput) || snapshots[snapshots.length - 1] : snapshots[snapshots.length - 1];
 
-                const ratio = cap / totalCapInPeriod;
-                const share = netProfit * ratio;
+            let startAssets = 0, endAssets = 0;
+            Object.values(startSnap.balances).forEach(v => startAssets += v);
+            Object.values(endSnap.balances).forEach(v => endAssets += v);
 
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/50 transition";
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-white">${investor}</td>
-                    <td class="p-3 font-mono">${cap.toFixed(2)} ج.م</td>
-                    <td class="p-3 font-mono text-indigo-400 font-semibold">${(ratio * 100).toFixed(2)}%</td>
-                    <td class="p-3 font-bold ${share >= 0 ? 'text-brand-400' : 'text-red-400'}">${share.toFixed(2)} ج.م</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+            let additions = 0, withdrawals = 0;
+            let investorCapMap = {};
 
-        // Global Delete
-        function deleteRecord(collection, id) {
-            if (confirm('هل أنت تأكيد تريد حذف هذا السجل نهائياً؟')) {
-                dbState[collection] = dbState[collection].filter(item => item.id !== id);
-                persistData();
-                if (collection === 'customers') {
-                    document.getElementById('customerStatementLogs').innerHTML = '<p class="text-slate-500 text-center py-8">اضغط على أي عميل لعرض سجل حركاته التاريخية بالكامل</p>';
-                    document.getElementById('selectedCustName').innerText = 'اختر عميلاً';
-                }
-            }
-        }
+            window.appData.capitalLogs.forEach(c => {
+                if (!investorCapMap[c.investor]) investorCapMap[c.investor] = { base: 0, add: 0, withdraw: 0 };
 
-        // Navigation Tabs
-        function switchTab(tabKey) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[id^="tab-"]').forEach(el => {
-                el.className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800";
-            });
-
-            document.getElementById(`content-${tabKey}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabKey}`).className = "px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse bg-brand-600 text-white";
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            const d = new Date(dateStr);
-            return d.toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        }
-
-        function exportJSONBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbState, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `Accounting_Backup_${new Date().toISOString().slice(0, 10)}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-        }
-
-        function importJSONBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const imported = JSON.parse(evt.target.result);
-                    if (imported && confirm('هل تريد استبدال كافة البيانات الحالية بالنسخة المسترجعة؟')) {
-                        dbState = imported;
-                        persistData();
-                        alert('تم استرجاع النسخة الاحتياطية بنجاح!');
+                if (c.date < startSnap.date) {
+                    investorCapMap[c.investor].base += (c.type === 'add' ? c.amount : -c.amount);
+                } else if (c.date >= startSnap.date && c.date <= endSnap.date) {
+                    if (c.type === 'add') {
+                        additions += c.amount;
+                        investorCapMap[c.investor].add += c.amount;
+                    } else {
+                        withdrawals += c.amount;
+                        investorCapMap[c.investor].withdraw += c.amount;
                     }
-                } catch(err) {
-                    alert('ملف النسخة الاحتياطية غير صالحة!');
                 }
-            };
-            reader.readAsText(file);
+            });
+
+            const netProfit = endAssets - startAssets - additions + withdrawals;
+
+            document.getElementById('calculatedProfitCard').innerHTML = `${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+
+            document.getElementById('reportFormulaExplanation').innerHTML = `
+                <p>• أصول بداية الفترة: <strong class="text-white">${startAssets.toLocaleString('ar-EG')}</strong> | أصول نهاية الفترة: <strong class="text-white">${endAssets.toLocaleString('ar-EG')}</strong></p>
+                <p>• إضافات رأس المال: <strong class="text-blue-400">${additions.toLocaleString('ar-EG')}</strong> | مسحوبات رأس المال: <strong class="text-red-400">${withdrawals.toLocaleString('ar-EG')}</strong></p>
+                <p class="text-brand-400 font-bold mt-1">الربح الصافي المحسوب للفترة = ${netProfit.toLocaleString('ar-EG')} ج.م</p>
+            `;
+
+            let totalEffectiveCapital = 0;
+            Object.keys(investorCapMap).forEach(inv => {
+                const data = investorCapMap[inv];
+                const effective = data.base + data.add - data.withdraw;
+                totalEffectiveCapital += Math.max(0, effective);
+            });
+
+            const tbody = document.getElementById('investorProfitBody');
+            tbody.innerHTML = Object.keys(investorCapMap).map(inv => {
+                const data = investorCapMap[inv];
+                const effective = Math.max(0, data.base + data.add - data.withdraw);
+                const shareRatio = totalEffectiveCapital > 0 ? (effective / totalEffectiveCapital) : 0;
+                const profitShare = netProfit * shareRatio;
+
+                return `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-semibold text-white">${inv}</td>
+                        <td class="p-3 font-mono">${data.base.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-blue-400">+${data.add.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-red-400">-${data.withdraw.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono font-bold">${effective.toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-indigo-400">${(shareRatio * 100).toFixed(2)}%</td>
+                        <td class="p-3 font-mono font-bold text-brand-400">${profitShare.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                    </tr>
+                `;
+            }).join('');
         }
+
+        window.onload = function() {
+            const now = new Date().toISOString().slice(0, 16);
+            if (document.getElementById('snapDate')) document.getElementById('snapDate').value = now;
+            if (document.getElementById('custDate')) document.getElementById('custDate').value = now;
+            if (document.getElementById('capDate')) document.getElementById('capDate').value = now;
+
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+            }
+
+            if (window.initCloudSync) {
+                window.initCloudSync();
+            } else {
+                renderAllViews();
+            }
+        };
     </script>
 </body>
 </html>
-```
-
-### طريقة تفعيل الربط على جهازك الثاني:
-1. افتح الموقع من الجهاز الأول (مثلاً الكمبيوتر) واكتب رمز المزامنة الخاص بك فوق (مثال: `MBS`) واضغط **ربط الجهازين**.
-2. افتح الموقع من الجهاز الثاني (مثلاً الهاتف)، واكتب نفس الرمز بالضبط (`MBS`) واضغط **ربط الجهازين**.
-3. ستنزل كافة البيانات فوراً على الجهاز الثاني، وأي تعديل أو إدخال جديد سيتحدث تلقائياً على الشاشتين خلال ثوانٍ.
-```
