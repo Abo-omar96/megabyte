@@ -91,14 +91,14 @@
                 <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-xs text-slate-400 font-medium">إجمالي الأصول (بالعادلة الجديدة)</p>
+                            <p class="text-xs text-slate-400 font-medium">صافي الأصول التشغيلية</p>
                             <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2 font-mono">0.00 <span class="text-xs text-slate-400 font-normal">ج.م</span></h3>
                         </div>
                         <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
                             <i class="fa-solid fa-vault text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-3">(لنا + الصناديق) − (علينا + رأس المال)</p>
+                    <p class="text-[11px] text-slate-500 mt-3">الصناديق + لنا عند العملاء − علينا للعملاء</p>
                 </div>
 
                 <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
@@ -284,6 +284,7 @@
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
                                 <select id="custType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                                     <option value="repayment">تسديد من العميل (خصم الدين)</option>
+                                    <option value="refund">سداد للعميل (خصم المبلغ المستحق له)</option>
                                     <option value="us">مبلغ لنا عند العميل (+ دين عليه)</option>
                                     <option value="them">مبلغ علينا للعميل (- له عندنا)</option>
                                 </select>
@@ -334,7 +335,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                             <div>
                                 <h3 class="text-lg font-bold text-white">تسجيل المصروفات التشغيلية</h3>
-                                <p class="text-xs text-slate-400">سجل مصروفاتك اليومية لتخصم من الأرباح تلقائياً</p>
+                                <p class="text-xs text-slate-400">للتوثيق والمراجعة؛ لا تُخصم ثانيةً ما دامت لقطة الرصيد تشمل أثرها النقدي.</p>
                             </div>
                             <button type="button" onclick="exportToExcel('expensesTable', 'المصروفات')" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print">
                                 <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير لـ Excel
@@ -466,7 +467,7 @@
                         <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
                             <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح المبسطة</h4>
                             <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto dir-ltr text-right">
-                                صافي الأصول = (لنا عند العملاء + الصناديق) − (علينا للعملاء + رأس المال)
+                                الربح = (صافي الأصول التشغيلية في النهاية − البداية) − الإضافات الرأسمالية + المسحوبات
                             </div>
                             <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1"></div>
                         </div>
@@ -502,7 +503,7 @@
     <!-- Firebase Integration Engine -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
@@ -519,47 +520,25 @@
 
         window.db = db;
         window.dbRef = ref;
-        window.dbSet = set;
-        window.dbOnValue = onValue;
-
-        window.initCloudSync = function() {
-            const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
-            document.getElementById('roomIdInput').value = roomId;
-
-            const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
-
-            window.dbOnValue(syncRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    window.appData = {
-                        accounts: data.accounts || defaultAccounts,
-                        snapshots: data.snapshots || [],
-                        customers: data.customers || [],
-                        capitalLogs: data.capitalLogs || [],
-                        expenses: data.expenses || []
-                    };
-                    localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
-                } else {
-                    window.pushDataToCloud();
-                }
-                renderAllViews();
-                document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-                document.getElementById('syncText').innerText = "متصل سحابياً (" + roomId + ")";
-                document.getElementById('syncStatus').className = "flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300";
-            }, (error) => {
-                console.error("Firebase Read Error:", error);
-                document.getElementById('syncDot').className = "w-2 h-2 rounded-full bg-red-500";
-                document.getElementById('syncText').innerText = "خطأ في الاتصال";
-            });
+        let stopListening = null, activeRoom = null, cloudReady = false;
+        const cleanRoom = value => value.trim().replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64);
+        window.pushDataToCloud = async function() {
+            if (!cloudReady || !activeRoom) return;
+            try {
+                const result = await runTransaction(ref(db, 'rooms/' + activeRoom), current => window.mergeStates(current, window.appData));
+                if (result.committed && result.snapshot.val()) window.applyState(result.snapshot.val(), false);
+            } catch (error) { setSyncStatus(false, 'تعذّر حفظ التغييرات سحابياً'); console.error(error); }
         };
-
-        window.pushDataToCloud = function() {
-            const roomId = localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT';
-            const syncRef = window.dbRef(window.db, 'rooms/' + roomId);
-            const cleanData = JSON.parse(JSON.stringify(window.appData));
-            window.dbSet(syncRef, cleanData).catch(err => {
-                console.error("Cloud push failed:", err);
-            });
+        window.initCloudSync = function() {
+            const stored = cleanRoom(localStorage.getItem('app_sync_room_id') || 'MEGABYTE_DEFAULT') || 'MEGABYTE_DEFAULT';
+            activeRoom = stored; cloudReady = true;
+            document.getElementById('roomIdInput').value = stored;
+            if (stopListening) stopListening();
+            stopListening = onValue(ref(db, 'rooms/' + stored), snap => {
+                if (snap.exists()) window.applyState(snap.val(), false);
+                else window.pushDataToCloud();
+                setSyncStatus(true, 'متصل سحابياً (' + stored + ')');
+            }, error => { setSyncStatus(false, 'خطأ في الاتصال'); console.error(error); });
         };
     </script>
 
@@ -1166,5 +1145,6 @@
             }
         };
     </script>
+    <script src="./accounting-app-fixed.js"></script>
 </body>
 </html>
