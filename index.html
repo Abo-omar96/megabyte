@@ -47,15 +47,22 @@
             </div>
             <div>
                 <h2 class="text-2xl font-bold text-white">تسجيل الدخول للنظام</h2>
-                <p class="text-xs text-slate-400 mt-1">رمز الدخول الافتراضي: <span class="text-brand-500 font-mono">123456</span></p>
+                <p class="text-xs text-slate-400 mt-1">حساب المدير الافتراضي: <span class="text-brand-500 font-mono">admin</span> / السر: <span class="text-brand-500 font-mono">123456</span></p>
             </div>
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="password" id="passInput" placeholder="أدخل كلمة السر" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-lg tracking-widest text-white focus:outline-none focus:border-brand-500 transition">
-                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-brand-600/20">
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-right">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">اسم المستخدم</label>
+                    <input type="text" id="loginUser" required placeholder="admin أو cashier" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">كلمة السر</label>
+                    <input type="password" id="passInput" required placeholder="أدخل كلمة السر" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-brand-600/20 mt-2">
                     <i class="fa-solid fa-key ml-2"></i> تأكيد الدخول
                 </button>
             </form>
-            <p id="loginError" class="text-red-400 text-xs hidden"><i class="fa-solid fa-triangle-exclamation ml-1"></i> كلمة السر غير صحيحة!</p>
+            <p id="loginError" class="text-red-400 text-xs hidden"><i class="fa-solid fa-triangle-exclamation ml-1"></i> اسم المستخدم أو كلمة السر غير صحيحة!</p>
         </div>
     </div>
 
@@ -70,7 +77,7 @@
                     </div>
                     <div>
                         <h1 class="font-bold text-lg text-white leading-none">نظام الحسابات المحاسبي</h1>
-                        <p class="text-xs text-slate-400 mt-1">إدارة الحسابات وتوزيع الأرباح المبسط</p>
+                        <p id="currentUserBadge" class="text-xs text-emerald-400 mt-1 font-semibold">المستخدم الحالي: مدير النظام</p>
                     </div>
                 </div>
 
@@ -81,8 +88,8 @@
                         <span id="syncText">جاري الاتصال بالسحابة...</span>
                     </div>
 
-                    <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700/60 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs transition" title="تغيير كلمة السر">
-                        <i class="fa-solid fa-key"></i>
+                    <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700/60 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs transition" title="إدارة المستخدمين وكلمة السر">
+                        <i class="fa-solid fa-users-gear"></i> الإعدادات
                     </button>
 
                     <button type="button" onclick="logout()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs transition">
@@ -187,10 +194,10 @@
                     <button type="button" onclick="switchTab('expenses')" id="tab-expenses" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
                         <i class="fa-solid fa-receipt"></i> <span>المصروفات</span>
                     </button>
-                    <button type="button" onclick="switchTab('capital')" id="tab-capital" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                    <button type="button" onclick="switchTab('capital')" id="tab-capital" class="admin-only px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
                         <i class="fa-solid fa-hand-holding-dollar"></i> <span>رأس المال</span>
                     </button>
-                    <button type="button" onclick="switchTab('reports')" id="tab-reports" class="px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                    <button type="button" onclick="switchTab('reports')" id="tab-reports" class="admin-only px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
                         <i class="fa-solid fa-chart-pie"></i> <span>الأرباح والتوزيع</span>
                     </button>
                 </div>
@@ -207,7 +214,7 @@
                         </div>
 
                         <!-- Add / Edit Account Form -->
-                        <form onsubmit="saveAccountConfig(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                        <form onsubmit="saveAccountConfig(event)" class="admin-only-form grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
                             <input type="hidden" id="accEditId" value="">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">اسم الحساب / الماكينة</label>
@@ -244,7 +251,7 @@
                                         <th class="p-3">اسم الحساب</th>
                                         <th class="p-3">النوع</th>
                                         <th class="p-3">الحالة</th>
-                                        <th class="p-3 text-center no-print">إجراءات</th>
+                                        <th class="p-3 text-center no-print admin-only-th">إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody id="accountsTableBody" class="divide-y divide-slate-800"></tbody>
@@ -289,7 +296,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                             <div>
                                 <h3 class="text-lg font-bold text-white">قاعدة بيانات العملاء والديون</h3>
-                                <p class="text-xs text-slate-400">تسجيل مبالغ (لنا / علينا / تسديد) — <strong class="text-amber-400">اضغط على أي عميل في الجدول بالأسفل لتعبئة بياناته فوق فوراً وتسديد حسابه!</strong></p>
+                                <p class="text-xs text-slate-400">تسجيل مبالغ (لنا / علينا / تسديد) — <strong class="text-amber-400">اضغط على أي عميل لتعبئة بياناته فوق لتسديد حسابه فوراً!</strong></p>
                             </div>
                             <div class="relative min-w-[240px]">
                                 <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
@@ -320,7 +327,7 @@
                                 <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
                             <div class="md:col-span-4 flex justify-between items-center pt-1">
-                                <span id="quickAlertMsg" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل، يمكنك إدخال مبلغ التسديد ثم الضغط على حفظ.</span>
+                                <span id="quickAlertMsg" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل، أدخل مبلغ التسديد واضغط حفظ.</span>
                                 <button type="submit" id="custSubmitBtn" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition shadow-lg shadow-amber-600/20 mr-auto">
                                     <i class="fa-solid fa-user-plus ml-1"></i> تسجيل الحركة / التسديد
                                 </button>
@@ -371,7 +378,7 @@
                         <form onsubmit="saveExpense(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">بند المصروف</label>
-                                <input type="text" id="expTitle" required placeholder="مثال: فاتورة كهرباء، إيجار..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <input type="text" id="expTitle" required placeholder="مثال: كهرباء، إيجار..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
@@ -403,7 +410,7 @@
                         </div>
                     </div>
 
-                    <!-- Tab 4: Capital Transactions -->
+                    <!-- Tab 4: Capital Transactions (Admin Only) -->
                     <div id="content-capital" class="tab-content space-y-6 hidden">
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                             <div>
@@ -455,7 +462,7 @@
                         </div>
                     </div>
 
-                    <!-- Tab 5: Profit Reports & Share Distribution -->
+                    <!-- Tab 5: Profit Reports & Share Distribution (Admin Only) -->
                     <div id="content-reports" class="tab-content space-y-6 hidden">
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                             <div>
@@ -526,18 +533,22 @@
         </footer>
     </div>
 
-    <!-- Password Change Modal -->
+    <!-- Password / Users Management Modal -->
     <div id="changePassModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4">
-            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-key text-brand-500 ml-1"></i> تغيير كلمة السر</h3>
-            <form onsubmit="saveNewPassword(event)" class="space-y-3">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-users-gear text-brand-500 ml-1"></i> إعدادات الأمان وكلمات السر</h3>
+            <form onsubmit="saveNewCredentials(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">كلمة السر الجديدة</label>
-                    <input type="password" id="newPassInput" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">كلمة سر المدير (Admin)</label>
+                    <input type="password" id="adminPassInput" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">كلمة سر الكاشير (Cashier)</label>
+                    <input type="password" id="cashierPassInput" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div class="flex justify-end space-x-2 space-x-reverse pt-2">
                     <button type="button" onclick="toggleChangePassModal()" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">إلغاء</button>
-                    <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">حفظ</button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">حفظ التغييرات</button>
                 </div>
             </form>
         </div>
@@ -576,7 +587,8 @@
                 const data = snapshot.val();
                 if (data) {
                     window.appData = {
-                        password: data.password || '123456',
+                        adminPass: data.adminPass || '123456',
+                        cashierPass: data.cashierPass || '123456',
                         accounts: data.accounts || defaultAccounts,
                         snapshots: data.snapshots || [],
                         customers: data.customers || [],
@@ -619,7 +631,8 @@
 
         let localRaw = localStorage.getItem('app_accounting_db');
         window.appData = localRaw ? JSON.parse(localRaw) : {
-            password: '123456',
+            adminPass: '123456',
+            cashierPass: '123456',
             accounts: defaultAccounts,
             snapshots: [],
             customers: [],
@@ -627,51 +640,90 @@
             expenses: []
         };
 
+        if (!window.appData.adminPass) window.appData.adminPass = '123456';
+        if (!window.appData.cashierPass) window.appData.cashierPass = '123456';
         if (!window.appData.accounts) window.appData.accounts = defaultAccounts;
         if (!window.appData.snapshots) window.appData.snapshots = [];
         if (!window.appData.customers) window.appData.customers = [];
         if (!window.appData.capitalLogs) window.appData.capitalLogs = [];
         if (!window.appData.expenses) window.appData.expenses = [];
 
+        let currentRole = sessionStorage.getItem('userRole') || '';
         let selectedCustomerForStatement = null;
+
+        function formatNum(val) {
+            return Number(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
 
         function saveLocalData() {
             localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
-            if (window.pushDataToCloud) {
-                window.pushDataToCloud();
-            }
+            if (window.pushDataToCloud) window.pushDataToCloud();
             renderAllViews();
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            const input = document.getElementById('passInput').value;
-            if (input === window.appData.password) {
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
-                sessionStorage.setItem('isLoggedIn', 'true');
+            const username = document.getElementById('loginUser').value.trim().toLowerCase();
+            const pass = document.getElementById('passInput').value;
+
+            if (username === 'admin' && pass === window.appData.adminPass) {
+                currentRole = 'admin';
+            } else if (username === 'cashier' && pass === window.appData.cashierPass) {
+                currentRole = 'cashier';
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
+                return;
+            }
+
+            sessionStorage.setItem('userRole', currentRole);
+            applyRolePermissions();
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
+        }
+
+        function applyRolePermissions() {
+            const badge = document.getElementById('currentUserBadge');
+            const adminElements = document.querySelectorAll('.admin-only');
+
+            if (currentRole === 'cashier') {
+                if (badge) badge.innerText = "المستخدم الحالي: كاشير (صلاحيات محدودة)";
+                adminElements.forEach(el => el.classList.add('hidden'));
+                // إذا كان في تبويب غير مصرح به، انقله للعملاء
+                const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                if (activeTab && (activeTab.id === 'content-capital' || activeTab.id === 'content-reports')) {
+                    switchTab('customers');
+                }
+            } else {
+                if (badge) badge.innerText = "المستخدم الحالي: مدير النظام (صلاحيات كاملة)";
+                adminElements.forEach(el => el.classList.remove('hidden'));
             }
         }
 
         function logout() {
-            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userRole');
             location.reload();
         }
 
         function toggleChangePassModal() {
+            if (currentRole !== 'admin') {
+                alert('عذراً، تعديل كلمات السر متاح لمدير النظام (Admin) فقط.');
+                return;
+            }
+            document.getElementById('adminPassInput').value = window.appData.adminPass;
+            document.getElementById('cashierPassInput').value = window.appData.cashierPass;
             document.getElementById('changePassModal').classList.toggle('hidden');
         }
 
-        function saveNewPassword(e) {
+        function saveNewCredentials(e) {
             e.preventDefault();
-            const newPass = document.getElementById('newPassInput').value;
-            if (newPass) {
-                window.appData.password = newPass;
+            const adminP = document.getElementById('adminPassInput').value;
+            const cashierP = document.getElementById('cashierPassInput').value;
+            if (adminP && cashierP) {
+                window.appData.adminPass = adminP;
+                window.appData.cashierPass = cashierP;
                 saveLocalData();
                 toggleChangePassModal();
-                alert('تم تغيير كلمة السر بنجاح');
+                alert('تم تحديث كلمات السر بنجاح');
             }
         }
 
@@ -689,6 +741,10 @@
         }
 
         function switchTab(tabId) {
+            if (currentRole === 'cashier' && (tabId === 'capital' || tabId === 'reports')) {
+                alert('غير مسموح للكاشير بالدخول لهذه الصفحة.');
+                return;
+            }
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('[id^="tab-"]').forEach(el => {
                 el.classList.remove('bg-brand-600', 'text-white');
@@ -705,6 +761,7 @@
 
         function saveAccountConfig(e) {
             e.preventDefault();
+            if (currentRole !== 'admin') return;
             const id = document.getElementById('accEditId').value;
             const name = document.getElementById('accName').value.trim();
             const type = document.getElementById('accType').value;
@@ -712,11 +769,7 @@
 
             if (id) {
                 const acc = window.appData.accounts.find(a => a.id === id);
-                if (acc) {
-                    acc.name = name;
-                    acc.type = type;
-                    acc.status = status;
-                }
+                if (acc) { acc.name = name; acc.type = type; acc.status = status; }
             } else {
                 window.appData.accounts.push({ id: 'acc_' + Date.now(), name: name, type: type, status: status });
             }
@@ -725,6 +778,7 @@
         }
 
         function editAccount(id) {
+            if (currentRole !== 'admin') return;
             const acc = window.appData.accounts.find(a => a.id === id);
             if (acc) {
                 document.getElementById('accEditId').value = acc.id;
@@ -744,7 +798,8 @@
         }
 
         function deleteAccount(id) {
-            if (confirm('هل أنت تأكد من حذف هذا الحساب؟')) {
+            if (currentRole !== 'admin') return;
+            if (confirm('تأكيد الحذف؟')) {
                 window.appData.accounts = window.appData.accounts.filter(a => a.id !== id);
                 saveLocalData();
             }
@@ -773,7 +828,7 @@
         }
 
         function deleteSnapshot(id) {
-            if (confirm('هل ترغب في حذف لقطة الرصيد هذه؟')) {
+            if (confirm('تأكيد الحذف؟')) {
                 window.appData.snapshots = window.appData.snapshots.filter(s => s.id !== id);
                 saveLocalData();
             }
@@ -792,7 +847,7 @@
             saveLocalData();
             document.getElementById('custAmount').value = '';
             document.getElementById('quickAlertMsg').classList.add('hidden');
-            alert('تم تسجيل الحركة/التسديد بنجاح للعميل: ' + name);
+            alert('تم تسجيل العملية بنجاح للعميل: ' + name);
         }
 
         function deleteCustomerRecord(id) {
@@ -818,7 +873,7 @@
         }
 
         function deleteExpense(id) {
-            if (confirm('تأكيد حذف المصروف؟')) {
+            if (confirm('تأكيد الحذف؟')) {
                 window.appData.expenses = window.appData.expenses.filter(e => e.id !== id);
                 saveLocalData();
             }
@@ -826,6 +881,7 @@
 
         function saveCapitalTransaction(e) {
             e.preventDefault();
+            if (currentRole !== 'admin') return;
             const investor = document.getElementById('capInvestor').value.trim();
             const type = document.getElementById('capType').value;
             const amount = parseFloat(document.getElementById('capAmount').value) || 0;
@@ -851,7 +907,8 @@
         }
 
         function deleteCapitalLog(id) {
-            if (confirm('تأكيد حذف حركة رأس المال؟')) {
+            if (currentRole !== 'admin') return;
+            if (confirm('تأكيد الحذف؟')) {
                 window.appData.capitalLogs = window.appData.capitalLogs.filter(c => c.id !== id);
                 saveLocalData();
             }
@@ -872,7 +929,7 @@
             renderExpensesTable();
             renderCapitalTable();
             updateDashboardCards();
-            generateProfitReport();
+            if (currentRole === 'admin') generateProfitReport();
         }
 
         function renderAccountsTable() {
@@ -887,12 +944,13 @@
                             ${acc.status === 'active' ? 'نشط' : 'معطل'}
                         </span>
                     </td>
-                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                    <td class="p-3 text-center no-print admin-only space-x-2 space-x-reverse">
                         <button onclick="editAccount('${acc.id}')" class="text-indigo-400 hover:text-indigo-300 p-1"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="deleteAccount('${acc.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
+            applyRolePermissions();
         }
 
         function renderDynamicSnapshotInputs() {
@@ -931,15 +989,15 @@
                 const cols = activeAccs.map(acc => {
                     const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
                     total += val;
-                    return `<td class="p-3 font-mono">${val.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>`;
+                    return `<td class="p-3 font-mono">${formatNum(val)}</td>`;
                 }).join('');
 
                 let profitDiffText = '-';
                 if (prevSnapTotal !== null) {
                     const diff = total - prevSnapTotal;
                     profitDiffText = diff >= 0 
-                        ? `<span class="text-emerald-400 font-bold font-mono">+${diff.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</span>`
-                        : `<span class="text-red-400 font-bold font-mono">${diff.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</span>`;
+                        ? `<span class="text-emerald-400 font-bold font-mono">+${formatNum(diff)} ج.م</span>`
+                        : `<span class="text-red-400 font-bold font-mono">${formatNum(diff)} ج.م</span>`;
                 } else {
                     profitDiffText = `<span class="text-slate-500 text-xs">بداية الحسابات</span>`;
                 }
@@ -948,9 +1006,9 @@
 
                 return `
                     <tr class="hover:bg-slate-800/50">
-                        <td class="p-3 font-mono text-xs text-slate-400">${new Date(snap.date).toLocaleString('ar-EG')}</td>
+                        <td class="p-3 font-mono text-xs text-slate-400">${new Date(snap.date).toLocaleString('en-US')}</td>
                         ${cols}
-                        <td class="p-3 font-bold font-mono text-emerald-400">${total.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td>
                         <td class="p-3 font-mono">${profitDiffText}</td>
                         <td class="p-3 text-center no-print">
                             <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
@@ -984,7 +1042,7 @@
                             <i class="fa-solid fa-hand-pointer text-amber-500 text-xs"></i>
                             <span>${name}</span>
                         </td>
-                        <td class="p-3 font-mono font-bold ${isDebtOnCustomer ? 'text-emerald-400' : 'text-red-400'}">${Math.abs(netBalance).toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                        <td class="p-3 font-mono font-bold ${isDebtOnCustomer ? 'text-emerald-400' : 'text-red-400'}">${formatNum(Math.abs(netBalance))} ج.م</td>
                         <td class="p-3">
                             <span class="text-xs px-2.5 py-1 rounded-full ${isDebtOnCustomer ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
                                 ${isDebtOnCustomer ? 'مبلغ لنا عنده (دين)' : 'مبلغ له عندنا'}
@@ -998,17 +1056,14 @@
             if (selectedCustomerForStatement) selectCustomer(selectedCustomerForStatement);
         }
 
-        // تحسين دالة اختيار العميل لتعبئة اسمه أوتوماتيكياً بالنموذج العلوي للتعديل والسداد فوراً
         function selectCustomer(name) {
             selectedCustomerForStatement = name;
-            
-            // تعبئة الاسم بالنموذج فوق تلقائياً
             const custNameInput = document.getElementById('custName');
             const custTypeSelect = document.getElementById('custType');
             const quickAlert = document.getElementById('quickAlertMsg');
             
             if (custNameInput) custNameInput.value = name;
-            if (custTypeSelect) custTypeSelect.value = 'repayment'; // التعيين الافتراضي لعملية التسديد
+            if (custTypeSelect) custTypeSelect.value = 'repayment';
             if (quickAlert) quickAlert.classList.remove('hidden');
 
             const nameEl = document.getElementById('selectedCustName');
@@ -1028,10 +1083,10 @@
                     <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
                         <div>
                             <span class="font-bold text-xs ${badgeClass}">${badgeText}</span>
-                            <p class="text-[10px] text-slate-500 font-mono">${new Date(l.date).toLocaleString('ar-EG')}</p>
+                            <p class="text-[10px] text-slate-500 font-mono">${new Date(l.date).toLocaleString('en-US')}</p>
                         </div>
                         <div class="flex items-center space-x-2 space-x-reverse">
-                            <span class="font-bold font-mono text-white">${l.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</span>
+                            <span class="font-bold font-mono text-white">${formatNum(l.amount)} ج.م</span>
                             <button onclick="deleteCustomerRecord('${l.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
@@ -1044,9 +1099,9 @@
             if (!tbody) return;
             tbody.innerHTML = window.appData.expenses.map(e => `
                 <tr class="hover:bg-slate-800/50">
-                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(e.date).toLocaleString('ar-EG')}</td>
+                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(e.date).toLocaleString('en-US')}</td>
                     <td class="p-3 font-semibold text-white">${e.title}</td>
-                    <td class="p-3 font-mono font-bold text-red-400">${e.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                    <td class="p-3 font-mono font-bold text-red-400">${formatNum(e.amount)} ج.م</td>
                     <td class="p-3 text-center no-print">
                         <button onclick="deleteExpense('${e.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -1059,10 +1114,10 @@
             if (!tbody) return;
             tbody.innerHTML = window.appData.capitalLogs.map(c => `
                 <tr class="hover:bg-slate-800/50">
-                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(c.date).toLocaleString('ar-EG')}</td>
+                    <td class="p-3 font-mono text-xs text-slate-400">${new Date(c.date).toLocaleString('en-US')}</td>
                     <td class="p-3 font-semibold text-white">${c.investor}</td>
                     <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
-                    <td class="p-3 font-mono font-bold text-white">${c.amount.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                    <td class="p-3 font-mono font-bold text-white">${formatNum(c.amount)} ج.م</td>
                     <td class="p-3 no-print">
                         <button onclick="deleteCapitalLog('${c.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -1076,11 +1131,11 @@
                 const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
                 if (latestSnap.balances) Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
             }
-            document.getElementById('totalAssetsCard').innerHTML = `${latestAssets.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            document.getElementById('totalAssetsCard').innerHTML = `${formatNum(latestAssets)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
             let totalCap = 0;
             window.appData.capitalLogs.forEach(c => totalCap += (c.type === 'add' ? c.amount : -c.amount));
-            document.getElementById('totalCapitalCard').innerHTML = `${totalCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            document.getElementById('totalCapitalCard').innerHTML = `${formatNum(totalCap)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
             let us = 0, them = 0;
             window.appData.customers.forEach(c => {
@@ -1088,13 +1143,14 @@
                 else them += c.amount;
             });
             const netCust = us - them;
-            document.getElementById('netCustomersCard').innerHTML = `${netCust.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            document.getElementById('netCustomersCard').innerHTML = `${formatNum(netCust)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
             
-            document.getElementById('customersUsCard').innerText = us.toLocaleString('ar-EG');
-            document.getElementById('customersThemCard').innerText = them.toLocaleString('ar-EG');
+            document.getElementById('customersUsCard').innerText = formatNum(us);
+            document.getElementById('customersThemCard').innerText = formatNum(them);
         }
 
         function generateProfitReport() {
+            if (currentRole !== 'admin') return;
             const startInput = document.getElementById('reportStartDate')?.value;
             const endInput = document.getElementById('reportEndDate')?.value;
 
@@ -1134,13 +1190,13 @@
 
             const netProfit = (endAssets - startAssets - additions + withdrawals) - totalPeriodExpenses;
 
-            document.getElementById('calculatedProfitCard').innerHTML = `${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
+            document.getElementById('calculatedProfitCard').innerHTML = `${formatNum(netProfit)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
             if (expEl) {
                 expEl.innerHTML = `
-                    <p>• الفارق المالي للأرصدة: <strong class="text-emerald-400">${(endAssets - startAssets).toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong></p>
-                    <p>• إجمالي المصروفات التشغيلية المخصومة: <strong class="text-red-400">-${totalPeriodExpenses.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</strong></p>
-                    <p class="text-brand-400 font-bold mt-1">صافي الأرباح القابلة للتوزيع = ${netProfit.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</p>
+                    <p>• الفارق المالي للأرصدة: <strong class="text-emerald-400">${formatNum(endAssets - startAssets)} ج.م</strong></p>
+                    <p>• إجمالي المصروفات التشغيلية المخصومة: <strong class="text-red-400">-${formatNum(totalPeriodExpenses)} ج.م</strong></p>
+                    <p class="text-brand-400 font-bold mt-1">صافي الأرباح القابلة للتوزيع = ${formatNum(netProfit)} ج.م</p>
                 `;
             }
 
@@ -1161,12 +1217,12 @@
                 return `
                     <tr class="hover:bg-slate-800/50">
                         <td class="p-3 font-semibold text-white">${inv}</td>
-                        <td class="p-3 font-mono">${data.base.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
-                        <td class="p-3 font-mono text-blue-400">+${data.add.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
-                        <td class="p-3 font-mono text-red-400">-${data.withdraw.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
-                        <td class="p-3 font-mono font-bold">${effectiveCap.toLocaleString('ar-EG', {minimumFractionDigits: 2})}</td>
+                        <td class="p-3 font-mono">${formatNum(data.base)}</td>
+                        <td class="p-3 font-mono text-blue-400">+${formatNum(data.add)}</td>
+                        <td class="p-3 font-mono text-red-400">-${formatNum(data.withdraw)}</td>
+                        <td class="p-3 font-mono font-bold">${formatNum(effectiveCap)}</td>
                         <td class="p-3 font-mono text-indigo-400">${(shareRatio * 100).toFixed(2)}%</td>
-                        <td class="p-3 font-mono font-bold text-brand-400">${profitShare.toLocaleString('ar-EG', {minimumFractionDigits: 2})} ج.م</td>
+                        <td class="p-3 font-mono font-bold text-brand-400">${formatNum(profitShare)} ج.م</td>
                     </tr>
                 `;
             }).join('');
@@ -1179,7 +1235,9 @@
             if (document.getElementById('expDate')) document.getElementById('expDate').value = now;
             if (document.getElementById('capDate')) document.getElementById('capDate').value = now;
 
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            if (sessionStorage.getItem('userRole')) {
+                currentRole = sessionStorage.getItem('userRole');
+                applyRolePermissions();
                 document.getElementById('loginOverlay').classList.add('hidden');
                 document.getElementById('appContent').classList.remove('blur-md', 'pointer-events-none');
             }
