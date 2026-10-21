@@ -98,7 +98,7 @@
                             <i class="fa-solid fa-vault text-xl"></i>
                         </div>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-3">(الصناديق + لنا عند العملاء) − علينا للعملاء</p>
+                    <p class="text-[11px] text-slate-500 mt-3">(لنا + الصناديق) − (علينا + رأس المال)</p>
                 </div>
 
                 <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl relative overflow-hidden">
@@ -466,7 +466,7 @@
                         <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
                             <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح المبسطة</h4>
                             <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto dir-ltr text-right">
-                                صافي الربح = (إجمالي الصناديق + ديون لنا) − (ديون علينا + رأس المال + المصروفات)
+                                صافي الأصول = (لنا عند العملاء + الصناديق) − (علينا للعملاء + رأس المال)
                             </div>
                             <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1"></div>
                         </div>
@@ -835,6 +835,37 @@
             `).join('');
         }
 
+        function getCustomersBalancesAtDate(targetDate) {
+            let custMap = {};
+            window.appData.customers.forEach(c => {
+                if (c.date <= targetDate) {
+                    if (!custMap[c.name]) custMap[c.name] = 0;
+                    if (c.type === 'us') custMap[c.name] += c.amount;
+                    else if (c.type === 'them') custMap[c.name] -= c.amount;
+                    else if (c.type === 'repayment') custMap[c.name] -= c.amount;
+                }
+            });
+
+            let totalUs = 0;
+            let totalThem = 0;
+            Object.values(custMap).forEach(net => {
+                if (net > 0) totalUs += net;
+                else if (net < 0) totalThem += Math.abs(net);
+            });
+
+            return { totalUs, totalThem, netCust: totalUs - totalThem };
+        }
+
+        function getTotalCapitalAtDate(targetDate) {
+            let totalCap = 0;
+            window.appData.capitalLogs.forEach(c => {
+                if (c.date <= targetDate) {
+                    totalCap += (c.type === 'add' ? c.amount : -c.amount);
+                }
+            });
+            return totalCap;
+        }
+
         function renderSnapshotsTable() {
             const activeAccs = window.appData.accounts.filter(a => a.status === 'active');
             const header = document.getElementById('snapshotsTableHeader');
@@ -845,7 +876,7 @@
                 <tr>
                     <th class="p-3">التاريخ والوقت</th>
                     ${activeAccs.map(acc => `<th class="p-3">${acc.name}</th>`).join('')}
-                    <th class="p-3 font-bold text-emerald-400">إجمالي الأصول</th>
+                    <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th>
                     <th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل</th>
                     <th class="p-3 text-center no-print">حذف</th>
                 </tr>
@@ -854,16 +885,21 @@
             let prevSnapTotal = null;
 
             tbody.innerHTML = window.appData.snapshots.map(snap => {
-                let total = 0;
+                let accountsTotal = 0;
                 const cols = activeAccs.map(acc => {
                     const val = (snap.balances && snap.balances[acc.id]) ? snap.balances[acc.id] : 0;
-                    total += val;
+                    accountsTotal += val;
                     return `<td class="p-3 font-mono">${formatNum(val)}</td>`;
                 }).join('');
 
+                // تطبيق المعادلة الجديدة: (لنا عند العملاء + الصناديق والماكينات) - (علينا للعملاء + رأس المال)
+                const custData = getCustomersBalancesAtDate(snap.date);
+                const totalCapital = getTotalCapitalAtDate(snap.date);
+                const totalAssets = (custData.totalUs + accountsTotal) - (custData.totalThem + totalCapital);
+
                 let profitDiffText = '-';
                 if (prevSnapTotal !== null) {
-                    const diff = total - prevSnapTotal;
+                    const diff = totalAssets - prevSnapTotal;
                     profitDiffText = diff >= 0 
                         ? `<span class="text-emerald-400 font-bold font-mono">+${formatNum(diff)} ج.م</span>`
                         : `<span class="text-red-400 font-bold font-mono">${formatNum(diff)} ج.م</span>`;
@@ -871,13 +907,13 @@
                     profitDiffText = `<span class="text-slate-500 text-xs">بداية الحسابات</span>`;
                 }
 
-                prevSnapTotal = total;
+                prevSnapTotal = totalAssets;
 
                 return `
                     <tr class="hover:bg-slate-800/50">
                         <td class="p-3 font-mono text-xs text-slate-400">${formatDateEn(snap.date)}</td>
                         ${cols}
-                        <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td>
+                        <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(totalAssets)} ج.م</td>
                         <td class="p-3 font-mono">${profitDiffText}</td>
                         <td class="p-3 text-center no-print">
                             <button onclick="deleteSnapshot('${snap.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
@@ -1000,19 +1036,16 @@
         }
 
         function updateDashboardCards() {
-            // 1. حساب إجمالي الصناديق والماكينات من آخر لقطة رصيد
             let latestAssets = 0;
             if (window.appData.snapshots.length > 0) {
                 const latestSnap = window.appData.snapshots[window.appData.snapshots.length - 1];
                 if (latestSnap.balances) Object.values(latestSnap.balances).forEach(val => latestAssets += (parseFloat(val) || 0));
             }
 
-            // 2. حساب إجمالي رأس المال
             let totalCap = 0;
             window.appData.capitalLogs.forEach(c => totalCap += (c.type === 'add' ? c.amount : -c.amount));
             document.getElementById('totalCapitalCard').innerHTML = `${formatNum(totalCap)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
 
-            // 3. حساب ديون العملاء (لنا / علينا)
             let custBalances = getCustomersBalancesMap();
             let totalUs = 0;
             let totalThem = 0;
@@ -1028,8 +1061,8 @@
             document.getElementById('customersUsCard').innerText = formatNum(totalUs) + ' ج.م';
             document.getElementById('customersThemCard').innerText = formatNum(totalThem) + ' ج.م';
 
-            // 4. المعادلة المطلوبة لإجمالي الأصول: (الصناديق والماكينات + لنا عند العملاء) - علينا للعملاء
-            const calculatedTotalAssets = (latestAssets + totalUs) - totalThem;
+            // تطبيق المعادلة الجديدة في كارت العرض الرئيسي: (لنا عند العملاء + الصناديق والماكينات) - (علينا للعملاء + إجمالي رأس المال)
+            const calculatedTotalAssets = (totalUs + latestAssets) - (totalThem + totalCap);
             document.getElementById('totalAssetsCard').innerHTML = `${formatNum(calculatedTotalAssets)} <span class="text-xs text-slate-400 font-normal">ج.م</span>`;
         }
 
@@ -1050,6 +1083,14 @@
             let startAssets = 0, endAssets = 0;
             if (startSnap.balances) Object.values(startSnap.balances).forEach(v => startAssets += v);
             if (endSnap.balances) Object.values(endSnap.balances).forEach(v => endAssets += v);
+
+            const startCust = getCustomersBalancesAtDate(startSnap.date);
+            const startCap = getTotalCapitalAtDate(startSnap.date);
+            startAssets = (startCust.totalUs + startAssets) - (startCust.totalThem + startCap);
+
+            const endCust = getCustomersBalancesAtDate(endSnap.date);
+            const endCap = getTotalCapitalAtDate(endSnap.date);
+            endAssets = (endCust.totalUs + endAssets) - (endCust.totalThem + endCap);
 
             let additions = 0, withdrawals = 0;
             let investorCapMap = {};
