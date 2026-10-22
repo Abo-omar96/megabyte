@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <!-- Cloud Sync Indicator & Mobile Toggle -->
+            <!-- Cloud Sync Indicator -->
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div id="cloudBadge" class="flex items-center space-x-2 space-x-reverse text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-slate-400 shadow-inner">
                     <span id="cloudDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
@@ -62,7 +62,7 @@
     <!-- App Layout Container (Sidebar + Main Content) -->
     <div class="max-w-7xl mx-auto px-4 py-6 w-full flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         
-        <!-- Sidebar Navigation (Like World Class Apps) -->
+        <!-- Sidebar Navigation -->
         <aside class="lg:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl no-print space-y-2 sticky top-20">
             <h3 class="text-xs font-bold text-slate-400 uppercase px-3 pb-2 tracking-wider border-b border-slate-800">قائمة النظام</h3>
             <nav class="space-y-1">
@@ -97,118 +97,4 @@
         <main class="lg:col-span-3 space-y-6 w-full">
             
             <!-- Room Sync Setup Banner -->
-            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print shadow-xl">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="bg-indigo-500/10 text-indigo-400 p-3 rounded-xl border border-indigo-500/20">
-                        <i class="fa-solid fa-network-wired text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-white">رمز المزامنة السحابية للشركة (Enterprise Sync ID)</h3>
-                        <p class="text-xs text-slate-400">ادخل نفس الرمز في جميع أجهزتك لتشارك الحسابات والأرباح فوراً</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
-                    <input type="text" id="syncRoomInput" placeholder="رمز الغرفة" class="bg-slate-950 border border-indigo-500/40 px-3 py-2 rounded-xl text-xs font-bold text-center font-mono w-full sm:w-40 text-indigo-300 focus:outline-none focus:border-indigo-400">
-                    <button type="button" id="btnSyncRoom" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-indigo-600/20 cursor-pointer">
-                        <i class="fa-solid fa-sync ml-1"></i> ربط وتحديث
-                    </button>
-                </div>
-            </div>
-
-            <!-- KPI Financial Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">صافي الأصول الصافية</p>
-                            <h3 id="kpiNetAssets" class="text-2xl font-black text-white mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                            <i class="fa-solid fa-scale-balanced text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">(لنا + المحافظ) − (علينا + رأس المال)</p>
-                </div>
-
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال والشركاء</p>
-                            <h3 id="kpiTotalCapital" class="text-2xl font-black text-blue-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
-                            <i class="fa-solid fa-vault text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">إجمالي مساهمات الشركاء والأرباح المضافة</p>
-                </div>
-
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي)</p>
-                            <h3 id="kpiNetCustomers" class="text-2xl font-black text-amber-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
-                            <i class="fa-solid fa-users-rectangle text-lg"></i>
-                        </div>
-                    </div>
-                    <div class="flex justify-between text-[10px] mt-3 font-mono border-t border-slate-800 pt-2 text-slate-400">
-                        <span>لنا: <strong id="kpiUs" class="text-emerald-400">0.00</strong></span>
-                        <span>علينا: <strong id="kpiThem" class="text-red-400">0.00</strong></span>
-                    </div>
-                </div>
-
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">أرصدة المحافظ والماكينات</p>
-                            <h3 id="kpiWalletsTotal" class="text-2xl font-black text-emerald-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                            <i class="fa-solid fa-wallet text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">إجمالي المحافظ النقدية والماكينات</p>
-                </div>
-            </div>
-
-            <!-- Tabs Content Card Container -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-                
-                <!-- TAB 1: SNAPSHOTS (حساب مع توزيع الأرباح التلقائي) -->
-                <div id="tab-content-snapshots" class="tab-pane space-y-6">
-                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">تسجيل لقطات الرصيد والورديات وحساب الأرباح اليومية</h2>
-                            <p class="text-xs text-slate-400 mt-1">يقوم النظام بحساب الفارق (الزيادة أو النقصان) عن الوردية السابقة وتوزيع الأرباح على الشركاء تلقائياً.</p>
-                        </div>
-                        <button id="btnExportSnapshots" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
-                            <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
-                        </button>
-                    </div>
-                    <form id="snapshotForm" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
-                                <input type="datetime-local" id="snapDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">رأس المال الفعلي (ج.م)</label>
-                                <input type="number" step="0.01" id="snapCapital" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المسؤول / الوردية</label>
-                                <input type="text" id="snapShift" placeholder="مثال: وردية الصباح - محمد" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فوري (ج.م)</label>
-                                <input type="number" step="0.01" id="snapFawry" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">أمان (ج.م)</label>
-                                <input type="number" step="0.01" id="snapAman" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">مجمد (ج.م)</label>
-                                <input type="number" step="0.01" id="snapFrozen" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border
+            <div class="bg
