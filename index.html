@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المحاسبة الذكية | Enterprise Financial Ledger</title>
+    <title>منصة المحاسبة وإدارة الشبكات السحابية | MegaByte Cloud Ledger</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -24,7 +24,7 @@
     </script>
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #020617; color: #f8fafc; }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
@@ -41,15 +41,15 @@
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div class="bg-gradient-to-tr from-emerald-600 to-emerald-400 text-slate-950 p-2.5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-chart-pie"></i>
+                    <i class="fa-solid fa-server"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-base text-white tracking-wide">الدفتر المحاسبي المالي الذكي</h1>
-                    <p class="text-[11px] text-emerald-400 font-semibold tracking-wider">الوضع المباشر (صلاحيات مطلقة)</p>
+                    <h1 class="font-extrabold text-base text-white tracking-wide">منصة MegaByte المحاسبية والسحابية</h1>
+                    <p class="text-[11px] text-emerald-400 font-semibold tracking-wider">نظام سحابي متكامل ومزامن للبيانات</p>
                 </div>
             </div>
 
-            <!-- Cloud Sync State -->
+            <!-- Cloud Sync Indicator -->
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div id="cloudBadge" class="flex items-center space-x-2 space-x-reverse text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-slate-400 shadow-inner">
                     <span id="cloudDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
@@ -59,7 +59,7 @@
         </div>
     </header>
 
-    <!-- Main Application Container -->
+    <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 w-full flex-1">
         
         <!-- Room Sync Setup Banner -->
@@ -69,51 +69,51 @@
                     <i class="fa-solid fa-network-wired text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="text-sm font-bold text-white">رمز الربط المتزامن للأجهزة (Enterprise Sync ID)</h3>
-                    <p class="text-xs text-slate-400">استخدم نفس الرمز السري (مثال: <code class="text-indigo-300 font-mono">FIN-2026</code>) في كافة أجهزتك لتوحيد قواعد البيانات</p>
+                    <h3 class="text-sm font-bold text-white">رمز المزامنة السحابية للشركة (Enterprise Sync ID)</h3>
+                    <p class="text-xs text-slate-400">ادخل نفس الرمز في جميع أجهزتك (مثال: <code class="text-indigo-300 font-mono">MEGABYTE-2026</code>) لتشارك الحسابات فوراً</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
-                <input type="text" id="syncRoomInput" placeholder="أدخل رمز الغرفة" class="bg-slate-950 border border-indigo-500/40 px-3 py-2 rounded-xl text-xs font-bold text-center font-mono w-full sm:w-40 text-indigo-300 focus:outline-none focus:border-indigo-400">
-                <button type="button" id="btnSyncRoom" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-indigo-600/20 whitespace-nowrap cursor-pointer">
+                <input type="text" id="syncRoomInput" placeholder="رمز الغرفة" class="bg-slate-950 border border-indigo-500/40 px-3 py-2 rounded-xl text-xs font-bold text-center font-mono w-full sm:w-40 text-indigo-300 focus:outline-none focus:border-indigo-400">
+                <button type="button" id="btnSyncRoom" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-indigo-600/20 cursor-pointer">
                     <i class="fa-solid fa-sync ml-1"></i> ربط وتحديث
                 </button>
             </div>
         </div>
 
-        <!-- KPI Financial Summary Grid -->
+        <!-- KPI Financial Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
             <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs text-slate-400 font-medium">إجمالي الأصول الصافية</p>
+                        <p class="text-xs text-slate-400 font-medium">صافي الأصول الصافية</p>
                         <h3 id="kpiNetAssets" class="text-2xl font-black text-white mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
                     </div>
                     <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
                         <i class="fa-solid fa-scale-balanced text-lg"></i>
                     </div>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">(لنا + الصناديق) − (علينا + رأس المال)</p>
+                <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">(لنا + أرصدة المحافظ) − (علينا + رأس المال)</p>
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال</p>
+                        <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال والشركاء</p>
                         <h3 id="kpiTotalCapital" class="text-2xl font-black text-blue-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
                     </div>
                     <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
                         <i class="fa-solid fa-vault text-lg"></i>
                     </div>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">إجمالي مساهمات المستثمرين</p>
+                <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">إجمالي مساهمات الشركاء</p>
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs text-slate-400 font-medium">صافي ديون العملاء</p>
+                        <p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي)</p>
                         <h3 id="kpiNetCustomers" class="text-2xl font-black text-amber-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
                     </div>
                     <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
@@ -121,81 +121,142 @@
                     </div>
                 </div>
                 <div class="flex justify-between text-[10px] mt-3 font-mono border-t border-slate-800 pt-2 text-slate-400">
-                    <span>لنا: <strong id="kpiUs" class="text-emerald-400">0.00</strong></span>
-                    <span>علينا: <strong id="kpiThem" class="text-red-400">0.00</strong></span>
+                    <span>لنا (عليه): <strong id="kpiUs" class="text-emerald-400">0.00</strong></span>
+                    <span>علينا (له): <strong id="kpiThem" class="text-red-400">0.00</strong></span>
                 </div>
             </div>
 
             <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs text-slate-400 font-medium">صافي أرباح الفترة</p>
-                        <h3 id="kpiNetProfit" class="text-2xl font-black text-emerald-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
+                        <p class="text-xs text-slate-400 font-medium">إجمالي أرصدة المحافظ والماكينات</p>
+                        <h3 id="kpiWalletsTotal" class="text-2xl font-black text-emerald-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
                     </div>
                     <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                        <i class="fa-solid fa-arrow-trend-up text-lg"></i>
+                        <i class="fa-solid fa-wallet text-lg"></i>
                     </div>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">بعد خصم المصروفات التشغيلية</p>
+                <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">مجموع المحافظ النقدية والماكينات</p>
             </div>
 
         </div>
 
-        <!-- Core Navigation Tabs -->
+        <!-- Navigation Tabs -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
             <div class="flex border-b border-slate-800 bg-slate-950/60 p-2 overflow-x-auto space-x-1.5 space-x-reverse no-print">
-                <button data-tab="accounts" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-wallet"></i> <span>الصناديق والماكينات</span>
-                </button>
                 <button data-tab="snapshots" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse bg-emerald-600 text-slate-950 shadow-md cursor-pointer">
-                    <i class="fa-solid fa-camera-retro"></i> <span>لقطات الرصيد والأصول</span>
+                    <i class="fa-solid fa-camera-retro"></i> <span>لقطات الرصيد (حساب)</span>
+                </button>
+                <button data-tab="wallets" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
+                    <i class="fa-solid fa-wallet"></i> <span>المحافظ والماكينات (كاش)</span>
                 </button>
                 <button data-tab="customers" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-address-book"></i> <span>العملاء والمديونيات</span>
+                    <i class="fa-solid fa-address-book"></i> <span>ديون العملاء (الخرج)</span>
                 </button>
-                <button data-tab="expenses" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-receipt"></i> <span>المصروفات التشغيلية</span>
+                <button data-tab="partners" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> <span>الشركاء والأرباح</span>
                 </button>
-                <button data-tab="capital" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-hand-holding-dollar"></i> <span>رأس المال والمستثمرين</span>
+                <button data-tab="network" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
+                    <i class="fa-solid fa-network-wired"></i> <span>إدارة أجهزة الـ IP</span>
                 </button>
-                <button data-tab="reports" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> <span>تقارير الأرباح وتوزيع النسب</span>
+                <button data-tab="clientwe" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
+                    <i class="fa-solid fa-phone"></i> <span>بيانات خطوط WE</span>
+                </button>
+                <button data-tab="orders" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
+                    <i class="fa-solid fa-list-check"></i> <span>أوردرات الصيانة والتنفيذ</span>
                 </button>
             </div>
 
             <div class="p-6">
                 
-                <!-- TAB 1: ACCOUNTS -->
-                <div id="tab-content-accounts" class="tab-pane space-y-6 hidden">
+                <!-- TAB 1: SNAPSHOTS (حساب) -->
+                <div id="tab-content-snapshots" class="tab-pane space-y-6">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">إدارة الحسابات والخزائن وماكينات الدفع</h2>
+                        <h2 class="text-base font-bold text-white">تسجيل لقطات الرصيد والورديات (حساب)</h2>
+                        <button id="btnExportSnapshots" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
+                            <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
+                        </button>
                     </div>
-                    <form id="accountForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <input type="hidden" id="accId">
+                    <form id="snapshotForm" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
+                                <input type="datetime-local" id="snapDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">رأس المال الفعلي (ج.م)</label>
+                                <input type="number" step="0.01" id="snapCapital" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المسؤول / الوردية</label>
+                                <input type="text" id="snapShift" placeholder="مثال: محمد" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فوري (ج.م)</label>
+                                <input type="number" step="0.01" id="snapFawry" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">أمان (ج.م)</label>
+                                <input type="number" step="0.01" id="snapAman" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">مجمد (ج.م)</label>
+                                <input type="number" step="0.01" id="snapFrozen" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فكة (ج.م)</label>
+                                <input type="number" step="0.01" id="snapFakka" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فضية (ج.م)</label>
+                                <input type="number" step="0.01" id="snapSilver" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
+                                <i class="fa-solid fa-floppy-disk ml-1"></i> تسجيل لقطة الرصيد والوردية
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table id="snapshotsTable" class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">التاريخ</th>
+                                    <th class="p-3">رأس المال</th>
+                                    <th class="p-3">فوري</th>
+                                    <th class="p-3">أمان</th>
+                                    <th class="p-3">مجمد</th>
+                                    <th class="p-3">فكة</th>
+                                    <th class="p-3">فضية</th>
+                                    <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th>
+                                    <th class="p-3">الوردية</th>
+                                    <th class="p-3 font-bold text-amber-400">الزيادة / العجز</th>
+                                    <th class="p-3 text-center no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="snapshotsBody" class="divide-y divide-slate-800/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 2: WALLETS (كاش) -->
+                <div id="tab-content-wallets" class="tab-pane space-y-6 hidden">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <h2 class="text-base font-bold text-white">إدارة المحافظ والماكينات النقدية (كاش)</h2>
+                    </div>
+                    <form id="walletForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم الحساب/الماكينة</label>
-                            <input type="text" id="accName" required placeholder="مثال: الخزينة الرئيسية" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المحفظة / الماكينة</label>
+                            <input type="text" id="walletName" required placeholder="مثال: محمد - 01029160001" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">النوع</label>
-                            <select id="accType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                                <option value="cash">خزينة نقدية</option>
-                                <option value="pos">ماكينة دفع إلكتروني</option>
-                                <option value="ewallet">محفظة رقمية</option>
-                                <option value="bank">حساب بنكي</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">الحالة</label>
-                            <select id="accStatus" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                                <option value="active">نشط</option>
-                                <option value="inactive">معطل</option>
-                            </select>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">الرصيد الحالي (ج.م)</label>
+                            <input type="number" step="0.01" id="walletBalance" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
                         </div>
                         <div class="flex items-end">
                             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                <i class="fa-solid fa-plus ml-1"></i> حفظ الحساب
+                                <i class="fa-solid fa-plus ml-1"></i> حفظ المحفظة
                             </button>
                         </div>
                     </form>
@@ -203,49 +264,20 @@
                         <table class="w-full text-right text-xs text-slate-300">
                             <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
                                 <tr>
-                                    <th class="p-3">الاسم</th>
-                                    <th class="p-3">النوع</th>
-                                    <th class="p-3">الحالة</th>
-                                    <th class="p-3 text-center no-print">إجراءات</th>
+                                    <th class="p-3">اسم المحفظة / الماكينة</th>
+                                    <th class="p-3">الرصيد الحالي</th>
+                                    <th class="p-3 text-center no-print">إجراء</th>
                                 </tr>
                             </thead>
-                            <tbody id="accountsTableBody" class="divide-y divide-slate-800/60"></tbody>
+                            <tbody id="walletsBody" class="divide-y divide-slate-800/60"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- TAB 2: SNAPSHOTS -->
-                <div id="tab-content-snapshots" class="tab-pane space-y-6">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">لقطات الأرصدة والأصول المالية</h2>
-                        <button id="btnExportSnapshots" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
-                            <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
-                        </button>
-                    </div>
-                    <form id="snapshotForm" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
-                        <div class="max-w-xs">
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">تاريخ ووقت اللقطة</label>
-                            <input type="datetime-local" id="snapDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                        </div>
-                        <div id="dynamicSnapInputs" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
-                        <div class="flex justify-end">
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                <i class="fa-solid fa-floppy-disk ml-1"></i> تسجيل لقطة الأصول
-                            </button>
-                        </div>
-                    </form>
-                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                        <table id="snapshotsTable" class="w-full text-right text-xs text-slate-300">
-                            <thead id="snapshotsHeader" class="bg-slate-950 text-slate-400 border-b border-slate-800"></thead>
-                            <tbody id="snapshotsBody" class="divide-y divide-slate-800/60"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TAB 3: CUSTOMERS -->
+                <!-- TAB 3: CUSTOMERS (الخرج) -->
                 <div id="tab-content-customers" class="tab-pane space-y-6 hidden">
                     <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">إدارة العملاء والمديونيات (لنا / علينا)</h2>
+                        <h2 class="text-base font-bold text-white">دفتر ديون العملاء والحسابات (الخرج)</h2>
                         <div class="relative w-64">
                             <i class="fa-solid fa-magnifying-glass absolute right-3 top-2.5 text-slate-500 text-xs"></i>
                             <input type="text" id="custSearch" placeholder="بحث باسم العميل..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
@@ -264,8 +296,8 @@
                             <label class="block text-[11px] font-semibold text-slate-300 mb-1">نوع الحركة</label>
                             <select id="custType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                                 <option value="repayment">تسديد من العميل (خصم الدين)</option>
-                                <option value="us">مبلغ لنا عند العميل (دين عليه +)</option>
-                                <option value="them">مبلغ علينا للعميل (دين له -)</option>
+                                <option value="us">مبلغ لنا عند العميل (عليه +)</option>
+                                <option value="them">مبلغ علينا للعميل (له -)</option>
                             </select>
                         </div>
                         <div>
@@ -275,7 +307,7 @@
                         <div class="md:col-span-4 flex justify-between items-center pt-1">
                             <span id="custAlert" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل لتسديد حسابه مباشرة.</span>
                             <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-6 py-2 rounded-xl text-xs transition shadow-md shadow-amber-600/20 mr-auto cursor-pointer">
-                                <i class="fa-solid fa-check ml-1"></i> اعتماد الحركة المحاسبية
+                                <i class="fa-solid fa-check ml-1"></i> تسجيل الحركة المحاسبية
                             </button>
                         </div>
                     </form>
@@ -290,7 +322,7 @@
                                         <th class="p-3 text-center no-print">الإجراء</th>
                                     </tr>
                                 </thead>
-                                <tbody id="customersTableBody" class="divide-y divide-slate-800/60"></tbody>
+                                <tbody id="customersBody" class="divide-y divide-slate-800/60"></tbody>
                             </table>
                         </div>
                         <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
@@ -307,22 +339,296 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: EXPENSES -->
-                <div id="tab-content-expenses" class="tab-pane space-y-6 hidden">
+                <!-- TAB 4: PARTNERS & CAPITAL -->
+                <div id="tab-content-partners" class="tab-pane space-y-6 hidden">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">تسجيل المصروفات التشغيلية</h2>
-                        <button id="btnExportExpenses" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
-                            <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
-                        </button>
+                        <h2 class="text-base font-bold text-white">إدارة الشركاء والمساهمات وتوزيع الأرباح</h2>
                     </div>
-                    <form id="expenseForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <form id="partnerForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">بند المصروف</label>
-                            <input type="text" id="expTitle" required placeholder="مثال: إيجار، كهرباء..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم الشريك / المستثمر</label>
+                            <input type="text" id="partName" required placeholder="مثال: الشريك الأول" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                            <input type="number" step="0.01" id="expAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">المبلغ المدفوع (ج.م)</label>
+                            <input type="number" step="0.01" id="partAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl text-xs transition shadow-lg shadow-blue-600/20 cursor-pointer">
+                                <i class="fa-solid fa-plus ml-1"></i> إضافة شريك
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">اسم الشريك</th>
+                                    <th class="p-3">المبلغ المدفوع</th>
+                                    <th class="p-3">نسبة المساهمة (%)</th>
+                                    <th class="p-3 text-emerald-400 font-bold">الربح المستحق</th>
+                                    <th class="p-3 text-center no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partnersBody" class="divide-y divide-slate-800/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 5: NETWORK IP ADDRESSES -->
+                <div id="tab-content-network" class="tab-pane space-y-6 hidden">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <h2 class="text-base font-bold text-white">إدارة أجهزة وIPs أجهزة الشبكة (IP Address)</h2>
+                    </div>
+                    <form id="networkForm" class="grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المحطة (Station)</label>
+                            <input type="text" id="netName" required placeholder="مثال: نانو عامر" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم الشبكة (SSID)</label>
+                            <input type="text" id="netSSID" placeholder="MEGABYTE" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">IP الجهاز</label>
+                            <input type="text" id="netIP" required placeholder="192.168.100.22" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">النوع (AP / ST)</label>
+                            <select id="netType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                                <option value="ST">ST (Station)</option>
+                                <option value="AP">AP (Access Point)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-plus ml-1"></i> إضافة جهاز
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">اسم المحطة</th>
+                                    <th class="p-3">SSID</th>
+                                    <th class="p-3">عنوان IP</th>
+                                    <th class="p-3">النوع</th>
+                                    <th class="p-3 text-center no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="networkBody" class="divide-y divide-slate-800/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 6: CLIENT WE -->
+                <div id="tab-content-clientwe" class="tab-pane space-y-6 hidden">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <h2 class="text-base font-bold text-white">بيانات خطوط التليفون الأرضي للعملاء (Client WE)</h2>
+                    </div>
+                    <form id="weForm" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم العميل</label>
+                            <input type="text" id="weName" required placeholder="اسم صاحب الخط" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">الرقم الأرضي</label>
+                            <input type="text" id="wePhone" required placeholder="0502460000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">كلمة سر الراوتر / الحساب</label>
+                            <input type="text" id="wePass" placeholder="Mm22446688" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-xl text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-plus ml-1"></i> حفظ البيانات
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">الاسم</th>
+                                    <th class="p-3">الرقم الأرضي</th>
+                                    <th class="p-3">كلمة السر</th>
+                                    <th class="p-3 text-center no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weBody" class="divide-y divide-slate-800/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 7: ORDERS -->
+                <div id="tab-content-orders" class="tab-pane space-y-6 hidden">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                        <h2 class="text-base font-bold text-white">جدول الأوردرات والمهام الجاري تنفيذها</h2>
+                    </div>
+                    <form id="orderForm" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">البيان / تفاصيل المهمة</label>
+                            <input type="text" id="ordDesc" required placeholder="مثال: تركيد راوتر فايبر" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">رقم الموبايل</label>
+                            <input type="text" id="ordMobile" placeholder="01012345678" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">ملاحظات / قطع غيار</label>
+                            <input type="text" id="ordNotes" placeholder="فلاشه 32 كينج ماكس" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-plus ml-1"></i> تسجيل أوردر
+                            </button>
+                        </div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">البيان</th>
+                                    <th class="p-3">رقم الموبايل</th>
+                                    <th class="p-3">ملاحظات</th>
+                                    <th class="p-3 text-center no-print">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersBody" class="divide-y divide-slate-800/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-900 py-4 text-center text-xs text-slate-500 no-print">
+        <p>نظام منصة MegaByte السحابية المطور © 2026 — مصمم بناءً على معايير نظام المحاسبة الخاص بك</p>
+    </footer>
+
+    <!-- Firebase SDK & Reactive Core Engine -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
+            authDomain: "megabytefawry.firebaseapp.com",
+            projectId: "megabytefawry",
+            storageBucket: "megabytefawry.firebasestorage.app",
+            messagingSenderId: "832804585797",
+            appId: "1:832804585797:web:00637871be12c00157fe2c",
+            measurementId: "G-75PB78K0F4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        class MegaByteLedgerSystem {
+            constructor() {
+                // إدخال البيانات المبدئية المسحوبة من شيت الإكسل تلقائياً
+                const defaultWallets = [
+                    { id: 'w1', name: 'محمد = 01029160001', balance: 25686 },
+                    { id: 'w2', name: 'محمود= 01094621233', balance: 3554 },
+                    { id: 'w3', name: 'بنك مصر', balance: 13890 },
+                    { id: 'w4', name: 'كارت فورى', balance: 4542 },
+                    { id: 'w5', name: 'فورى اندرويد', balance: 626 },
+                    { id: 'w6', name: 'اوباى', balance: 90 }
+                ];
+
+                const defaultPartners = [
+                    { id: 'p1', name: 'الرصيد + النت + انا', amount: 72761 },
+                    { id: 'p2', name: 'اختى', amount: 14267 },
+                    { id: 'p3', name: 'عمر & حور', amount: 1855 }
+                ];
+
+                const defaultCustomers = [
+                    { id: 'c1', name: 'صندوق النت', date: '2026-01-01T00:00', type: 'them', amount: 21205 },
+                    { id: 'c2', name: 'عمر & حور & امهم', date: '2026-01-01T00:00', type: 'us', amount: 120 },
+                    { id: 'c3', name: 'عمر & حور & امهم', date: '2026-01-01T00:00', type: 'them', amount: 2000 },
+                    { id: 'c4', name: 'نجش', date: '2026-01-01T00:00', type: 'us', amount: 6500 },
+                    { id: 'c5', name: 'محمد حربى', date: '2026-01-01T00:00', type: 'us', amount: 2500 },
+                    { id: 'c6', name: 'ام عاصم', date: '2026-01-01T00:00', type: 'them', amount: 17892 }
+                ];
+
+                let local = localStorage.getItem('megabyte_cloud_db');
+                this.data = local ? JSON.parse(local) : {
+                    snapshots: [],
+                    wallets: defaultWallets,
+                    customers: defaultCustomers,
+                    partners: defaultPartners,
+                    networks: [],
+                    clientwe: [],
+                    orders: []
+                };
+                this.selectedCustomer = null;
+                this.initSync();
+                this.bindEvents();
+            }
+
+            initSync() {
+                const room = localStorage.getItem('megabyte_sync_room') || 'MEGABYTE_DEFAULT';
+                document.getElementById('syncRoomInput').value = room;
+                const dbRef = ref(db, 'megabyte_rooms/' + room);
+                onValue(dbRef, (snapshot) => {
+                    const val = snapshot.val();
+                    if (val) {
+                        this.data = val;
+                        localStorage.setItem('megabyte_cloud_db', JSON.stringify(val));
+                    } else {
+                        this.pushCloud();
+                    }
+                    this.renderAll();
+                    document.getElementById('cloudDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+                    document.getElementById('cloudText').innerText = "متصل سحابياً (" + room + ")";
+                }, (err) => {
+                    document.getElementById('cloudDot').className = "w-2.5 h-2.5 rounded-full bg-red-500";
+                    document.getElementById('cloudText').innerText = "خطأ في الاتصال";
+                });
+            }
+
+            pushCloud() {
+                const room = localStorage.getItem('megabyte_sync_room') || 'MEGABYTE_DEFAULT';
+                set(ref(db, 'megabyte_rooms/' + room), JSON.parse(JSON.stringify(this.data))).catch(e => console.error(e));
+            }
+
+            saveLocal() {
+                localStorage.setItem('megabyte_cloud_db', JSON.stringify(this.data));
+                this.pushCloud();
+                this.renderAll();
+            }
+
+            bindEvents() {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const tabId = btn.getAttribute('data-tab');
+                        this.switchTab(tabId);
+                    });
+                });
+
+                document.getElementById('btnSyncRoom').addEventListener('click', () => {
+                    const val = document.getElementById('syncRoomInput').value.trim();
+                    if (val) {
+                        localStorage.setItem('megabyte_sync_room', val);
+                        location.reload();
+                    }
+                });
+
+                document.getElementById('snapshotForm').addEventListener('submit', (e) => this.saveSnapshot(e));
+                document.getElementById('walletForm').addEventListener('submit', (e) => this.saveWallet(e));
+                document.getElementById('customerForm').addEventListener('submit', (e) => this.saveCustomerTx(e));
+                document.getElementById('partnerForm').addEventListener('submit', (e) => this.savePartner(e));
+                document.getElementById('networkForm').addEventListener('submit', (e) => this.saveNetwork(e));
+                document.getElementById('weForm').addEventListener('submit', (e) => this.saveWE(e));
+                document.getElementById('orderForm').addEventListener('submit', (e) => this.saveOrder(e));
+
+                document.getElementById('custSearch').addEventListener('input', () => this.renderCustomers());
+                document.getElementById('btnExportSnapshots').addEventListener('click', () => this.exportTable('snapshotsTable', 'لقطات_الرصيد'));
+            }
+
+            switchTab(tabId) {
+                document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.tab-btn').forEach(el => {
+                    el.className = "tab-btn px-4 py-2.5 rounded-xl text-
