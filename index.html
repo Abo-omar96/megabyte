@@ -6,11 +6,11 @@
     <title>منصة المحاسبة الذكية | Enterprise Financial Ledger</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Pro / Free Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- SheetJS for Enterprise Excel Export -->
+    <!-- SheetJS for Excel Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
@@ -18,15 +18,6 @@
             theme: {
                 extend: {
                     fontFamily: { cairo: ['Cairo', 'sans-serif'] },
-                    colors: {
-                        ledger: {
-                            50: '#f8fafc',
-                            900: '#0f172a',
-                            950: '#020617',
-                            accent: '#10b981',
-                            darkcard: '#1e293b'
-                        }
-                    }
                 }
             }
         }
@@ -46,7 +37,7 @@
 <body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
     <!-- Top Navigation Bar -->
-    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 no-print">
+    <header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 no-print">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div class="bg-gradient-to-tr from-emerald-600 to-emerald-400 text-slate-950 p-2.5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20">
@@ -79,12 +70,12 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-white">رمز الربط المتزامن للأجهزة (Enterprise Sync ID)</h3>
-                    <p class="text-xs text-slate-400">استخدم نفس الرمز السري (مثال: <code class="text-indigo-300 font-mono">FIN-2026</code>) في كافة أجهزتك لتوحيد قواعد البيانات فواقاً</p>
+                    <p class="text-xs text-slate-400">استخدم نفس الرمز السري (مثال: <code class="text-indigo-300 font-mono">FIN-2026</code>) في كافة أجهزتك لتوحيد قواعد البيانات</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
                 <input type="text" id="syncRoomInput" placeholder="أدخل رمز الغرفة" class="bg-slate-950 border border-indigo-500/40 px-3 py-2 rounded-xl text-xs font-bold text-center font-mono w-full sm:w-40 text-indigo-300 focus:outline-none focus:border-indigo-400">
-                <button type="button" onclick="App.updateSyncRoom()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-indigo-600/20 whitespace-nowrap">
+                <button type="button" id="btnSyncRoom" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-indigo-600/20 whitespace-nowrap cursor-pointer">
                     <i class="fa-solid fa-sync ml-1"></i> ربط وتحديث
                 </button>
             </div>
@@ -93,8 +84,7 @@
         <!-- KPI Financial Summary Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <!-- Net Assets KPI -->
-            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-emerald-500/40 transition">
+            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs text-slate-400 font-medium">إجمالي الأصول الصافية</p>
@@ -107,8 +97,7 @@
                 <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">(لنا + الصناديق) − (علينا + رأس المال)</p>
             </div>
 
-            <!-- Capital KPI -->
-            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-blue-500/40 transition">
+            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال</p>
@@ -121,8 +110,7 @@
                 <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">إجمالي مساهمات المستثمرين</p>
             </div>
 
-            <!-- Customers Net Debt KPI -->
-            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-amber-500/40 transition">
+            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs text-slate-400 font-medium">صافي ديون العملاء</p>
@@ -138,8 +126,7 @@
                 </div>
             </div>
 
-            <!-- Net Period Profit KPI -->
-            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-emerald-500/40 transition">
+            <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs text-slate-400 font-medium">صافي أرباح الفترة</p>
@@ -157,37 +144,34 @@
         <!-- Core Navigation Tabs -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
             <div class="flex border-b border-slate-800 bg-slate-950/60 p-2 overflow-x-auto space-x-1.5 space-x-reverse no-print">
-                <button onclick="App.switchTab('accounts')" id="btn-tab-accounts" class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                <button data-tab="accounts" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
                     <i class="fa-solid fa-wallet"></i> <span>الصناديق والماكينات</span>
                 </button>
-                <button onclick="App.switchTab('snapshots')" id="btn-tab-snapshots" class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse bg-emerald-600 text-slate-950 shadow-md">
+                <button data-tab="snapshots" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse bg-emerald-600 text-slate-950 shadow-md cursor-pointer">
                     <i class="fa-solid fa-camera-retro"></i> <span>لقطات الرصيد والأصول</span>
                 </button>
-                <button onclick="App.switchTab('customers')" id="btn-tab-customers" class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                <button data-tab="customers" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
                     <i class="fa-solid fa-address-book"></i> <span>العملاء والمديونيات</span>
                 </button>
-                <button onclick="App.switchTab('expenses')" id="btn-tab-expenses" class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                <button data-tab="expenses" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
                     <i class="fa-solid fa-receipt"></i> <span>المصروفات التشغيلية</span>
                 </button>
-                <button onclick="App.switchTab('capital')" id="btn-tab-capital" class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                <button data-tab="capital" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
                     <i class="fa-solid fa-hand-holding-dollar"></i> <span>رأس المال والمستثمرين</span>
                 </button>
-                <button onclick="App.switchTab('reports')" id="btn-tab-reports" class="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800">
+                <button data-tab="reports" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
                     <i class="fa-solid fa-file-invoice-dollar"></i> <span>تقارير الأرباح وتوزيع النسب</span>
                 </button>
             </div>
 
             <div class="p-6">
                 
-                <!-- TAB 1: ACCOUNTS & POS SETUP -->
+                <!-- TAB 1: ACCOUNTS -->
                 <div id="tab-content-accounts" class="tab-pane space-y-6 hidden">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">إدارة الحسابات والخزائن وماكينات الدفع</h2>
-                            <p class="text-xs text-slate-400">إضافة وتفعيل الأرصدة والماكينات التي تُحتسب في لقطات الرصيد</p>
-                        </div>
+                        <h2 class="text-base font-bold text-white">إدارة الحسابات والخزائن وماكينات الدفع</h2>
                     </div>
-                    <form onsubmit="App.saveAccount(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <form id="accountForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <input type="hidden" id="accId">
                         <div>
                             <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم الحساب/الماكينة</label>
@@ -210,7 +194,7 @@
                             </select>
                         </div>
                         <div class="flex items-end">
-                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20">
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
                                 <i class="fa-solid fa-plus ml-1"></i> حفظ الحساب
                             </button>
                         </div>
@@ -230,25 +214,22 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: BALANCE SNAPSHOTS -->
+                <!-- TAB 2: SNAPSHOTS -->
                 <div id="tab-content-snapshots" class="tab-pane space-y-6">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">لقطات الأرصدة والأصول المالية</h2>
-                            <p class="text-xs text-slate-400">إدخال الأرصدة الفعلية في تاريخ محدد لحساب الفارق والأرباح تلقائياً</p>
-                        </div>
-                        <button onclick="App.exportTable('snapshotsTable', 'لقطات_الأصول')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print">
+                        <h2 class="text-base font-bold text-white">لقطات الأرصدة والأصول المالية</h2>
+                        <button id="btnExportSnapshots" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
                             <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
                         </button>
                     </div>
-                    <form onsubmit="App.saveSnapshot(event)" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
+                    <form id="snapshotForm" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
                         <div class="max-w-xs">
                             <label class="block text-[11px] font-semibold text-slate-300 mb-1">تاريخ ووقت اللقطة</label>
                             <input type="datetime-local" id="snapDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
                         </div>
                         <div id="dynamicSnapInputs" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
                         <div class="flex justify-end">
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
                                 <i class="fa-solid fa-floppy-disk ml-1"></i> تسجيل لقطة الأصول
                             </button>
                         </div>
@@ -261,19 +242,16 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: CUSTOMERS & LEDGER -->
+                <!-- TAB 3: CUSTOMERS -->
                 <div id="tab-content-customers" class="tab-pane space-y-6 hidden">
                     <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">إدارة العملاء والمديونيات (لنا / علينا)</h2>
-                            <p class="text-xs text-slate-400">اضغط على أي عميل لتعبئة نموذج التسديد أو الإضافة فوراً</p>
-                        </div>
+                        <h2 class="text-base font-bold text-white">إدارة العملاء والمديونيات (لنا / علينا)</h2>
                         <div class="relative w-64">
                             <i class="fa-solid fa-magnifying-glass absolute right-3 top-2.5 text-slate-500 text-xs"></i>
-                            <input type="text" id="custSearch" oninput="App.renderCustomers()" placeholder="بحث باسم العميل..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <input type="text" id="custSearch" placeholder="بحث باسم العميل..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pr-9 pl-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                     </div>
-                    <form onsubmit="App.saveCustomerTx(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-amber-500/30">
+                    <form id="customerForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-amber-500/30">
                         <div>
                             <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم العميل</label>
                             <input type="text" id="custName" required placeholder="أدخل اسم العميل" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
@@ -296,7 +274,7 @@
                         </div>
                         <div class="md:col-span-4 flex justify-between items-center pt-1">
                             <span id="custAlert" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل لتسديد حسابه مباشرة.</span>
-                            <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-6 py-2 rounded-xl text-xs transition shadow-md shadow-amber-600/20 mr-auto">
+                            <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-6 py-2 rounded-xl text-xs transition shadow-md shadow-amber-600/20 mr-auto cursor-pointer">
                                 <i class="fa-solid fa-check ml-1"></i> اعتماد الحركة المحاسبية
                             </button>
                         </div>
@@ -329,18 +307,15 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: OPERATING EXPENSES -->
+                <!-- TAB 4: EXPENSES -->
                 <div id="tab-content-expenses" class="tab-pane space-y-6 hidden">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">تسجيل المصروفات التشغيلية</h2>
-                            <p class="text-xs text-slate-400">المصروفات اليومية التي تخصص وتخصم من صافي أرباح الفترة</p>
-                        </div>
-                        <button onclick="App.exportTable('expensesTable', 'المصروفات')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print">
+                        <h2 class="text-base font-bold text-white">تسجيل المصروفات التشغيلية</h2>
+                        <button id="btnExportExpenses" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
                             <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
                         </button>
                     </div>
-                    <form onsubmit="App.saveExpense(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <form id="expenseForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
                             <label class="block text-[11px] font-semibold text-slate-300 mb-1">بند المصروف</label>
                             <input type="text" id="expTitle" required placeholder="مثال: إيجار، كهرباء..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
@@ -350,655 +325,4 @@
                             <input type="number" step="0.01" id="expAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ</label>
-                            <input type="datetime-local" id="expDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                        </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-xl text-xs transition shadow-lg shadow-red-600/20">
-                                <i class="fa-solid fa-plus ml-1"></i> تسجيل المصروف
-                            </button>
-                        </div>
-                    </form>
-                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                        <table id="expensesTable" class="w-full text-right text-xs text-slate-300">
-                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                                <tr>
-                                    <th class="p-3">التاريخ</th>
-                                    <th class="p-3">البند</th>
-                                    <th class="p-3">المبلغ</th>
-                                    <th class="p-3 text-center no-print">إجراء</th>
-                                </tr>
-                            </thead>
-                            <tbody id="expensesTableBody" class="divide-y divide-slate-800/60"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TAB 5: CAPITAL & INVESTORS -->
-                <div id="tab-content-capital" class="tab-pane space-y-6 hidden">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">إدارة رؤوس أموال المستثمرين</h2>
-                            <p class="text-xs text-slate-400">تسجيل الإضافات والمسحوبات لكل شريك لتحديد نسب الأرباح</p>
-                        </div>
-                    </div>
-                    <form onsubmit="App.saveCapital(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المستثمر</label>
-                            <input type="text" id="capInvestor" required placeholder="اسم الشريك" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">نوع الحركة</label>
-                            <select id="capType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                                <option value="add">إضافة رأس مال (+)</option>
-                                <option value="withdraw">سحب رأس مال (-)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                            <input type="number" step="0.01" id="capAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ</label>
-                            <input type="datetime-local" id="capDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                        </div>
-                        <div class="md:col-span-4 flex justify-end">
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-xl text-xs transition shadow-lg shadow-blue-600/20">
-                                <i class="fa-solid fa-plus ml-1"></i> اعتماد حركة رأس المال
-                            </button>
-                        </div>
-                    </form>
-                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                        <table class="w-full text-right text-xs text-slate-300">
-                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                                <tr>
-                                    <th class="p-3">التاريخ</th>
-                                    <th class="p-3">المستثمر</th>
-                                    <th class="p-3">الحركة</th>
-                                    <th class="p-3">المبلغ</th>
-                                    <th class="p-3 text-center no-print">إجراء</th>
-                                </tr>
-                            </thead>
-                            <tbody id="capitalTableBody" class="divide-y divide-slate-800/60"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TAB 6: REPORTS & PROFIT DISTRIBUTION -->
-                <div id="tab-content-reports" class="tab-pane space-y-6 hidden">
-                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">تقرير الأرباح وتوزيع الحصص للمستثمرين</h2>
-                            <p class="text-xs text-slate-400">حدد الفترة الزمنية لحساب صافي الربح وتوزيعه بنسب رؤوس الأموال بدقة</p>
-                        </div>
-                        <div class="flex items-center space-x-2 space-x-reverse no-print">
-                            <button onclick="App.exportTable('investorProfitTable', 'تقرير_الأرباح')" class="bg-emerald-700 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs transition">
-                                <i class="fa-solid fa-file-excel ml-1"></i> تصدير Excel
-                            </button>
-                            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-2 rounded-xl text-xs font-semibold transition">
-                                <i class="fa-solid fa-print ml-1"></i> طباعة التقرير
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">من تاريخ</label>
-                            <input type="datetime-local" id="reportStart" onchange="App.generateReports()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">إلى تاريخ</label>
-                            <input type="datetime-local" id="reportEnd" onchange="App.generateReports()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                        </div>
-                        <div class="flex items-end">
-                            <button type="button" onclick="App.generateReports()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20">
-                                <i class="fa-solid fa-calculator ml-1"></i> احتساب النتائج والنسب
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Formula breakdown box -->
-                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
-                        <h4 class="font-bold text-slate-400 flex items-center"><i class="fa-solid fa-square-root-variable text-emerald-400 ml-1"></i> تفاصيل المعادلة المعتمدة</h4>
-                        <div class="font-mono text-slate-300 bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-right dir-ltr">
-                            صافي الأصول = (لنا عند العملاء + الصناديق والماكينات) − (علينا للعملاء + إجمالي رأس المال)
-                        </div>
-                        <div id="reportFormulaText" class="text-slate-400 space-y-1 pt-1"></div>
-                    </div>
-
-                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                        <table id="investorProfitTable" class="w-full text-right text-xs text-slate-300">
-                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                                <tr>
-                                    <th class="p-3">المستثمر</th>
-                                    <th class="p-3">رأس المال بداية الفترة</th>
-                                    <th class="p-3">الإضافات</th>
-                                    <th class="p-3">المسحوبات</th>
-                                    <th class="p-3">رأس المال الفعّال</th>
-                                    <th class="p-3">النسبة (%)</th>
-                                    <th class="p-3 text-emerald-400 font-bold">الربح المستحق</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reportTableBody" class="divide-y divide-slate-800/60"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <footer class="bg-slate-950 border-t border-slate-900 py-4 text-center text-xs text-slate-500 no-print">
-        <p>نظام الدفتر المالي المحاسبي الاحترافي © 2026 — هندسة برمجية ومحاسبية متكاملة</p>
-    </footer>
-
-    <!-- Firebase SDK & Reactive Engine -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
-            authDomain: "megabytefawry.firebaseapp.com",
-            projectId: "megabytefawry",
-            storageBucket: "megabytefawry.firebasestorage.app",
-            messagingSenderId: "832804585797",
-            appId: "1:832804585797:web:00637871be12c00157fe2c",
-            measurementId: "G-75PB78K0F4"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        class FinancialLedgerSystem {
-            constructor() {
-                this.defaultAccounts = [
-                    { id: 'acc_cash', name: 'الخزينة النقدية', type: 'cash', status: 'active' },
-                    { id: 'acc_ewallet', name: 'المحافظ الرقمية', type: 'ewallet', status: 'active' },
-                    { id: 'acc_pos_1', name: 'ماكينة فوري أندرويد', type: 'pos', status: 'active' }
-                ];
-                
-                let local = localStorage.getItem('fin_ledger_db');
-                this.data = local ? JSON.parse(local) : {
-                    accounts: this.defaultAccounts,
-                    snapshots: [],
-                    customers: [],
-                    expenses: [],
-                    capital: []
-                };
-                this.selectedCustomer = null;
-                this.initSync();
-            }
-
-            initSync() {
-                const room = localStorage.getItem('fin_sync_room') || 'DEFAULT_LEDGER';
-                document.getElementById('syncRoomInput').value = room;
-                const dbRef = ref(db, 'ledger_rooms/' + room);
-                onValue(dbRef, (snapshot) => {
-                    const val = snapshot.val();
-                    if (val) {
-                        this.data = val;
-                        localStorage.setItem('fin_ledger_db', JSON.stringify(val));
-                    } else {
-                        this.pushCloud();
-                    }
-                    this.renderAll();
-                    document.getElementById('cloudDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
-                    document.getElementById('cloudText').innerText = "متصل سحابياً (" + room + ")";
-                }, (err) => {
-                    document.getElementById('cloudDot').className = "w-2.5 h-2.5 rounded-full bg-red-500";
-                    document.getElementById('cloudText').innerText = "خطأ في الاتصال";
-                });
-            }
-
-            pushCloud() {
-                const room = localStorage.getItem('fin_sync_room') || 'DEFAULT_LEDGER';
-                set(ref(db, 'ledger_rooms/' + room), JSON.parse(JSON.stringify(this.data))).catch(e => console.error(e));
-            }
-
-            saveLocal() {
-                localStorage.setItem('fin_ledger_db', JSON.stringify(this.data));
-                this.pushCloud();
-                this.renderAll();
-            }
-
-            updateSyncRoom() {
-                const val = document.getElementById('syncRoomInput').value.trim();
-                if (val) {
-                    localStorage.setItem('fin_sync_room', val);
-                    location.reload();
-                }
-            }
-
-            switchTab(tabId) {
-                document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-                document.querySelectorAll('[id^="btn-tab-"]').forEach(el => {
-                    el.className = "px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800";
-                });
-                document.getElementById('tab-content-' + tabId).classList.remove('hidden');
-                document.getElementById('btn-tab-' + tabId).className = "px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse bg-emerald-600 text-slate-950 shadow-md";
-            }
-
-            formatNum(num) {
-                return Number(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-
-            getCustomersMap(upToDate = null) {
-                let map = {};
-                this.data.customers.forEach(c => {
-                    if (!upToDate || c.date <= upToDate) {
-                        if (!map[c.name]) map[c.name] = 0;
-                        if (c.type === 'us') map[c.name] += c.amount;
-                        else map[c.name] -= c.amount;
-                    }
-                });
-                let totalUs = 0, totalThem = 0;
-                Object.values(map).forEach(val => {
-                    if (val > 0) totalUs += val;
-                    else if (val < 0) totalThem += Math.abs(val);
-                });
-                return { totalUs, totalThem, net: totalUs - totalThem, map };
-            }
-
-            getTotalCapital(upToDate = null) {
-                let cap = 0;
-                this.data.capital.forEach(c => {
-                    if (!upToDate || c.date <= upToDate) {
-                        cap += (c.type === 'add' ? c.amount : -c.amount);
-                    }
-                });
-                return cap;
-            }
-
-            renderAll() {
-                this.renderAccounts();
-                this.renderSnapshots();
-                this.renderCustomers();
-                this.renderExpenses();
-                this.renderCapital();
-                this.updateKPIs();
-                this.generateReports();
-            }
-
-            // --- ACCOUNTS ---
-            saveAccount(e) {
-                e.preventDefault();
-                const id = document.getElementById('accId').value;
-                const name = document.getElementById('accName').value.trim();
-                const type = document.getElementById('accType').value;
-                const status = document.getElementById('accStatus').value;
-                if (id) {
-                    const acc = this.data.accounts.find(a => a.id === id);
-                    if (acc) Object.assign(acc, { name, type, status });
-                } else {
-                    this.data.accounts.push({ id: 'acc_' + Date.now(), name, type, status });
-                }
-                document.getElementById('accId').value = '';
-                e.target.reset();
-                this.saveLocal();
-            }
-
-            renderAccounts() {
-                const tbody = document.getElementById('accountsTableBody');
-                tbody.innerHTML = this.data.accounts.map(a => `
-                    <tr class="hover:bg-slate-900/50">
-                        <td class="p-3 font-bold text-white">${a.name}</td>
-                        <td class="p-3"><span class="bg-slate-900 px-2 py-1 rounded border border-slate-800">${a.type}</span></td>
-                        <td class="p-3"><span class="${a.status === 'active' ? 'text-emerald-400' : 'text-red-400'}">${a.status === 'active' ? 'نشط' : 'معطل'}</span></td>
-                        <td class="p-3 text-center no-print">
-                            <button onclick="App.deleteAccount('${a.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-                
-                // Snapshot inputs
-                const container = document.getElementById('dynamicSnapInputs');
-                const active = this.data.accounts.filter(a => a.status === 'active');
-                container.innerHTML = active.map(a => `
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-400 mb-1">${a.name}</label>
-                        <input type="number" step="0.01" id="snap_acc_${a.id}" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                    </div>
-                `).join('');
-            }
-
-            deleteAccount(id) {
-                if (confirm('تأكيد الحذف؟')) {
-                    this.data.accounts = this.data.accounts.filter(a => a.id !== id);
-                    this.saveLocal();
-                }
-            }
-
-            // --- SNAPSHOTS ---
-            saveSnapshot(e) {
-                e.preventDefault();
-                const date = document.getElementById('snapDate').value;
-                if (!date) return;
-                let balances = {};
-                this.data.accounts.filter(a => a.status === 'active').forEach(a => {
-                    const input = document.getElementById('snap_acc_' + a.id);
-                    balances[a.id] = input ? (parseFloat(input.value) || 0) : 0;
-                });
-                this.data.snapshots.push({ id: 'snap_' + Date.now(), date, balances });
-                this.data.snapshots.sort((a,b) => new Date(a.date) - new Date(b.date));
-                e.target.reset();
-                document.getElementById('snapDate').value = new Date().toISOString().slice(0,16);
-                this.saveLocal();
-            }
-
-            renderSnapshots() {
-                const active = this.data.accounts.filter(a => a.status === 'active');
-                const header = document.getElementById('snapshotsHeader');
-                const body = document.getElementById('snapshotsBody');
-                
-                header.innerHTML = `
-                    <tr>
-                        <th class="p-3">التاريخ والوقت</th>
-                        ${active.map(a => `<th class="p-3">${a.name}</th>`).join('')}
-                        <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th>
-                        <th class="p-3 font-bold text-blue-400">فارق الربح</th>
-                        <th class="p-3 text-center no-print">إجراء</th>
-                    </tr>
-                `;
-
-                let prev = null;
-                body.innerHTML = this.data.snapshots.map(s => {
-                    let accTotal = 0;
-                    const cols = active.map(a => {
-                        let val = s.balances[a.id] || 0;
-                        accTotal += val;
-                        return `<td class="p-3 font-mono">${this.formatNum(val)}</td>`;
-                    }).join('');
-
-                    const cust = this.getCustomersMap(s.date);
-                    const cap = this.getTotalCapital(s.date);
-                    // المعادلة المعتمدة: (لنا عند العملاء + الصناديق والماكينات) - (علينا للعملاء + إجمالي رأس المال)
-                    const netAssets = (cust.totalUs + accTotal) - (cust.totalThem + cap);
-
-                    let diffTxt = '-';
-                    if (prev !== null) {
-                        let diff = netAssets - prev;
-                        diffTxt = diff >= 0 ? `<span class="text-emerald-400 font-mono">+${this.formatNum(diff)}</span>` : `<span class="text-red-400 font-mono">${this.formatNum(diff)}</span>`;
-                    }
-                    prev = netAssets;
-
-                    return `
-                        <tr class="hover:bg-slate-900/50">
-                            <td class="p-3 font-mono text-slate-400">${s.date.replace('T', ' ')}</td>
-                            ${cols}
-                            <td class="p-3 font-mono font-bold text-emerald-400">${this.formatNum(netAssets)} ج.م</td>
-                            <td class="p-3 font-mono">${diffTxt}</td>
-                            <td class="p-3 text-center no-print">
-                                <button onclick="App.deleteSnapshot('${s.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            deleteSnapshot(id) {
-                if (confirm('تأكيد الحذف؟')) {
-                    this.data.snapshots = this.data.snapshots.filter(s => s.id !== id);
-                    this.saveLocal();
-                }
-            }
-
-            // --- CUSTOMERS ---
-            saveCustomerTx(e) {
-                e.preventDefault();
-                const name = document.getElementById('custName').value.trim();
-                const date = document.getElementById('custDate').value;
-                const type = document.getElementById('custType').value;
-                const amount = parseFloat(document.getElementById('custAmount').value) || 0;
-                if (!name || !date || amount <= 0) return;
-
-                this.data.customers.push({ id: 'c_' + Date.now(), name, date, type, amount });
-                document.getElementById('custAmount').value = '';
-                document.getElementById('custAlert').classList.add('hidden');
-                this.saveLocal();
-            }
-
-            renderCustomers() {
-                const search = document.getElementById('custSearch').value.toLowerCase();
-                const custData = this.getCustomersMap();
-                const tbody = document.getElementById('customersTableBody');
-                
-                const names = Object.keys(custData.map).filter(n => n.toLowerCase().includes(search));
-                tbody.innerHTML = names.map(name => {
-                    let bal = custData.map[name];
-                    let isUs = bal >= 0;
-                    return `
-                        <tr onclick="App.selectCustomer('${name}')" class="hover:bg-slate-900 cursor-pointer transition">
-                            <td class="p-3 font-bold text-white flex items-center space-x-2 space-x-reverse">
-                                <i class="fa-solid fa-user text-amber-500 text-[10px]"></i>
-                                <span>${name}</span>
-                            </td>
-                            <td class="p-3 font-mono font-bold ${isUs ? 'text-emerald-400' : 'text-red-400'}">${this.formatNum(Math.abs(bal))} ج.م</td>
-                            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] ${isUs ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">${isUs ? 'لنا عنده (دين)' : 'له عندنا'}</span></td>
-                            <td class="p-3 text-center no-print text-amber-400 font-bold"><i class="fa-solid fa-pen-to-square"></i></td>
-                        </tr>
-                    `;
-                }).join('');
-
-                if (this.selectedCustomer) this.selectCustomer(this.selectedCustomer);
-            }
-
-            selectCustomer(name) {
-                this.selectedCustomer = name;
-                document.getElementById('custName').value = name;
-                document.getElementById('custType').value = 'repayment';
-                document.getElementById('custAlert').classList.remove('hidden');
-                document.getElementById('selectedCustTitle').innerText = name;
-
-                const container = document.getElementById('customerLogsContainer');
-                const logs = this.data.customers.filter(c => c.name === name).sort((a,b) => new Date(b.date) - new Date(a.date));
-                
-                container.innerHTML = logs.map(l => `
-                    <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                        <div>
-                            <span class="font-bold text-[11px] ${l.type === 'us' ? 'text-emerald-400' : 'text-red-400'}">${l.type === 'us' ? 'لنا عند العملاء (+)' : (l.type === 'them' ? 'علينا للعميل (-)' : 'تسديد من العميل (-)')}</span>
-                            <p class="text-[9px] text-slate-500 font-mono">${l.date.replace('T', ' ')}</p>
-                        </div>
-                        <div class="flex items-center space-x-2 space-x-reverse">
-                            <span class="font-bold font-mono text-white">${this.formatNum(l.amount)} ج.م</span>
-                            <button onclick="App.deleteCustomerTx('${l.id}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            deleteCustomerTx(id) {
-                if (confirm('تأكيد الحذف؟')) {
-                    this.data.customers = this.data.customers.filter(c => c.id !== id);
-                    this.saveLocal();
-                }
-            }
-
-            // --- EXPENSES ---
-            saveExpense(e) {
-                e.preventDefault();
-                const title = document.getElementById('expTitle').value.trim();
-                const amount = parseFloat(document.getElementById('expAmount').value) || 0;
-                const date = document.getElementById('expDate').value;
-                if (!title || !date || amount <= 0) return;
-
-                this.data.expenses.push({ id: 'ex_' + Date.now(), title, amount, date });
-                e.target.reset();
-                document.getElementById('expDate').value = new Date().toISOString().slice(0,16);
-                this.saveLocal();
-            }
-
-            renderExpenses() {
-                const tbody = document.getElementById('expensesTableBody');
-                tbody.innerHTML = this.data.expenses.map(e => `
-                    <tr class="hover:bg-slate-900/50">
-                        <td class="p-3 font-mono text-slate-400">${e.date.replace('T', ' ')}</td>
-                        <td class="p-3 font-bold text-white">${e.title}</td>
-                        <td class="p-3 font-mono font-bold text-red-400">${this.formatNum(e.amount)} ج.م</td>
-                        <td class="p-3 text-center no-print">
-                            <button onclick="App.deleteExpense('${e.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            deleteExpense(id) {
-                if (confirm('تأكيد الحذف؟')) {
-                    this.data.expenses = this.data.expenses.filter(e => e.id !== id);
-                    this.saveLocal();
-                }
-            }
-
-            // --- CAPITAL ---
-            saveCapital(e) {
-                e.preventDefault();
-                const investor = document.getElementById('capInvestor').value.trim();
-                const type = document.getElementById('capType').value;
-                const amount = parseFloat(document.getElementById('capAmount').value) || 0;
-                const date = document.getElementById('capDate').value;
-                if (!investor || !date || amount <= 0) return;
-
-                this.data.capital.push({ id: 'cap_' + Date.now(), investor, type, amount, date });
-                e.target.reset();
-                document.getElementById('capDate').value = new Date().toISOString().slice(0,16);
-                this.saveLocal();
-            }
-
-            renderCapital() {
-                const tbody = document.getElementById('capitalTableBody');
-                tbody.innerHTML = this.data.capital.map(c => `
-                    <tr class="hover:bg-slate-900/50">
-                        <td class="p-3 font-mono text-slate-400">${c.date.replace('T', ' ')}</td>
-                        <td class="p-3 font-bold text-white">${c.investor}</td>
-                        <td class="p-3"><span class="${c.type === 'add' ? 'text-blue-400' : 'text-red-400'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
-                        <td class="p-3 font-mono font-bold text-white">${this.formatNum(c.amount)} ج.م</td>
-                        <td class="p-3 text-center no-print">
-                            <button onclick="App.deleteCapital('${c.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            deleteCapital(id) {
-                if (confirm('تأكيد الحذف؟')) {
-                    this.data.capital = this.data.capital.filter(c => c.id !== id);
-                    this.saveLocal();
-                }
-            }
-
-            // --- KPIS & REPORTS ---
-            updateKPIs() {
-                let latestAssets = 0;
-                if (this.data.snapshots.length > 0) {
-                    const snap = this.data.snapshots[this.data.snapshots.length - 1];
-                    Object.values(snap.balances).forEach(v => latestAssets += v);
-                }
-                const cust = this.getCustomersMap();
-                const cap = this.getTotalCapital();
-
-                // المعادلة المعتمدة للأصول الصافية
-                const netAssets = (cust.totalUs + latestAssets) - (cust.totalThem + cap);
-
-                document.getElementById('kpiNetAssets').innerHTML = `${this.formatNum(netAssets)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
-                document.getElementById('kpiTotalCapital').innerHTML = `${this.formatNum(cap)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
-                document.getElementById('kpiNetCustomers').innerHTML = `${this.formatNum(cust.net)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
-                document.getElementById('kpiUs').innerText = this.formatNum(cust.totalUs);
-                document.getElementById('kpiThem').innerText = this.formatNum(cust.totalThem);
-            }
-
-            generateReports() {
-                const start = document.getElementById('reportStart').value;
-                const end = document.getElementById('reportEnd').value;
-                const snaps = this.data.snapshots;
-
-                if (snaps.length < 2) {
-                    document.getElementById('reportTableBody').innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-500">يلزم تسجيل لقطتي رصيد على الأقل لحساب الأرباح</td></tr>`;
-                    return;
-                }
-
-                const startSnap = start ? snaps.find(s => s.date >= start) || snaps[0] : snaps[0];
-                const endSnap = end ? snaps.slice().reverse().find(s => s.date <= end) || snaps[snaps.length - 1] : snaps[snaps.length - 1];
-
-                let startAcc = 0, endAcc = 0;
-                Object.values(startSnap.balances).forEach(v => startAcc += v);
-                Object.values(endSnap.balances).forEach(v => endAcc += v);
-
-                const startCust = this.getCustomersMap(startSnap.date);
-                const endCust = this.getCustomersMap(endSnap.date);
-                const startCapTotal = this.getTotalCapital(startSnap.date);
-                const endCapTotal = this.getTotalCapital(endSnap.date);
-
-                const startNetAssets = (startCust.totalUs + startAcc) - (startCust.totalThem + startCapTotal);
-                const endNetAssets = (endCust.totalUs + endAcc) - (endCust.totalThem + endCapTotal);
-
-                let periodAdd = 0, periodWithdraw = 0;
-                let invMap = {};
-                this.data.capital.forEach(c => {
-                    if (!invMap[c.investor]) invMap[c.investor] = { base: 0, add: 0, withdraw: 0 };
-                    if (c.date < startSnap.date) {
-                        invMap[c.investor].base += (c.type === 'add' ? c.amount : -c.amount);
-                    } else if (c.date >= startSnap.date && c.date <= endSnap.date) {
-                        if (c.type === 'add') { periodAdd += c.amount; invMap[c.investor].add += c.amount; }
-                        else { periodWithdraw += c.amount; invMap[c.investor].withdraw += c.amount; }
-                    }
-                });
-
-                let periodExpenses = 0;
-                this.data.expenses.forEach(e => {
-                    if (e.date >= startSnap.date && e.date <= endSnap.date) periodExpenses += e.amount;
-                });
-
-                const netProfit = (endNetAssets - startNetAssets - periodAdd + periodWithdraw) - periodExpenses;
-                document.getElementById('kpiNetProfit').innerHTML = `${this.formatNum(netProfit)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
-
-                document.getElementById('reportFormulaText').innerHTML = `
-                    <p>• أصول صافية بداية الفترة: <strong class="text-white">${this.formatNum(startNetAssets)}</strong> | نهاية الفترة: <strong class="text-white">${this.formatNum(endNetAssets)}</strong></p>
-                    <p>• إجمالي المصروفات التشغيلية المخصومة: <strong class="text-red-400">-${this.formatNum(periodExpenses)}</strong></p>
-                    <p class="text-emerald-400 font-bold mt-1">صافي أرباح الفترة القابلة للتوزيع = <span class="font-mono">${this.formatNum(netProfit)} ج.م</span></p>
-                `;
-
-                let totalCurrentCap = 0;
-                Object.values(invMap).forEach(d => totalCurrentCap += Math.max(0, d.base + d.add - d.withdraw));
-
-                const tbody = document.getElementById('reportTableBody');
-                tbody.innerHTML = Object.keys(invMap).map(inv => {
-                    const d = invMap[inv];
-                    const effective = Math.max(0, d.base + d.add - d.withdraw);
-                    const ratio = totalCurrentCap > 0 ? (effective / totalCurrentCap) : 0;
-                    const profitShare = netProfit * ratio;
-
-                    return `
-                        <tr class="hover:bg-slate-900/50">
-                            <td class="p-3 font-bold text-white">${inv}</td>
-                            <td class="p-3 font-mono">${this.formatNum(d.base)}</td>
-                            <td class="p-3 font-mono text-blue-400">+${this.formatNum(d.add)}</td>
-                            <td class="p-3 font-mono text-red-400">-${this.formatNum(d.withdraw)}</td>
-                            <td class="p-3 font-mono font-bold">${this.formatNum(effective)}</td>
-                            <td class="p-3 font-mono text-indigo-400">${(ratio * 100).toFixed(2)}%</td>
-                            <td class="p-3 font-mono font-bold text-emerald-400">${this.formatNum(profitShare)} ج.م</td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            exportTable(tableId, filename) {
-                const table = document.getElementById(tableId);
-                if (!table) return;
-                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-                XLSX.writeFile(wb, filename + '.xlsx');
-            }
-        }
-
-        const App = new FinancialLedgerSystem();
-        window.App = App;
-
-        window.onload = function() {
-            const now = new Date().toISOString().slice(0,16);
-            ['snapDate', 'custDate', 'expDate', 'capDate', 'reportStart', 'reportEnd'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el && !el.value) el.value = now;
-            });
-            App.renderAll();
-        };
-    </script>
-</body>
-</html>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ
