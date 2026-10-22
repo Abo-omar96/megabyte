@@ -27,17 +27,21 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
+        .font-mono, td.mono-num, th.mono-num, input[type="number"], .num-font { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
+            .print-clean { border: 1px solid #ccc !important; color: black !important; background: white !important; }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
+    <!-- Toast Notification Overlay -->
+    <div id="toastContainer" class="fixed bottom-5 left-5 z-50 flex flex-col space-y-2 no-print"></div>
+
     <!-- Top Navigation Bar -->
-    <header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 no-print">
+    <header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 no-print">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div class="bg-gradient-to-tr from-emerald-600 to-emerald-400 text-slate-950 p-2.5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20">
@@ -52,8 +56,8 @@
             <!-- Cloud Sync Indicator -->
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div id="cloudBadge" class="flex items-center space-x-2 space-x-reverse text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-slate-400 shadow-inner">
-                    <span id="cloudDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="cloudText">جاري الاتصال السحابي...</span>
+                    <span id="cloudDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="cloudText">متصل بالسحابة المحلية</span>
                 </div>
             </div>
         </div>
@@ -295,8 +299,8 @@
                         <div>
                             <label class="block text-[11px] font-semibold text-slate-300 mb-1">نوع الحركة</label>
                             <select id="custType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                                <option value="repayment">تسديد من العميل (خصم الدين)</option>
                                 <option value="us">مبلغ لنا عند العميل (عليه +)</option>
+                                <option value="repayment">تسديد من العميل (خصم الدين)</option>
                                 <option value="them">مبلغ علينا للعميل (له -)</option>
                             </select>
                         </div>
@@ -422,27 +426,31 @@
                     </div>
                 </div>
 
-                <!-- TAB 6: CLIENT WE -->
+                <!-- TAB 6: CLIENT WE LINES -->
                 <div id="tab-content-clientwe" class="tab-pane space-y-6 hidden">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">بيانات خطوط التليفون الأرضي للعملاء (Client WE)</h2>
+                        <h2 class="text-base font-bold text-white">إدارة وبيانات خطوط WE</h2>
                     </div>
                     <form id="weForm" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم العميل</label>
-                            <input type="text" id="weName" required placeholder="اسم صاحب الخط" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">رقم الخط / الخدمة</label>
+                            <input type="text" id="weNumber" required placeholder="022xxxxxxx / 015xxxx" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">الرقم الأرضي</label>
-                            <input type="text" id="wePhone" required placeholder="0502460000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم الخط / العميل</label>
+                            <input type="text" id="weName" required placeholder="اسم الشحنة / العميل" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">كلمة سر الراوتر / الحساب</label>
-                            <input type="text" id="wePass" placeholder="Mm22446688" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">تاريخ التجيد / الاستحقاق</label>
+                            <input type="date" id="weDueDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
                         </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 rounded-xl text-xs transition cursor-pointer">
-                                <i class="fa-solid fa-plus ml-1"></i> حفظ البيانات
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">قيمة الفاتورة (ج.م)</label>
+                            <input type="number" step="0.01" id="weAmount" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div class="md:col-span-4 flex justify-end pt-2">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-2 rounded-xl text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-plus ml-1"></i> حفظ بيانات خط WE
                             </button>
                         </div>
                     </form>
@@ -450,9 +458,10 @@
                         <table class="w-full text-right text-xs text-slate-300">
                             <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
                                 <tr>
-                                    <th class="p-3">الاسم</th>
-                                    <th class="p-3">الرقم الأرضي</th>
-                                    <th class="p-3">كلمة السر</th>
+                                    <th class="p-3">رقم الخدمة</th>
+                                    <th class="p-3">الاسم / المكان</th>
+                                    <th class="p-3">تاريخ التجديد</th>
+                                    <th class="p-3">القيمة</th>
                                     <th class="p-3 text-center no-print">إجراء</th>
                                 </tr>
                             </thead>
@@ -461,27 +470,35 @@
                     </div>
                 </div>
 
-                <!-- TAB 7: ORDERS -->
+                <!-- TAB 7: MAINTENANCE ORDERS -->
                 <div id="tab-content-orders" class="tab-pane space-y-6 hidden">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">جدول الأوردرات والمهام الجاري تنفيذها</h2>
+                        <h2 class="text-base font-bold text-white">أوردرات الصيانة والتنفيذ الميداني</h2>
                     </div>
                     <form id="orderForm" class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">البيان / تفاصيل المهمة</label>
-                            <input type="text" id="ordDesc" required placeholder="مثال: تركيد راوتر فايبر" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم العميل / المكان</label>
+                            <input type="text" id="orderClient" required placeholder="اسم العميل" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">رقم الموبايل</label>
-                            <input type="text" id="ordMobile" placeholder="01012345678" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">تفاصيل المشكلة / الأوردر</label>
+                            <input type="text" id="orderDesc" required placeholder="سلك مقطوع / راوتر فاصل" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">ملاحظات / قطع غيار</label>
-                            <input type="text" id="ordNotes" placeholder="فلاشه 32 كينج ماكس" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">الفني المكلف</label>
+                            <input type="text" id="orderTech" placeholder="اسم الفني" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
                         </div>
-                        <div class="flex items-end">
-                            <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs transition cursor-pointer">
-                                <i class="fa-solid fa-plus ml-1"></i> تسجيل أوردر
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">حالة الأوردر</label>
+                            <select id="orderStatus" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                                <option value="pending">قيد الانتظار</option>
+                                <option value="progress">جاري التنفيذ</option>
+                                <option value="completed">تم التنفيذ بنجاح</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-4 flex justify-end pt-2">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2 rounded-xl text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-folder-plus ml-1"></i> تسجيل أوردر صيانة
                             </button>
                         </div>
                     </form>
@@ -489,9 +506,10 @@
                         <table class="w-full text-right text-xs text-slate-300">
                             <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
                                 <tr>
-                                    <th class="p-3">البيان</th>
-                                    <th class="p-3">رقم الموبايل</th>
-                                    <th class="p-3">ملاحظات</th>
+                                    <th class="p-3">العميل</th>
+                                    <th class="p-3">تفاصيل الطلب</th>
+                                    <th class="p-3">الفني</th>
+                                    <th class="p-3">الحالة</th>
                                     <th class="p-3 text-center no-print">إجراء</th>
                                 </tr>
                             </thead>
@@ -502,133 +520,617 @@
 
             </div>
         </div>
+
     </main>
 
-    <footer class="bg-slate-950 border-t border-slate-900 py-4 text-center text-xs text-slate-500 no-print">
-        <p>نظام منصة MegaByte السحابية المطور © 2026 — مصمم بناءً على معايير نظام المحاسبة الخاص بك</p>
-    </footer>
+    <!-- App JavaScript Engine -->
+    <script>
+        // Store Application State locally with enterprise Sync ID simulation
+        const DEFAULT_SYNC_ROOM = 'MEGABYTE-2026';
+        let currentSyncRoom = localStorage.getItem('mb_sync_room') || DEFAULT_SYNC_ROOM;
 
-    <!-- Firebase SDK & Reactive Core Engine -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
-            authDomain: "megabytefawry.firebaseapp.com",
-            projectId: "megabytefawry",
-            storageBucket: "megabytefawry.firebasestorage.app",
-            messagingSenderId: "832804585797",
-            appId: "1:832804585797:web:00637871be12c00157fe2c",
-            measurementId: "G-75PB78K0F4"
+        // Data Models
+        let appData = {
+            snapshots: [],
+            wallets: [],
+            customers: [],
+            partners: [],
+            network: [],
+            weLines: [],
+            orders: []
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        let activeCustName = null;
 
-        class MegaByteLedgerSystem {
-            constructor() {
-                // إدخال البيانات المبدئية المسحوبة من شيت الإكسل تلقائياً
-                const defaultWallets = [
-                    { id: 'w1', name: 'محمد = 01029160001', balance: 25686 },
-                    { id: 'w2', name: 'محمود= 01094621233', balance: 3554 },
-                    { id: 'w3', name: 'بنك مصر', balance: 13890 },
-                    { id: 'w4', name: 'كارت فورى', balance: 4542 },
-                    { id: 'w5', name: 'فورى اندرويد', balance: 626 },
-                    { id: 'w6', name: 'اوباى', balance: 90 }
-                ];
+        // Toast Helpers
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bg = type === 'success' ? 'bg-emerald-600 text-slate-950' : (type === 'error' ? 'bg-rose-600 text-white' : 'bg-indigo-600 text-white');
+            toast.className = `${bg} px-4 py-2.5 rounded-xl text-xs font-bold shadow-2xl flex items-center space-x-2 space-x-reverse transition-all duration-300 opacity-0 translate-y-2`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-2');
+            }, 10);
 
-                const defaultPartners = [
-                    { id: 'p1', name: 'الرصيد + النت + انا', amount: 72761 },
-                    { id: 'p2', name: 'اختى', amount: 14267 },
-                    { id: 'p3', name: 'عمر & حور', amount: 1855 }
-                ];
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
-                const defaultCustomers = [
-                    { id: 'c1', name: 'صندوق النت', date: '2026-01-01T00:00', type: 'them', amount: 21205 },
-                    { id: 'c2', name: 'عمر & حور & امهم', date: '2026-01-01T00:00', type: 'us', amount: 120 },
-                    { id: 'c3', name: 'عمر & حور & امهم', date: '2026-01-01T00:00', type: 'them', amount: 2000 },
-                    { id: 'c4', name: 'نجش', date: '2026-01-01T00:00', type: 'us', amount: 6500 },
-                    { id: 'c5', name: 'محمد حربى', date: '2026-01-01T00:00', type: 'us', amount: 2500 },
-                    { id: 'c6', name: 'ام عاصم', date: '2026-01-01T00:00', type: 'them', amount: 17892 }
-                ];
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('syncRoomInput').value = currentSyncRoom;
+            setInitialDates();
+            loadLocalData();
+            setupTabNavigation();
+            bindFormEvents();
+            renderAll();
 
-                let local = localStorage.getItem('megabyte_cloud_db');
-                this.data = local ? JSON.parse(local) : {
+            // Auto sync status pulse simulation
+            setInterval(() => {
+                const cloudDot = document.getElementById('cloudDot');
+                cloudDot.classList.toggle('opacity-40');
+            }, 1500);
+        });
+
+        function setInitialDates() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const datetimeStr = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            const snapDate = document.getElementById('snapDate');
+            const custDate = document.getElementById('custDate');
+            const weDueDate = document.getElementById('weDueDate');
+            
+            if(snapDate) snapDate.value = datetimeStr;
+            if(custDate) custDate.value = datetimeStr;
+            if(weDueDate) weDueDate.value = `${year}-${month}-${day}`;
+        }
+
+        // Sync & Storage Functions
+        function loadLocalData() {
+            const saved = localStorage.getItem(`mb_data_${currentSyncRoom}`);
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {
+                    console.error('Error loading data', e);
+                }
+            } else {
+                // Initialize default demo values if fresh
+                appData = {
                     snapshots: [],
-                    wallets: defaultWallets,
-                    customers: defaultCustomers,
-                    partners: defaultPartners,
-                    networks: [],
-                    clientwe: [],
+                    wallets: [
+                        { id: 1, name: 'فودافون كاش - الرئيسى', balance: 5000 },
+                        { id: 2, name: 'ماكينة فوري 1', balance: 1200 }
+                    ],
+                    customers: [
+                        { id: 1, name: 'عميل تجريبي', balance: 150, logs: [{ id: 101, date: new Date().toLocaleString('ar-EG'), type: 'us', amount: 150, note: 'رصيد اول المده' }] }
+                    ],
+                    partners: [
+                        { id: 1, name: 'شريك 1', amount: 10000 }
+                    ],
+                    network: [
+                        { id: 1, name: 'نانو الرئيسي', ssid: 'MEGABYTE_MAIN', ip: '192.168.1.20', type: 'AP' }
+                    ],
+                    weLines: [],
                     orders: []
                 };
-                this.selectedCustomer = null;
-                this.initSync();
-                this.bindEvents();
+                saveData();
             }
+        }
 
-            initSync() {
-                const room = localStorage.getItem('megabyte_sync_room') || 'MEGABYTE_DEFAULT';
-                document.getElementById('syncRoomInput').value = room;
-                const dbRef = ref(db, 'megabyte_rooms/' + room);
-                onValue(dbRef, (snapshot) => {
-                    const val = snapshot.val();
-                    if (val) {
-                        this.data = val;
-                        localStorage.setItem('megabyte_cloud_db', JSON.stringify(val));
-                    } else {
-                        this.pushCloud();
-                    }
-                    this.renderAll();
-                    document.getElementById('cloudDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
-                    document.getElementById('cloudText').innerText = "متصل سحابياً (" + room + ")";
-                }, (err) => {
-                    document.getElementById('cloudDot').className = "w-2.5 h-2.5 rounded-full bg-red-500";
-                    document.getElementById('cloudText').innerText = "خطأ في الاتصال";
-                });
-            }
+        function saveData() {
+            localStorage.setItem(`mb_data_${currentSyncRoom}`, JSON.stringify(appData));
+            renderAll();
+        }
 
-            pushCloud() {
-                const room = localStorage.getItem('megabyte_sync_room') || 'MEGABYTE_DEFAULT';
-                set(ref(db, 'megabyte_rooms/' + room), JSON.parse(JSON.stringify(this.data))).catch(e => console.error(e));
-            }
+        // Tab Navigation
+        function setupTabNavigation() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
 
-            saveLocal() {
-                localStorage.setItem('megabyte_cloud_db', JSON.stringify(this.data));
-                this.pushCloud();
-                this.renderAll();
-            }
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabKey = btn.getAttribute('data-tab');
+                    
+                    tabBtns.forEach(b => {
+                        b.classList.remove('bg-emerald-600', 'text-slate-950', 'shadow-md');
+                        b.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
+                    });
+                    
+                    btn.classList.add('bg-emerald-600', 'text-slate-950', 'shadow-md');
+                    btn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
 
-            bindEvents() {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const tabId = btn.getAttribute('data-tab');
-                        this.switchTab(tabId);
+                    tabPanes.forEach(pane => {
+                        if (pane.id === `tab-content-${tabKey}`) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
                     });
                 });
+            });
+        }
 
-                document.getElementById('btnSyncRoom').addEventListener('click', () => {
-                    const val = document.getElementById('syncRoomInput').value.trim();
-                    if (val) {
-                        localStorage.setItem('megabyte_sync_room', val);
-                        location.reload();
-                    }
+        // Global Render Engine & Calculations
+        function renderAll() {
+            calculateKPIs();
+            renderSnapshots();
+            renderWallets();
+            renderCustomers();
+            renderPartners();
+            renderNetwork();
+            renderWELines();
+            renderOrders();
+        }
+
+        function calculateKPIs() {
+            // 1. Wallets Total
+            const walletsTotal = appData.wallets.reduce((acc, w) => acc + (parseFloat(w.balance) || 0), 0);
+            document.getElementById('kpiWalletsTotal').innerHTML = `${walletsTotal.toFixed(2)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
+
+            // 2. Capital Total
+            const totalCapital = appData.partners.reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
+            document.getElementById('kpiTotalCapital').innerHTML = `${totalCapital.toFixed(2)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
+
+            // 3. Customers Net
+            let totalUs = 0;
+            let totalThem = 0;
+            appData.customers.forEach(c => {
+                const bal = parseFloat(c.balance) || 0;
+                if (bal > 0) totalUs += bal;
+                else if (bal < 0) totalThem += Math.abs(bal);
+            });
+
+            const netCustomers = totalUs - totalThem;
+            document.getElementById('kpiUs').innerText = totalUs.toFixed(2);
+            document.getElementById('kpiThem').innerText = totalThem.toFixed(2);
+            document.getElementById('kpiNetCustomers').innerHTML = `${netCustomers.toFixed(2)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
+
+            // 4. Net Assets
+            // Assets = (Wallets + Customers Debt Us) - (Customers Debt Them + Capital)
+            const netAssets = (walletsTotal + totalUs) - (totalThem + totalCapital);
+            document.getElementById('kpiNetAssets').innerHTML = `${netAssets.toFixed(2)} <span class="text-xs text-slate-500 font-normal">ج.م</span>`;
+        }
+
+        // Form Event Listeners & Button Bindings
+        function bindFormEvents() {
+            // Room Sync Button
+            document.getElementById('btnSyncRoom').addEventListener('click', () => {
+                const roomVal = document.getElementById('syncRoomInput').value.trim();
+                if (roomVal) {
+                    currentSyncRoom = roomVal;
+                    localStorage.setItem('mb_sync_room', currentSyncRoom);
+                    loadLocalData();
+                    showToast(`تم التوصيل والربط بالتزامن السحابي للغرفة: ${currentSyncRoom}`, 'info');
+                }
+            });
+
+            // Tab 1: Snapshot Submit
+            document.getElementById('snapshotForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const capital = parseFloat(document.getElementById('snapCapital').value) || 0;
+                const fawry = parseFloat(document.getElementById('snapFawry').value) || 0;
+                const aman = parseFloat(document.getElementById('snapAman').value) || 0;
+                const frozen = parseFloat(document.getElementById('snapFrozen').value) || 0;
+                const fakka = parseFloat(document.getElementById('snapFakka').value) || 0;
+                const silver = parseFloat(document.getElementById('snapSilver').value) || 0;
+                const shift = document.getElementById('snapShift').value.trim() || 'عام';
+                const date = document.getElementById('snapDate').value;
+
+                const netAssets = fawry + aman + frozen + fakka + silver;
+                const diff = netAssets - capital;
+
+                appData.snapshots.unshift({
+                    id: Date.now(),
+                    date: date ? new Date(date).toLocaleString('ar-EG') : new Date().toLocaleString('ar-EG'),
+                    capital, fawry, aman, frozen, fakka, silver, netAssets, shift, diff
                 });
 
-                document.getElementById('snapshotForm').addEventListener('submit', (e) => this.saveSnapshot(e));
-                document.getElementById('walletForm').addEventListener('submit', (e) => this.saveWallet(e));
-                document.getElementById('customerForm').addEventListener('submit', (e) => this.saveCustomerTx(e));
-                document.getElementById('partnerForm').addEventListener('submit', (e) => this.savePartner(e));
-                document.getElementById('networkForm').addEventListener('submit', (e) => this.saveNetwork(e));
-                document.getElementById('weForm').addEventListener('submit', (e) => this.saveWE(e));
-                document.getElementById('orderForm').addEventListener('submit', (e) => this.saveOrder(e));
+                saveData();
+                showToast('تم تسجيل لقطة الرصيد والوردية بنجاح');
+                document.getElementById('snapshotForm').reset();
+                setInitialDates();
+            });
 
-                document.getElementById('custSearch').addEventListener('input', () => this.renderCustomers());
-                document.getElementById('btnExportSnapshots').addEventListener('click', () => this.exportTable('snapshotsTable', 'لقطات_الرصيد'));
+            // Export Snapshots Excel
+            document.getElementById('btnExportSnapshots').addEventListener('click', () => {
+                if (appData.snapshots.length === 0) {
+                    showToast('لا توجد لقطات للتصدير', 'error');
+                    return;
+                }
+                const worksheet = XLSX.utils.json_to_sheet(appData.snapshots);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Snapshots");
+                XLSX.writeFile(workbook, `MegaByte_Snapshots_${currentSyncRoom}.xlsx`);
+                showToast('تم تصدير ملف Excel بنجاح');
+            });
+
+            // Tab 2: Wallet Form
+            document.getElementById('walletForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('walletName').value.trim();
+                const balance = parseFloat(document.getElementById('walletBalance').value) || 0;
+
+                appData.wallets.push({ id: Date.now(), name, balance });
+                saveData();
+                showToast('تمت إضافة المحفظة / الماكينة بنجاح');
+                document.getElementById('walletForm').reset();
+            });
+
+            // Tab 3: Customer Form
+            document.getElementById('customerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('custName').value.trim();
+                const date = document.getElementById('custDate').value;
+                const type = document.getElementById('custType').value;
+                const amount = parseFloat(document.getElementById('custAmount').value) || 0;
+
+                let cust = appData.customers.find(c => c.name.toLowerCase() === name.toLowerCase());
+                if (!cust) {
+                    cust = { id: Date.now(), name, balance: 0, logs: [] };
+                    appData.customers.push(cust);
+                }
+
+                let delta = 0;
+                let note = '';
+                if (type === 'us') { delta = amount; note = 'مبلغ لنا عند العميل (+)'; }
+                else if (type === 'them') { delta = -amount; note = 'مبلغ علينا للعميل (-)'; }
+                else if (type === 'repayment') { delta = -amount; note = 'تسديد سداد حساب (-)'; }
+
+                cust.balance += delta;
+                cust.logs.unshift({
+                    id: Date.now(),
+                    date: date ? new Date(date).toLocaleString('ar-EG') : new Date().toLocaleString('ar-EG'),
+                    type, amount, note
+                });
+
+                saveData();
+                showToast(`تم تسجيل الحركة الحسابية للعميل ${name}`);
+                document.getElementById('customerForm').reset();
+                document.getElementById('custAlert').classList.add('hidden');
+                setInitialDates();
+            });
+
+            // Customer Search Filter
+            document.getElementById('custSearch').addEventListener('input', (e) => {
+                renderCustomers(e.target.value.trim().toLowerCase());
+            });
+
+            // Tab 4: Partner Form
+            document.getElementById('partnerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('partName').value.trim();
+                const amount = parseFloat(document.getElementById('partAmount').value) || 0;
+
+                appData.partners.push({ id: Date.now(), name, amount });
+                saveData();
+                showToast('تمت إضافة الشريك بنجاح');
+                document.getElementById('partnerForm').reset();
+            });
+
+            // Tab 5: Network IP Form
+            document.getElementById('networkForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('netName').value.trim();
+                const ssid = document.getElementById('netSSID').value.trim() || 'MEGABYTE';
+                const ip = document.getElementById('netIP').value.trim();
+                const type = document.getElementById('netType').value;
+
+                appData.network.push({ id: Date.now(), name, ssid, ip, type });
+                saveData();
+                showToast('تم حفظ الجهاز وعنوان IP بنجاح');
+                document.getElementById('networkForm').reset();
+            });
+
+            // Tab 6: WE Lines Form
+            document.getElementById('weForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const number = document.getElementById('weNumber').value.trim();
+                const name = document.getElementById('weName').value.trim();
+                const dueDate = document.getElementById('weDueDate').value;
+                const amount = parseFloat(document.getElementById('weAmount').value) || 0;
+
+                appData.weLines.push({ id: Date.now(), number, name, dueDate, amount });
+                saveData();
+                showToast('تم حفظ بيانات خط WE بنجاح');
+                document.getElementById('weForm').reset();
+                setInitialDates();
+            });
+
+            // Tab 7: Orders Form
+            document.getElementById('orderForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const client = document.getElementById('orderClient').value.trim();
+                const desc = document.getElementById('orderDesc').value.trim();
+                const tech = document.getElementById('orderTech').value.trim() || 'غير محدد';
+                const status = document.getElementById('orderStatus').value;
+
+                appData.orders.push({ id: Date.now(), client, desc, tech, status });
+                saveData();
+                showToast('تم إنشاء أوردر الصيانة بنجاح');
+                document.getElementById('orderForm').reset();
+            });
+        }
+
+        // Render Functions for Tables
+        function renderSnapshots() {
+            const tbody = document.getElementById('snapshotsBody');
+            if (appData.snapshots.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-500">لا توجد لقطات رصيد مسجلة حتى الآن.</td></tr>`;
+                return;
             }
 
-            switchTab(tabId) {
-                document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-                document.querySelectorAll('.tab-btn').forEach(el => {
-                    el.className = "tab-btn px-4 py-2.5 rounded-xl text-
+            tbody.innerHTML = appData.snapshots.map(s => {
+                const diffClass = s.diff >= 0 ? 'text-emerald-400' : 'text-rose-400';
+                return `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-mono">${s.date}</td>
+                    <td class="p-3 font-mono">${s.capital.toFixed(2)}</td>
+                    <td class="p-3 font-mono">${s.fawry.toFixed(2)}</td>
+                    <td class="p-3 font-mono">${s.aman.toFixed(2)}</td>
+                    <td class="p-3 font-mono">${s.frozen.toFixed(2)}</td>
+                    <td class="p-3 font-mono">${s.fakka.toFixed(2)}</td>
+                    <td class="p-3 font-mono">${s.silver.toFixed(2)}</td>
+                    <td class="p-3 font-mono font-bold text-emerald-400">${s.netAssets.toFixed(2)}</td>
+                    <td class="p-3">${s.shift}</td>
+                    <td class="p-3 font-mono font-bold ${diffClass}">${s.diff > 0 ? '+' : ''}${s.diff.toFixed(2)}</td>
+                    <td class="p-3 text-center no-print">
+                        <button onclick="deleteItem('snapshots', ${s.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderWallets() {
+            const tbody = document.getElementById('walletsBody');
+            if (appData.wallets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-slate-500">لا توجد محافظ أو ماكينات مضافة.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = appData.wallets.map(w => `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-semibold text-white">${w.name}</td>
+                    <td class="p-3 font-mono text-emerald-400 font-bold">${parseFloat(w.balance).toFixed(2)} ج.م</td>
+                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                        <button onclick="editWallet(${w.id})" class="text-amber-400 hover:text-amber-300 p-1 cursor-pointer" title="تعديل">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteItem('wallets', ${w.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editWallet(id) {
+            const wallet = appData.wallets.find(w => w.id === id);
+            if (!wallet) return;
+            const newBal = prompt(`تعديل رصيد المحفظة (${wallet.name}):`, wallet.balance);
+            if (newBal !== null && !isNaN(parseFloat(newBal))) {
+                wallet.balance = parseFloat(newBal);
+                saveData();
+                showToast('تم تعديل رصيد المحفظة');
+            }
+        }
+
+        function renderCustomers(filter = '') {
+            const tbody = document.getElementById('customersBody');
+            let filtered = appData.customers;
+            if (filter) {
+                filtered = filtered.filter(c => c.name.toLowerCase().includes(filter));
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-500">لا يوجد عملاء مطابقون.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(c => {
+                const bal = parseFloat(c.balance) || 0;
+                let badgeClass = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                let label = 'عليه (مطلوب منه)';
+                if (bal < 0) {
+                    badgeClass = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+                    label = 'له (دائن)';
+                } else if (bal === 0) {
+                    badgeClass = 'text-slate-400 bg-slate-800 border-slate-700';
+                    label = 'خالص الحساب';
+                }
+
+                return `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-semibold text-white cursor-pointer hover:text-amber-400" onclick="selectCustomer('${c.name}')">${c.name}</td>
+                    <td class="p-3 font-mono font-bold ${bal > 0 ? 'text-emerald-400' : (bal < 0 ? 'text-rose-400' : 'text-slate-400')}">${Math.abs(bal).toFixed(2)} ج.م</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-lg border text-[10px] font-bold ${badgeClass}">${label}</span></td>
+                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                        <button onclick="selectCustomer('${c.name}')" class="text-indigo-400 hover:text-indigo-300 p-1 cursor-pointer" title="عرض الحركات">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                        <button onclick="quickRepay('${c.name}')" class="text-amber-400 hover:text-amber-300 p-1 cursor-pointer" title="تسديد دين">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </button>
+                        <button onclick="deleteItem('customers', ${c.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف العميل">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function selectCustomer(name) {
+            activeCustName = name;
+            document.getElementById('selectedCustTitle').innerText = name;
+            const cust = appData.customers.find(c => c.name === name);
+            const container = document.getElementById('customerLogsContainer');
+
+            if (!cust || !cust.logs || cust.logs.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-center py-6">لا توجد حركات مسجلة للعميل ${name}</p>`;
+                return;
+            }
+
+            container.innerHTML = cust.logs.map(l => `
+                <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800 space-y-1">
+                    <div class="flex justify-between font-bold">
+                        <span class="${l.type === 'us' ? 'text-emerald-400' : 'text-rose-400'}">${l.note}</span>
+                        <span class="font-mono">${parseFloat(l.amount).toFixed(2)} ج.م</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 font-mono">${l.date}</div>
+                </div>
+            `).join('');
+        }
+
+        function quickRepay(name) {
+            document.getElementById('custName').value = name;
+            document.getElementById('custType').value = 'repayment';
+            document.getElementById('custAlert').classList.remove('hidden');
+            showToast(`جاهز لتسديد حساب العميل: ${name}`);
+        }
+
+        function renderPartners() {
+            const tbody = document.getElementById('partnersBody');
+            const totalCap = appData.partners.reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
+
+            if (appData.partners.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">لا يوجد شركاء مضافين.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = appData.partners.map(p => {
+                const shareRatio = totalCap > 0 ? ((p.amount / totalCap) * 100).toFixed(1) : 0;
+                return `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-semibold text-white">${p.name}</td>
+                    <td class="p-3 font-mono font-bold text-blue-400">${parseFloat(p.amount).toFixed(2)} ج.م</td>
+                    <td class="p-3 font-mono">${shareRatio}%</td>
+                    <td class="p-3 font-mono text-emerald-400 font-bold">نسبة ${shareRatio}% من الأرباح</td>
+                    <td class="p-3 text-center no-print">
+                        <button onclick="deleteItem('partners', ${p.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderNetwork() {
+            const tbody = document.getElementById('networkBody');
+            if (appData.network.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">لا توجد أجهزة شبكة مضافة.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = appData.network.map(n => `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-semibold text-white">${n.name}</td>
+                    <td class="p-3 font-mono text-slate-300">${n.ssid}</td>
+                    <td class="p-3 font-mono text-emerald-400">${n.ip}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${n.type === 'AP' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-slate-800 text-slate-300'}">${n.type}</span></td>
+                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                        <a href="http://${n.ip}" target="_blank" class="text-emerald-400 hover:text-emerald-300 p-1 cursor-pointer" title="فتح لوحة التحكم">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        <button onclick="deleteItem('network', ${n.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderWELines() {
+            const tbody = document.getElementById('weBody');
+            if (appData.weLines.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">لا توجد خطوط WE مضافة.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = appData.weLines.map(w => `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-mono text-white font-bold">${w.number}</td>
+                    <td class="p-3 text-slate-300">${w.name}</td>
+                    <td class="p-3 font-mono text-amber-400">${w.dueDate}</td>
+                    <td class="p-3 font-mono text-emerald-400 font-bold">${parseFloat(w.amount).toFixed(2)} ج.م</td>
+                    <td class="p-3 text-center no-print">
+                        <button onclick="deleteItem('weLines', ${w.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderOrders() {
+            const tbody = document.getElementById('ordersBody');
+            if (appData.orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">لا توجد أوردرات صيانة حالية.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = appData.orders.map(o => {
+                let badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                let statusText = 'قيد الانتظار';
+                if (o.status === 'progress') {
+                    badgeClass = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                    statusText = 'جاري التنفيذ';
+                } else if (o.status === 'completed') {
+                    badgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                    statusText = 'مكتمل';
+                }
+
+                return `
+                <tr class="hover:bg-slate-900/50">
+                    <td class="p-3 font-semibold text-white">${o.client}</td>
+                    <td class="p-3 text-slate-300">${o.desc}</td>
+                    <td class="p-3 text-indigo-300">${o.tech}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-lg border text-[10px] font-bold ${badgeClass}">${statusText}</span></td>
+                    <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                        <button onclick="toggleOrderStatus(${o.id})" class="text-emerald-400 hover:text-emerald-300 p-1 cursor-pointer" title="تغيير الحالة">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                        <button onclick="deleteItem('orders', ${o.id})" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function toggleOrderStatus(id) {
+            const order = appData.orders.find(o => o.id === id);
+            if (!order) return;
+            if (order.status === 'pending') order.status = 'progress';
+            else if (order.status === 'progress') order.status = 'completed';
+            else order.status = 'pending';
+            saveData();
+            showToast('تم تحديث حالة الأوردر بنجاح');
+        }
+
+        function deleteItem(collection, id) {
+            if (confirm('هل أنت تأكد من إتمام عملية الحذف؟')) {
+                appData[collection] = appData[collection].filter(item => item.id !== id);
+                saveData();
+                showToast('تم الحذف بنجاح');
+            }
+        }
+    </script>
+</body>
+</html>
