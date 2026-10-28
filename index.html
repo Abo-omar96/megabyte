@@ -72,7 +72,7 @@
                     <h3 id="totalCapitalCard" class="text-2xl font-bold text-blue-400 mt-2 font-mono">0.00</h3></div>
                     <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl"><i class="fa-solid fa-piggy-bank text-xl"></i></div>
                 </div>
-                <p class="text-[11px] text-slate-500 mt-3">إجمالي مساهمات المستثمرين المسجلة</p>
+                <p id="capitalNote" class="text-[11px] text-slate-500 mt-3">إجمالي مساهمات المستثمرين المسجلة</p>
             </div>
             <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
                 <div class="flex justify-between items-start">
@@ -91,7 +91,7 @@
                     <h3 id="calculatedProfitCard" class="text-2xl font-bold text-brand-500 mt-2 font-mono">0.00</h3></div>
                     <div class="p-3 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-xl"><i class="fa-solid fa-chart-line text-xl"></i></div>
                 </div>
-                <p class="text-[11px] text-slate-500 mt-3">بعد خصم المصروفات التشغيلية</p>
+                <p class="text-[11px] text-slate-500 mt-3">المصروفات مشمولة أصلاً في الأرصدة</p>
             </div>
         </div>
 
@@ -176,7 +176,8 @@
                             <select id="custType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
                                 <option value="repayment">تسديد من العميل (خصم الدين)</option>
                                 <option value="us">مبلغ لنا عند العميل (+ دين عليه)</option>
-                                <option value="them">مبلغ علينا للعميل (- له عندنا)</option></select></div>
+                                <option value="them">مبلغ علينا للعميل (- له عندنا)</option>
+                                <option value="payout">سداد منا للعميل (نخصم ما له عندنا)</option></select></div>
                         <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
                             <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
                         <div class="md:col-span-4 flex justify-between items-center pt-1">
@@ -205,7 +206,7 @@
                 <!-- Expenses -->
                 <div id="content-expenses" class="tab-content space-y-6 hidden">
                     <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
-                        <div><h3 class="text-lg font-bold text-white">المصروفات التشغيلية</h3><p class="text-xs text-slate-400">تُخصم من الأرباح تلقائياً</p></div>
+                        <div><h3 class="text-lg font-bold text-white">المصروفات التشغيلية</h3><p class="text-xs text-slate-400">للمتابعة والتحليل فقط — لا تُخصم ثانية من الربح لأنها منعكسة في أرصدة الصناديق</p></div>
                         <button type="button" data-act="export" data-table="expensesTable" data-name="المصروفات" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel</button>
                     </div>
                     <form id="expenseForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
@@ -271,14 +272,14 @@
                     <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
                         <h4 class="text-xs font-bold text-slate-400"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح</h4>
                         <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto">
-                            صافي الربح = (فرق الأصول) − الإضافات + المسحوبات − المصروفات</div>
+                            صافي الربح = فرق الأصول − الإضافات + المسحوبات &nbsp;(المصروفات مشمولة في الأرصدة فلا تُخصم ثانية)</div>
                         <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1"></div>
                     </div>
                     <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
                         <table id="investorProfitTable" class="w-full text-right text-sm text-slate-300">
                             <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
                                 <th class="p-3">المستثمر</th><th class="p-3">رأس المال بداية الفترة</th><th class="p-3">الإضافات</th>
-                                <th class="p-3">المسحوبات</th><th class="p-3">رأس المال الحالي</th><th class="p-3">النسبة %</th><th class="p-3 text-brand-400 font-bold">الربح المستحق</th></tr></thead>
+                                <th class="p-3">المسحوبات</th><th class="p-3">رأس المال الحالي</th><th class="p-3">المتوسط المرجّح بالزمن</th><th class="p-3">النسبة %</th><th class="p-3 text-brand-400 font-bold">الربح المستحق</th></tr></thead>
                             <tbody id="investorProfitBody" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
@@ -410,6 +411,7 @@
     }
     function formatNum(v) { return Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function ts(d) { const t = new Date(d).getTime(); return isNaN(t) ? 0 : t; }
+    const r2 = v => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
     function formatDateEn(d) { return d ? new Date(d).toLocaleString('en-US', { hour12: true }) : ''; }
     function money(v, cls = '') { return `${formatNum(v)} <span class="text-xs text-slate-400 font-normal ${cls}">ج.م</span>`; }
     function nowLocal() {
@@ -459,10 +461,19 @@
     function snapAccountsTotal(snap) {
         return activeAccounts().reduce((sum, a) => sum + (parseFloat(snap.balances?.[a.id]) || 0), 0);
     }
+    // أثر الحركة على رصيد العميل: موجب = لنا عنده، سالب = له عندنا
+    function custDelta(c) { return (c.type === 'us' || c.type === 'payout') ? c.amount : -c.amount; }
+    // صافي حركة رأس المال (إضافات - مسحوبات) في الفترة (from, to]
+    function capitalNet(fromT, toT) {
+        return window.appData.capitalLogs.reduce((sum, c) => {
+            const t = ts(c.date);
+            return (t > fromT && t <= toT) ? sum + (c.type === 'add' ? c.amount : -c.amount) : sum;
+        }, 0);
+    }
     function customerTotalsAt(target) {
         const t = ts(target), map = {};
         window.appData.customers.forEach(c => {
-            if (ts(c.date) <= t) map[c.name] = (map[c.name] || 0) + (c.type === 'us' ? c.amount : -c.amount);
+            if (ts(c.date) <= t) map[c.name] = (map[c.name] || 0) + custDelta(c);
         });
         return totalsFromMap(map);
     }
@@ -498,18 +509,18 @@
     function renderSnapshotsTable() {
         const accs = activeAccounts();
         $('snapshotsTableHeader').innerHTML = `<tr><th class="p-3">التاريخ</th>${accs.map(a => `<th class="p-3">${esc(a.name)}</th>`).join('')}
-            <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th><th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل</th><th class="p-3 text-center no-print">حذف</th></tr>`;
-        let prev = null;
+            <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th><th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل (بعد استبعاد رأس المال)</th><th class="p-3 text-center no-print">حذف</th></tr>`;
+        let prev = null, prevT = 0;
         $('snapshotsTableBody').innerHTML = sortedSnaps().map(s => {
             const cols = accs.map(a => `<td class="p-3 font-mono">${formatNum(s.balances?.[a.id])}</td>`).join('');
             const total = snapNetAssets(s);
             let diff;
             if (prev === null) diff = '<span class="text-slate-500 text-xs">بداية الحسابات</span>';
             else {
-                const d = total - prev;
+                const d = r2(total - prev - capitalNet(prevT, ts(s.date)));
                 diff = `<span class="${d >= 0 ? 'text-emerald-400' : 'text-red-400'} font-bold font-mono">${d >= 0 ? '+' : ''}${formatNum(d)} ج.م</span>`;
             }
-            prev = total;
+            prev = total; prevT = ts(s.date);
             return `<tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(s.date))}</td>${cols}
                 <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td><td class="p-3">${diff}</td>
                 <td class="p-3 text-center no-print"><button data-act="delSnap" data-id="${esc(s.id)}" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td></tr>`;
@@ -519,7 +530,7 @@
     // ---------- العملاء ----------
     function customersMap() {
         const m = {};
-        window.appData.customers.forEach(c => { m[c.name] = (m[c.name] || 0) + (c.type === 'us' ? c.amount : -c.amount); });
+        window.appData.customers.forEach(c => { m[c.name] = (m[c.name] || 0) + custDelta(c); });
         return m;
     }
     function saveCustomerRecord(e) {
@@ -557,8 +568,8 @@
         const logs = window.appData.customers.filter(c => c.name === selectedCustomer).sort((a, b) => ts(b.date) - ts(a.date));
         if (!logs.length) { box.innerHTML = '<p class="text-slate-500 text-center py-8">لا توجد حركات</p>'; return; }
         box.innerHTML = logs.map(l => {
-            const txt = l.type === 'us' ? 'لنا عنده (+)' : l.type === 'them' ? 'له عندنا (-)' : 'تسديد من العميل (-)';
-            const cls = l.type === 'us' ? 'text-emerald-400' : l.type === 'them' ? 'text-red-400' : 'text-blue-400';
+            const txt = { us: 'لنا عنده (+)', them: 'له عندنا (-)', repayment: 'تسديد من العميل (-)', payout: 'سداد منا للعميل (+)' }[l.type] || l.type;
+            const cls = { us: 'text-emerald-400', them: 'text-red-400', repayment: 'text-blue-400', payout: 'text-amber-400' }[l.type] || 'text-slate-300';
             return `<div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
                 <div><span class="font-bold text-xs ${cls}">${txt}</span><p class="text-[10px] text-slate-500 font-mono">${esc(formatDateEn(l.date))}</p></div>
                 <div class="flex items-center space-x-2 space-x-reverse"><span class="font-bold font-mono text-white">${formatNum(l.amount)} ج.م</span>
@@ -619,64 +630,79 @@
     function updateDashboardCards() {
         const snaps = sortedSnaps();
         const latest = snaps.length ? snaps[snaps.length - 1] : null;
-        const cash = latest ? snapAccountsTotal(latest) : 0;
+        
         const cap = window.appData.capitalLogs.reduce((s, c) => s + (c.type === 'add' ? c.amount : -c.amount), 0);
         const t = totalsFromMap(customersMap());
         $('totalCapitalCard').innerHTML = money(cap);
         $('netCustomersCard').innerHTML = money(t.net);
         $('customersUsCard').textContent = formatNum(t.totalUs);
         $('customersThemCard').textContent = formatNum(t.totalThem);
-        $('totalAssetsCard').innerHTML = money(cash + t.totalUs - t.totalThem);
+        const assets = latest ? snapNetAssets(latest) : 0; // الصناديق والعملاء بنفس تاريخ آخر لقطة
+        $('totalAssetsCard').innerHTML = money(assets);
+        $('capitalNote').textContent = 'الأصول − رأس المال = ' + formatNum(r2(assets - cap)) + ' (أرباح غير موزعة / فروقات)';
     }
 
     function generateProfitReport() {
         const snaps = sortedSnaps();
         const exp = $('reportFormulaExplanation'), body = $('investorProfitBody');
         const startIn = $('reportStartDate').value, endIn = $('reportEndDate').value;
-        if (snaps.length < 2) {
-            exp.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتي رصيد على الأقل لحساب الأرباح.</p>';
-            $('calculatedProfitCard').innerHTML = money(0); body.innerHTML = ''; return;
-        }
+        const empty = (msg) => { exp.innerHTML = '<p class="text-amber-400">' + msg + '</p>'; $('calculatedProfitCard').innerHTML = money(0); body.innerHTML = ''; };
+        if (snaps.length < 2) return empty('يلزم تسجيل لقطتي رصيد على الأقل لحساب الأرباح.');
         const startSnap = startIn ? (snaps.find(s => ts(s.date) >= ts(startIn)) || snaps[0]) : snaps[0];
         const endSnap = endIn ? ([...snaps].reverse().find(s => ts(s.date) <= ts(endIn)) || snaps[snaps.length - 1]) : snaps[snaps.length - 1];
-        if (ts(endSnap.date) <= ts(startSnap.date)) {
-            exp.innerHTML = '<p class="text-amber-400">لا توجد لقطتان ضمن الفترة المحددة.</p>';
-            $('calculatedProfitCard').innerHTML = money(0); body.innerHTML = ''; return;
-        }
         const sT = ts(startSnap.date), eT = ts(endSnap.date);
-        const startAssets = snapNetAssets(startSnap), endAssets = snapNetAssets(endSnap);
+        if (eT <= sT) return empty('لا توجد لقطتان ضمن الفترة المحددة.');
 
+        const startAssets = snapNetAssets(startSnap), endAssets = snapNetAssets(endSnap);
+        // اتفاق: حركة بتاريخ لقطة البداية تُعتبر قبلها (داخلة في الأساس)، وحركة بتاريخ لقطة النهاية داخل الفترة
+        const logs = window.appData.capitalLogs.slice().sort((a, b) => ts(a.date) - ts(b.date));
+        const sign = c => c.type === 'add' ? c.amount : -c.amount;
         let additions = 0, withdrawals = 0;
         const inv = {};
-        window.appData.capitalLogs.forEach(c => {
+        logs.forEach(c => {
             const t = ts(c.date);
-            if (!inv[c.investor]) inv[c.investor] = { base: 0, add: 0, withdraw: 0 };
-            if (t < sT) inv[c.investor].base += (c.type === 'add' ? c.amount : -c.amount);
+            if (!inv[c.investor]) inv[c.investor] = { base: 0, add: 0, withdraw: 0, end: 0, avg: 0 };
+            if (t <= sT) inv[c.investor].base += sign(c);
             else if (t <= eT) {
                 if (c.type === 'add') { additions += c.amount; inv[c.investor].add += c.amount; }
                 else { withdrawals += c.amount; inv[c.investor].withdraw += c.amount; }
             }
         });
-        const expenses = window.appData.expenses.filter(x => ts(x.date) >= sT && ts(x.date) <= eT).reduce((s, x) => s + x.amount, 0);
-        const netProfit = (endAssets - startAssets - additions + withdrawals) - expenses;
+        // متوسط رأس المال المرجّح بالزمن لكل مستثمر
+        const span = eT - sT;
+        Object.keys(inv).forEach(name => {
+            let level = inv[name].base, last = sT, area = 0;
+            logs.filter(c => c.investor === name && ts(c.date) > sT && ts(c.date) <= eT).forEach(c => {
+                const t = ts(c.date);
+                area += Math.max(0, level) * (t - last);
+                level += sign(c); last = t;
+            });
+            area += Math.max(0, level) * (eT - last);
+            inv[name].avg = area / span;
+            inv[name].end = Math.max(0, level);
+        });
+
+        const expenses = window.appData.expenses.filter(x => ts(x.date) > sT && ts(x.date) <= eT).reduce((sum, x) => sum + x.amount, 0);
+        const netProfit = r2(endAssets - startAssets - additions + withdrawals);
+        const grossProfit = r2(netProfit + expenses);
 
         $('calculatedProfitCard').innerHTML = money(netProfit);
         exp.innerHTML = `
             <p>• الفترة: <span class="font-mono">${esc(formatDateEn(startSnap.date))}</span> ← <span class="font-mono">${esc(formatDateEn(endSnap.date))}</span></p>
-            <p>• فرق الأصول: <strong class="text-emerald-400 font-mono">${formatNum(endAssets - startAssets)} ج.م</strong></p>
+            <p>• أصول البداية: <span class="font-mono">${formatNum(startAssets)}</span> — أصول النهاية: <span class="font-mono">${formatNum(endAssets)}</span> — الفرق: <strong class="text-emerald-400 font-mono">${formatNum(endAssets - startAssets)}</strong></p>
             <p>• الإضافات: <span class="font-mono">${formatNum(additions)}</span> — المسحوبات: <span class="font-mono">${formatNum(withdrawals)}</span></p>
-            <p>• المصروفات المخصومة: <strong class="text-red-400 font-mono">-${formatNum(expenses)} ج.م</strong></p>
-            <p class="text-brand-400 font-bold mt-1">صافي الربح القابل للتوزيع = <span class="font-mono">${formatNum(netProfit)} ج.م</span></p>`;
+            <p class="text-brand-400 font-bold mt-1">صافي الربح (بعد المصروفات) = <span class="font-mono">${formatNum(netProfit)} ج.م</span></p>
+            <p class="text-slate-400">للعلم: المصروفات المسجلة في الفترة <span class="font-mono">${formatNum(expenses)}</span> منعكسة أصلاً في الأرصدة، فالربح قبل المصروفات = <span class="font-mono">${formatNum(grossProfit)} ج.م</span></p>`;
 
-        const eff = n => Math.max(0, inv[n].base + inv[n].add - inv[n].withdraw);
-        const total = Object.keys(inv).reduce((s, n) => s + eff(n), 0);
+        const totalAvg = Object.values(inv).reduce((sum, d) => sum + d.avg, 0);
         body.innerHTML = Object.keys(inv).map(n => {
-            const d = inv[n], cap = eff(n), r = total > 0 ? cap / total : 0;
+            const d = inv[n], r = totalAvg > 0 ? d.avg / totalAvg : 0;
             return `<tr class="hover:bg-slate-800/50"><td class="p-3 font-semibold text-white">${esc(n)}</td>
                 <td class="p-3 font-mono">${formatNum(d.base)}</td><td class="p-3 font-mono text-blue-400">+${formatNum(d.add)}</td>
-                <td class="p-3 font-mono text-red-400">-${formatNum(d.withdraw)}</td><td class="p-3 font-mono font-bold">${formatNum(cap)}</td>
+                <td class="p-3 font-mono text-red-400">-${formatNum(d.withdraw)}</td><td class="p-3 font-mono font-bold">${formatNum(d.end)}</td>
+                <td class="p-3 font-mono">${formatNum(d.avg)}</td>
                 <td class="p-3 font-mono text-indigo-400">${(r * 100).toFixed(2)}%</td>
-                <td class="p-3 font-mono font-bold text-brand-400">${formatNum(netProfit * r)} ج.م</td></tr>`;
+                <td class="p-3 font-mono font-bold text-brand-400">${formatNum(r2(netProfit * r))} ج.م</td></tr>`;
         }).join('');
     }
 
