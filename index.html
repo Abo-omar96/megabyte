@@ -3,262 +3,748 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المحاسبة وإدارة الشبكات السحابية | MegaByte Cloud Ledger</title>
-    <!-- Tailwind CSS -->
+    <title>نظام الحسابات المتكامل</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- SheetJS for Excel Export -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Chart.js for Advanced Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
-                }
-            }
+            theme: { extend: { fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                colors: { brand: { 50: '#f0fdf4', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' } } } }
         }
     </script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #020617; color: #f8fafc; }
+        body { font-family: 'Cairo', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
         .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; }
-        }
+        @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
-
-    <!-- Top Navigation Bar -->
-    <header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 no-print">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+<div id="appContent" class="w-full">
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-40 no-print">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <!-- Mobile Menu Toggle Button -->
-                <button id="mobileMenuToggle" class="lg:hidden bg-slate-800 text-slate-200 p-2 rounded-xl text-sm focus:outline-none cursor-pointer">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <div class="bg-gradient-to-tr from-emerald-600 to-emerald-400 text-slate-950 p-2.5 rounded-2xl font-black text-xl shadow-lg shadow-emerald-500/20">
-                    <i class="fa-solid fa-server"></i>
-                </div>
+                <div class="bg-brand-500 text-slate-950 p-2.5 rounded-xl font-bold text-xl shadow-lg shadow-brand-500/20"><i class="fa-solid fa-calculator"></i></div>
                 <div>
-                    <h1 class="font-extrabold text-sm sm:text-base text-white tracking-wide">منصة MegaByte المحاسبية والسحابية</h1>
-                    <p class="text-[10px] sm:text-[11px] text-emerald-400 font-semibold tracking-wider">نظام سحابي متكامل ومزامن للبيانات وتوزيع الأرباح</p>
+                    <h1 class="font-bold text-lg text-white leading-none">نظام الحسابات المحاسبي</h1>
+                    <p class="text-xs text-emerald-400 mt-1 font-semibold">مدير النظام (صلاحيات كاملة)</p>
                 </div>
             </div>
-
-            <!-- Cloud Sync Indicator -->
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div id="cloudBadge" class="hidden sm:flex items-center space-x-2 space-x-reverse text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-slate-400 shadow-inner">
-                    <span id="cloudDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="cloudText">جاري الاتصال السحابي...</span>
-                </div>
+            <div id="syncStatus" class="flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400">
+                <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span id="syncText">جاري الاتصال بالسحابة...</span>
             </div>
         </div>
     </header>
 
-    <!-- App Layout Container (Sidebar + Main Content) -->
-    <div class="max-w-7xl mx-auto px-4 py-6 w-full flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start relative">
-        
-        <!-- Sidebar Navigation -->
-        <aside id="sidebarNav" class="hidden lg:block lg:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl no-print space-y-2 sticky top-20 z-40 transition-all duration-300">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-2 px-3">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">قائمة النظام</h3>
-                <button id="closeSidebar" class="lg:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <nav class="space-y-1">
-                <button data-tab="snapshots" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse bg-emerald-600 text-slate-950 shadow-md cursor-pointer">
-                    <i class="fa-solid fa-camera-retro w-5 text-center"></i> <span>لقطات الرصيد (حساب)</span>
-                </button>
-                <button data-tab="wallets" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-wallet w-5 text-center"></i> <span>المحافظ والماكينات (كاش)</span>
-                </button>
-                <button data-tab="customers" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-address-book w-5 text-center"></i> <span>ديون العملاء (الخرج)</span>
-                </button>
-                <button data-tab="partners" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-hand-holding-dollar w-5 text-center"></i> <span>الشركاء وتوزيع الأرباح</span>
-                </button>
-                <button data-tab="network" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-network-wired w-5 text-center"></i> <span>إدارة أجهزة الـ IP</span>
-                </button>
-                <button data-tab="clientwe" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-phone w-5 text-center"></i> <span>بيانات خطوط WE</span>
-                </button>
-                <button data-tab="orders" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-list-check w-5 text-center"></i> <span>أوردرات الصيانة والتنفيذ</span>
-                </button>
-                <button data-tab="reports" class="tab-btn w-full px-4 py-3 rounded-xl text-xs font-bold transition flex items-center space-x-3 space-x-reverse text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer">
-                    <i class="fa-solid fa-chart-pie w-5 text-center"></i> <span>التقارير الشاملة والتحليلات</span>
-                </button>
-            </nav>
-        </aside>
-
-        <!-- Main Workspace Area -->
-        <main class="lg:col-span-3 space-y-6 w-full">
-            
-            <!-- Room Sync Setup Banner -->
-            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print shadow-xl">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="bg-indigo-500/10 text-indigo-400 p-3 rounded-xl border border-indigo-500/20">
-                        <i class="fa-solid fa-network-wired text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-white">رمز المزامنة السحابية للشركة (Enterprise Sync ID)</h3>
-                        <p class="text-xs text-slate-400">ادخل نفس الرمز في جميع أجهزتك لتشارك الحسابات والأرباح فوراً</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
-                    <input type="text" id="syncRoomInput" placeholder="رمز الغرفة" class="bg-slate-950 border border-indigo-500/40 px-3 py-2 rounded-xl text-xs font-bold text-center font-mono w-full sm:w-40 text-indigo-300 focus:outline-none focus:border-indigo-400">
-                    <button type="button" id="btnSyncRoom" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-indigo-600/20 cursor-pointer">
-                        <i class="fa-solid fa-sync ml-1"></i> ربط وتحديث
-                    </button>
+    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+        <div class="bg-slate-800/80 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print shadow-lg">
+            <div class="flex items-center space-x-3 space-x-reverse flex-1 min-w-[280px]">
+                <div class="bg-indigo-500/20 text-indigo-400 p-3 rounded-xl border border-indigo-500/30"><i class="fa-solid fa-cloud-arrow-up text-xl"></i></div>
+                <div>
+                    <h3 class="text-sm font-bold text-white">رمز المزامنة السري (Sync ID)</h3>
+                    <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز في كل أجهزتك. استخدم رمزاً <strong class="text-amber-400">طويلاً وعشوائياً</strong> ولا تشاركه، فهو الحماية الوحيدة لبياناتك.</p>
                 </div>
             </div>
+            <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
+                <input type="text" id="roomIdInput" placeholder="رمز المزامنة" class="bg-slate-900 border border-indigo-500/40 px-3 py-2 rounded-xl text-sm font-bold text-center font-mono w-full sm:w-64 text-indigo-300 focus:outline-none focus:border-indigo-400">
+                <button type="button" id="btnConnect" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold transition whitespace-nowrap"><i class="fa-solid fa-plug ml-1"></i> ربط</button>
+            </div>
+        </div>
 
-            <!-- KPI Financial Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">صافي الأصول الصافية</p>
-                            <h3 id="kpiNetAssets" class="text-2xl font-black text-white mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                            <i class="fa-solid fa-scale-balanced text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">(المحافظ + ديون لنا) − ديون علينا</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div><p class="text-xs text-slate-400 font-medium">إجمالي الأصول الحالية</p>
+                    <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2 font-mono">0.00</h3></div>
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-vault text-xl"></i></div>
                 </div>
-
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">إجمالي رأس المال والشركاء</p>
-                            <h3 id="kpiTotalCapital" class="text-2xl font-black text-blue-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
-                            <i class="fa-solid fa-vault text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">مساهمات الشركاء + الأرباح المضافة</p>
+                <p class="text-[11px] text-slate-500 mt-3">(آخر لقطة للصناديق + لنا عند العملاء) − علينا للعملاء</p>
+            </div>
+            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div><p class="text-xs text-slate-400 font-medium">إجمالي رأس المال</p>
+                    <h3 id="totalCapitalCard" class="text-2xl font-bold text-blue-400 mt-2 font-mono">0.00</h3></div>
+                    <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl"><i class="fa-solid fa-piggy-bank text-xl"></i></div>
                 </div>
-
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي)</p>
-                            <h3 id="kpiNetCustomers" class="text-2xl font-black text-amber-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
-                            <i class="fa-solid fa-users-rectangle text-lg"></i>
-                        </div>
-                    </div>
-                    <div class="flex justify-between text-[10px] mt-3 font-mono border-t border-slate-800 pt-2 text-slate-400">
-                        <span>لنا: <strong id="kpiUs" class="text-emerald-400">0.00</strong></span>
-                        <span>علينا: <strong id="kpiThem" class="text-red-400">0.00</strong></span>
-                    </div>
+                <p class="text-[11px] text-slate-500 mt-3">إجمالي مساهمات المستثمرين المسجلة</p>
+            </div>
+            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div><p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي)</p>
+                    <h3 id="netCustomersCard" class="text-2xl font-bold text-amber-400 mt-2 font-mono">0.00</h3></div>
+                    <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl"><i class="fa-solid fa-users text-xl"></i></div>
                 </div>
-
-                <div class="bg-slate-900/90 border border-slate-800/80 p-5 rounded-2xl relative overflow-hidden shadow-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-xs text-slate-400 font-medium">أرصدة المحافظ والماكينات</p>
-                            <h3 id="kpiWalletsTotal" class="text-2xl font-black text-emerald-400 mt-1 font-mono">0.00 <span class="text-xs text-slate-500 font-normal">ج.م</span></h3>
-                        </div>
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                            <i class="fa-solid fa-wallet text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-3 font-mono border-t border-slate-800 pt-2">إجمالي المحافظ والنقود السائلة</p>
+                <div class="flex justify-between text-[11px] mt-3 text-slate-400">
+                    <span>لنا: <strong id="customersUsCard" class="text-emerald-400 font-mono">0.00</strong></span>
+                    <span>علينا: <strong id="customersThemCard" class="text-red-400 font-mono">0.00</strong></span>
                 </div>
             </div>
+            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+                <div class="flex justify-between items-start">
+                    <div><p class="text-xs text-slate-400 font-medium">صافي أرباح الفترة</p>
+                    <h3 id="calculatedProfitCard" class="text-2xl font-bold text-brand-500 mt-2 font-mono">0.00</h3></div>
+                    <div class="p-3 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-xl"><i class="fa-solid fa-chart-line text-xl"></i></div>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-3">بعد خصم المصروفات التشغيلية</p>
+            </div>
+        </div>
 
-            <!-- Tabs Content Container -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-                
-                <!-- TAB 1: SNAPSHOTS -->
-                <div id="tab-content-snapshots" class="tab-pane space-y-6">
-                    <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
-                        <div>
-                            <h2 class="text-base font-bold text-white">تسجيل لقطات الرصيد والورديات وحساب الأرباح اليومية</h2>
-                            <p class="text-xs text-slate-400 mt-1">يقوم النظام بحساب صافي الأصول بدقة، واستخراج الربح اليومي وتوزيعه آلياً على الشركاء.</p>
-                        </div>
-                        <button id="btnExportSnapshots" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-semibold no-print cursor-pointer">
-                            <i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel
-                        </button>
+        <div class="bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-xl">
+            <div class="flex border-b border-slate-700/80 bg-slate-900/50 p-2 overflow-x-auto space-x-2 space-x-reverse no-print" id="tabBar">
+                <button type="button" data-tab="accounts" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-building-columns"></i> <span>الصناديق والماكينات</span></button>
+                <button type="button" data-tab="snapshots" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-camera"></i> <span>لقطات الرصيد</span></button>
+                <button type="button" data-tab="customers" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-user-group"></i> <span>العملاء والديون</span></button>
+                <button type="button" data-tab="expenses" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-receipt"></i> <span>المصروفات</span></button>
+                <button type="button" data-tab="capital" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-hand-holding-dollar"></i> <span>رأس المال</span></button>
+                <button type="button" data-tab="reports" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-chart-pie"></i> <span>الأرباح والتوزيع</span></button>
+            </div>
+
+            <div class="p-6">
+                <!-- Accounts -->
+                <div id="content-accounts" class="tab-content space-y-6 hidden">
+                    <div class="border-b border-slate-700/60 pb-4">
+                        <h3 class="text-lg font-bold text-white">إدارة الصناديق والمحافظ وماكينات الدفع</h3>
+                        <p class="text-xs text-slate-400">إضافة أو تعديل أو حذف أي محفظة أو ماكينة</p>
                     </div>
-                    <form id="snapshotForm" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
-                                <input type="datetime-local" id="snapDate" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">رأس المال الفعلي (ج.م)</label>
-                                <input type="number" step="0.01" id="snapCapital" required placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المسؤول / الوردية</label>
-                                <input type="text" id="snapShift" placeholder="مثال: وردية الصباح - محمد" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فوري (ج.م)</label>
-                                <input type="number" step="0.01" id="snapFawry" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">أمان (ج.م)</label>
-                                <input type="number" step="0.01" id="snapAman" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">مجمد (ج.م)</label>
-                                <input type="number" step="0.01" id="snapFrozen" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فكة (ج.م)</label>
-                                <input type="number" step="0.01" id="snapFakka" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">فضية (ج.م)</label>
-                                <input type="number" step="0.01" id="snapSilver" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
-                            </div>
-                        </div>
-                        <div class="flex justify-end pt-2">
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 cursor-pointer">
-                                <i class="fa-solid fa-floppy-disk ml-1"></i> تسجيل الوردية وتوزيع الأرباح تلقائياً
-                            </button>
+                    <form id="accountForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                        <input type="hidden" id="accEditId" value="">
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">اسم الحساب / الماكينة</label>
+                            <input type="text" id="accName" required placeholder="مثال: خزينة، فوري..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">النوع</label>
+                            <select id="accType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                                <option value="cash">صندوق نقدي (خزينة)</option><option value="ewallet">محفظة إلكترونية</option>
+                                <option value="pos">ماكينة دفع</option><option value="bank">حساب بنكي</option></select></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">الحالة</label>
+                            <select id="accStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                                <option value="active">نشط</option><option value="inactive">معطل</option></select></div>
+                        <div class="flex items-end space-x-2 space-x-reverse">
+                            <button type="submit" id="accBtnText" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-sm font-semibold transition"><i class="fa-solid fa-plus ml-1"></i> حفظ</button>
+                            <button type="button" id="accCancelBtn" data-act="resetAccount" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold">إلغاء</button>
                         </div>
                     </form>
-                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                        <table class="w-full text-right text-xs text-slate-300">
-                            <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
-                                <tr>
-                                    <th class="p-3">التاريخ</th>
-                                    <th class="p-3">الوردية</th>
-                                    <th class="p-3">رأس المال</th>
-                                    <th class="p-3 font-bold text-emerald-400">الأصول الصافية</th>
-                                    <th class="p-3 font-bold text-amber-400">الربح/الخسارة اليومية</th>
-                                    <th class="p-3 text-center no-print">إجراء</th>
-                                </tr>
-                            </thead>
-                            <tbody id="snapshotsBody" class="divide-y divide-slate-800/60"></tbody>
+                    <p class="text-xs text-amber-400">تنبيه: الحساب المعطّل لا يُحتسب في إجمالي الأصول ولا يظهر في اللقطات الجديدة.</p>
+                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                        <table class="w-full text-right text-sm text-slate-300">
+                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
+                                <th class="p-3">اسم الحساب</th><th class="p-3">النوع</th><th class="p-3">الحالة</th><th class="p-3 text-center no-print">إجراءات</th></tr></thead>
+                            <tbody id="accountsTableBody" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- TAB 2: WALLETS -->
-                <div id="tab-content-wallets" class="tab-pane space-y-6 hidden">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-white">إدارة المحافظ والماكينات النقدية (كاش)</h2>
+                <!-- Snapshots -->
+                <div id="content-snapshots" class="tab-content space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                        <div><h3 class="text-lg font-bold text-white">تسجيل لقطة رصيد جديدة</h3>
+                        <p class="text-xs text-slate-400">سجل أرصدتك بتاريخ محدد لمعرفة ربح كل تسجيل تلقائياً</p></div>
+                        <button type="button" data-act="export" data-table="snapshotsTable" data-name="لقطات_الرصيد" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel</button>
                     </div>
-                    <form id="walletForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="bl
+                    <form id="snapshotForm" class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/50 space-y-4">
+                        <div class="max-w-xs"><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
+                            <input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div id="dynamicSnapshotInputs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                        <div class="flex justify-end pt-2"><button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition"><i class="fa-solid fa-plus ml-1"></i> حفظ لقطة الرصيد</button></div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                        <table id="snapshotsTable" class="w-full text-right text-sm text-slate-300">
+                            <thead id="snapshotsTableHeader" class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"></thead>
+                            <tbody id="snapshotsTableBody" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Customers -->
+                <div id="content-customers" class="tab-content space-y-6 hidden">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                        <div><h3 class="text-lg font-bold text-white">قاعدة بيانات العملاء والديون</h3>
+                        <p class="text-xs text-slate-400">اضغط على أي عميل لتعبئة اسمه في النموذج وتسديد حسابه فوراً</p></div>
+                        <div class="relative min-w-[240px]"><i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
+                            <input type="text" id="customerSearch" placeholder="بحث باسم العميل..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pr-9 pl-3 py-2 text-xs text-white"></div>
+                    </div>
+                    <form id="customerForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-amber-500/30">
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">اسم العميل</label>
+                            <input type="text" id="custName" required placeholder="اسم العميل" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
+                            <input type="datetime-local" id="custDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
+                            <select id="custType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                                <option value="repayment">تسديد من العميل (خصم الدين)</option>
+                                <option value="us">مبلغ لنا عند العميل (+ دين عليه)</option>
+                                <option value="them">مبلغ علينا للعميل (- له عندنا)</option></select></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
+                            <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div class="md:col-span-4 flex justify-between items-center pt-1">
+                            <span id="quickAlertMsg" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل، أدخل المبلغ واضغط حفظ.</span>
+                            <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm mr-auto"><i class="fa-solid fa-user-plus ml-1"></i> تسجيل الحركة / التسديد</button>
+                        </div>
+                    </form>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 border border-slate-700/80 rounded-xl overflow-hidden">
+                            <table class="w-full text-right text-sm text-slate-300">
+                                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
+                                    <th class="p-3">اسم العميل</th><th class="p-3">الرصيد</th><th class="p-3">الحالة</th><th class="p-3 no-print text-center">كشف</th></tr></thead>
+                                <tbody id="customersDirectoryBody" class="divide-y divide-slate-800"></tbody>
+                            </table>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4">
+                            <h4 class="font-bold text-white text-base border-b border-slate-700/60 pb-2 mb-3 flex items-center justify-between">
+                                <span><i class="fa-solid fa-file-invoice-dollar text-amber-500 ml-1"></i> كشف حساب</span>
+                                <span id="selectedCustName" class="text-xs font-normal text-slate-400">اختر عميلاً</span></h4>
+                            <div id="customerStatementLogs" class="space-y-2 max-h-72 overflow-y-auto text-xs text-slate-300 pr-1">
+                                <p class="text-slate-500 text-center py-8">اضغط على أي عميل لعرض سجل حركاته</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expenses -->
+                <div id="content-expenses" class="tab-content space-y-6 hidden">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                        <div><h3 class="text-lg font-bold text-white">المصروفات التشغيلية</h3><p class="text-xs text-slate-400">تُخصم من الأرباح تلقائياً</p></div>
+                        <button type="button" data-act="export" data-table="expensesTable" data-name="المصروفات" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel</button>
+                    </div>
+                    <form id="expenseForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">بند المصروف</label>
+                            <input type="text" id="expTitle" required placeholder="كهرباء، إيجار..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
+                            <input type="number" step="0.01" id="expAmount" min="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
+                            <input type="datetime-local" id="expDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div class="flex items-end"><button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus ml-1"></i> إضافة</button></div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                        <table id="expensesTable" class="w-full text-right text-sm text-slate-300">
+                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
+                                <th class="p-3">التاريخ</th><th class="p-3">البند</th><th class="p-3">المبلغ</th><th class="p-3 text-center no-print">حذف</th></tr></thead>
+                            <tbody id="expensesTableBody" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Capital -->
+                <div id="content-capital" class="tab-content space-y-6 hidden">
+                    <div class="border-b border-slate-700/60 pb-4"><h3 class="text-lg font-bold text-white">حركة رأس المال والمستثمرين</h3>
+                        <p class="text-xs text-slate-400">تسجيل إضافات ومسحوبات المستثمرين</p></div>
+                    <form id="capitalForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">اسم المستثمر</label>
+                            <input type="text" id="capInvestor" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
+                            <select id="capType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+                                <option value="add">إضافة رأس مال (+)</option><option value="withdraw">سحب رأس مال (-)</option></select></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
+                            <input type="number" step="0.01" id="capAmount" min="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
+                            <input type="datetime-local" id="capDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div class="md:col-span-4 flex justify-end"><button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm"><i class="fa-solid fa-plus ml-1"></i> تسجيل الحركة</button></div>
+                    </form>
+                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                        <table class="w-full text-right text-sm text-slate-300">
+                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
+                                <th class="p-3">التاريخ</th><th class="p-3">المستثمر</th><th class="p-3">النوع</th><th class="p-3">المبلغ</th><th class="p-3 no-print">حذف</th></tr></thead>
+                            <tbody id="capitalTableBody" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reports -->
+                <div id="content-reports" class="tab-content space-y-6 hidden">
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                        <div><h3 class="text-lg font-bold text-white">تقرير الأرباح وتوزيعها على المستثمرين</h3>
+                        <p class="text-xs text-slate-400">الفترة من أول لقطة إلى آخر لقطة ضمن التاريخين المحددين</p></div>
+                        <div class="flex items-center space-x-2 space-x-reverse no-print">
+                            <button type="button" data-act="export" data-table="investorProfitTable" data-name="تقرير_الأرباح" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-file-excel ml-1"></i> Excel</button>
+                            <button type="button" data-act="print" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-print ml-1"></i> طباعة</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ</label>
+                            <input type="datetime-local" id="reportStartDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ</label>
+                            <input type="datetime-local" id="reportEndDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                        <div class="flex items-end"><button type="button" data-act="report" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-calculator ml-1"></i> حساب النتائج</button></div>
+                    </div>
+                    <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
+                        <h4 class="text-xs font-bold text-slate-400"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح</h4>
+                        <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto">
+                            صافي الربح = (فرق الأصول) − الإضافات + المسحوبات − المصروفات</div>
+                        <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1"></div>
+                    </div>
+                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
+                        <table id="investorProfitTable" class="w-full text-right text-sm text-slate-300">
+                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
+                                <th class="p-3">المستثمر</th><th class="p-3">رأس المال بداية الفترة</th><th class="p-3">الإضافات</th>
+                                <th class="p-3">المسحوبات</th><th class="p-3">رأس المال الحالي</th><th class="p-3">النسبة %</th><th class="p-3 text-brand-400 font-bold">الربح المستحق</th></tr></thead>
+                            <tbody id="investorProfitBody" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print">
+        <p>نظام الحسابات المحاسبي © 2026</p>
+    </footer>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
+        authDomain: "megabytefawry.firebaseapp.com",
+        projectId: "megabytefawry",
+        storageBucket: "megabytefawry.firebasestorage.app",
+        messagingSenderId: "832804585797",
+        appId: "1:832804585797:web:00637871be12c00157fe2c",
+        measurementId: "G-75PB78K0F4"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let unsubscribe = null;
+    let currentRoom = null;
+
+    function setStatus(kind, text) {
+        const dot = document.getElementById('syncDot'), txt = document.getElementById('syncText'), box = document.getElementById('syncStatus');
+        const map = {
+            ok: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300'],
+            err: ['w-2 h-2 rounded-full bg-red-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-red-950/60 border border-red-500/40 px-3 py-1.5 rounded-lg text-red-300'],
+            wait: ['w-2 h-2 rounded-full bg-amber-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400']
+        };
+        dot.className = map[kind][0]; box.className = map[kind][1]; txt.textContent = text;
+    }
+
+    function getRoom() {
+        let r = localStorage.getItem('app_sync_room_id');
+        if (!r) {
+            // رمز عشوائي طويل بدل رمز افتراضي معروف
+            const a = new Uint8Array(16); crypto.getRandomValues(a);
+            r = 'R-' + Array.from(a, b => b.toString(16).padStart(2, '0')).join('');
+            localStorage.setItem('app_sync_room_id', r);
+        }
+        return r;
+    }
+
+    // الكتابة لأقسام محددة فقط (وليس الغرفة كلها)
+    window.pushSections = function (sections) {
+        if (!currentRoom) return;
+        const payload = {};
+        sections.forEach(s => { payload[s] = JSON.parse(JSON.stringify(window.appData[s] ?? [])); });
+        update(ref(db, 'rooms/' + currentRoom), payload).catch(err => {
+            console.error('Cloud push failed:', err);
+            setStatus('err', 'فشل الحفظ السحابي');
+        });
+    };
+
+    window.initCloudSync = function () {
+        const roomId = getRoom();
+        currentRoom = roomId;
+        document.getElementById('roomIdInput').value = roomId;
+        if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+        setStatus('wait', 'جاري الاتصال...');
+
+        unsubscribe = onValue(ref(db, 'rooms/' + roomId), (snap) => {
+            const data = snap.val();
+            const linked = localStorage.getItem('app_linked_room');
+            if (!data) {
+                window.pushSections(window.SECTIONS);
+            } else {
+                const incoming = {};
+                window.SECTIONS.forEach(s => { incoming[s] = Array.isArray(data[s]) ? data[s] : (data[s] ? Object.values(data[s]) : []); });
+                if (!incoming.accounts.length) incoming.accounts = window.defaultAccounts();
+                if (linked !== roomId && window.localHasData()) {
+                    const useCloud = confirm('هذه الغرفة تحتوي بيانات سحابية، وجهازك فيه بيانات محلية مختلفة.\n\nموافق = استخدام بيانات السحابة (تُستبدل بيانات الجهاز)\nإلغاء = رفع بيانات هذا الجهاز مكان بيانات السحابة');
+                    if (!useCloud) { localStorage.setItem('app_linked_room', roomId); window.pushSections(window.SECTIONS); setStatus('ok', 'متصل سحابياً'); return; }
+                }
+                window.appData = incoming;
+                localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+            }
+            localStorage.setItem('app_linked_room', roomId);
+            window.renderAllViews();
+            setStatus('ok', 'متصل سحابياً');
+        }, (error) => {
+            console.error('Firebase Read Error:', error);
+            setStatus('err', 'خطأ في الاتصال (راجع قواعد الأمان)');
+        });
+    };
+    window.dispatchEvent(new Event('firebase-ready'));
+    window.firebaseReady = true;
+</script>
+
+<script>
+    const SECTIONS = ['accounts', 'snapshots', 'customers', 'capitalLogs', 'expenses'];
+    window.SECTIONS = SECTIONS;
+    window.defaultAccounts = () => [
+        { id: 'acc_cash', name: 'الصندوق النقدي (الخزينة)', type: 'cash', status: 'active' },
+        { id: 'acc_ewallet', name: 'المحافظ الإلكترونية', type: 'ewallet', status: 'active' },
+        { id: 'acc_fawry_android', name: 'فوري Android', type: 'pos', status: 'active' },
+        { id: 'acc_aman', name: 'ماكينة أمان', type: 'pos', status: 'active' },
+        { id: 'acc_fawry_std', name: 'فوري العادية', type: 'pos', status: 'active' }
+    ];
+
+    (function loadLocal() {
+        let parsed = null;
+        try { parsed = JSON.parse(localStorage.getItem('app_accounting_db')); } catch (e) {}
+        window.appData = parsed || {};
+        SECTIONS.forEach(s => { if (!Array.isArray(window.appData[s])) window.appData[s] = []; });
+        if (!window.appData.accounts.length) window.appData.accounts = window.defaultAccounts();
+    })();
+
+    window.localHasData = function () {
+        const d = window.appData;
+        return d.snapshots.length || d.customers.length || d.capitalLogs.length || d.expenses.length;
+    };
+
+    let selectedCustomer = null;
+
+    // ---------- أدوات ----------
+    const $ = id => document.getElementById(id);
+    function esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function formatNum(v) { return Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function ts(d) { const t = new Date(d).getTime(); return isNaN(t) ? 0 : t; }
+    function formatDateEn(d) { return d ? new Date(d).toLocaleString('en-US', { hour12: true }) : ''; }
+    function money(v, cls = '') { return `${formatNum(v)} <span class="text-xs text-slate-400 font-normal ${cls}">ج.م</span>`; }
+    function nowLocal() {
+        const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        return d.toISOString().slice(0, 16);
+    }
+    const typeLabel = { cash: 'صندوق نقدي', ewallet: 'محفظة إلكترونية', pos: 'ماكينة دفع', bank: 'حساب بنكي' };
+
+    function save(sections) {
+        localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+        if (window.pushSections) window.pushSections(sections);
+        renderAllViews();
+    }
+
+    // ---------- التبويبات ----------
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            const on = b.dataset.tab === tab;
+            b.classList.toggle('bg-brand-600', on); b.classList.toggle('text-white', on);
+            b.classList.toggle('text-slate-400', !on);
+        });
+        $('content-' + tab).classList.remove('hidden');
+    }
+
+    // ---------- الحسابات ----------
+    function resetAccountForm() {
+        $('accEditId').value = ''; $('accName').value = '';
+        $('accBtnText').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> حفظ';
+        $('accCancelBtn').classList.add('hidden');
+    }
+    function editAccount(id) {
+        const a = window.appData.accounts.find(x => x.id === id); if (!a) return;
+        $('accEditId').value = a.id; $('accName').value = a.name; $('accType').value = a.type; $('accStatus').value = a.status;
+        $('accBtnText').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل';
+        $('accCancelBtn').classList.remove('hidden');
+    }
+    function deleteAccount(id) {
+        if (!confirm('تأكيد الحذف؟ ستُحذف أرصدة هذا الحساب من اللقطات المعروضة.')) return;
+        window.appData.accounts = window.appData.accounts.filter(a => a.id !== id);
+        save(['accounts']);
+    }
+
+    // ---------- اللقطات ----------
+    function activeAccounts() { return window.appData.accounts.filter(a => a.status === 'active'); }
+    // دالة واحدة لحساب مجموع اللقطة (تُستخدم في الجدول والبطاقة والتقرير)
+    function snapAccountsTotal(snap) {
+        return activeAccounts().reduce((sum, a) => sum + (parseFloat(snap.balances?.[a.id]) || 0), 0);
+    }
+    function customerTotalsAt(target) {
+        const t = ts(target), map = {};
+        window.appData.customers.forEach(c => {
+            if (ts(c.date) <= t) map[c.name] = (map[c.name] || 0) + (c.type === 'us' ? c.amount : -c.amount);
+        });
+        return totalsFromMap(map);
+    }
+    function totalsFromMap(map) {
+        let us = 0, them = 0;
+        Object.values(map).forEach(n => { if (n > 0) us += n; else if (n < 0) them += -n; });
+        return { totalUs: us, totalThem: them, net: us - them };
+    }
+    function snapNetAssets(snap) {
+        const c = customerTotalsAt(snap.date);
+        return snapAccountsTotal(snap) + c.totalUs - c.totalThem;
+    }
+    function sortedSnaps() { return window.appData.snapshots.slice().sort((a, b) => ts(a.date) - ts(b.date)); }
+
+    function saveSnapshot(e) {
+        e.preventDefault();
+        const date = $('snapDate').value; if (!date) return;
+        const balances = {};
+        activeAccounts().forEach(a => { balances[a.id] = parseFloat($('snap_acc_' + a.id)?.value) || 0; });
+        window.appData.snapshots.push({ id: 'snap_' + Date.now(), date, balances });
+        activeAccounts().forEach(a => { const i = $('snap_acc_' + a.id); if (i) i.value = ''; });
+        save(['snapshots']);
+    }
+    function renderDynamicSnapshotInputs() {
+        const c = $('dynamicSnapshotInputs');
+        const old = {};
+        c.querySelectorAll('input').forEach(i => old[i.id] = i.value);
+        c.innerHTML = activeAccounts().map(a => `
+            <div><label class="block text-xs font-semibold text-slate-300 mb-1">${esc(a.name)}</label>
+            <input type="number" step="0.01" id="snap_acc_${esc(a.id)}" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>`).join('');
+        c.querySelectorAll('input').forEach(i => { if (old[i.id] !== undefined) i.value = old[i.id]; });
+    }
+    function renderSnapshotsTable() {
+        const accs = activeAccounts();
+        $('snapshotsTableHeader').innerHTML = `<tr><th class="p-3">التاريخ</th>${accs.map(a => `<th class="p-3">${esc(a.name)}</th>`).join('')}
+            <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th><th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل</th><th class="p-3 text-center no-print">حذف</th></tr>`;
+        let prev = null;
+        $('snapshotsTableBody').innerHTML = sortedSnaps().map(s => {
+            const cols = accs.map(a => `<td class="p-3 font-mono">${formatNum(s.balances?.[a.id])}</td>`).join('');
+            const total = snapNetAssets(s);
+            let diff;
+            if (prev === null) diff = '<span class="text-slate-500 text-xs">بداية الحسابات</span>';
+            else {
+                const d = total - prev;
+                diff = `<span class="${d >= 0 ? 'text-emerald-400' : 'text-red-400'} font-bold font-mono">${d >= 0 ? '+' : ''}${formatNum(d)} ج.م</span>`;
+            }
+            prev = total;
+            return `<tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(s.date))}</td>${cols}
+                <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td><td class="p-3">${diff}</td>
+                <td class="p-3 text-center no-print"><button data-act="delSnap" data-id="${esc(s.id)}" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+        }).join('');
+    }
+
+    // ---------- العملاء ----------
+    function customersMap() {
+        const m = {};
+        window.appData.customers.forEach(c => { m[c.name] = (m[c.name] || 0) + (c.type === 'us' ? c.amount : -c.amount); });
+        return m;
+    }
+    function saveCustomerRecord(e) {
+        e.preventDefault();
+        const name = $('custName').value.trim(), date = $('custDate').value, type = $('custType').value;
+        const amount = parseFloat($('custAmount').value) || 0;
+        if (!name || !date || amount <= 0) return;
+        window.appData.customers.push({ id: 'cust_' + Date.now(), name, date, type, amount });
+        $('custAmount').value = ''; $('quickAlertMsg').classList.add('hidden');
+        save(['customers']);
+    }
+    function renderCustomers() {
+        const search = ($('customerSearch').value || '').toLowerCase();
+        const map = customersMap();
+        $('customersDirectoryBody').innerHTML = Object.keys(map).filter(n => n.toLowerCase().includes(search)).map(name => {
+            const net = map[name], debt = net >= 0;
+            return `<tr class="hover:bg-slate-800/80 cursor-pointer border-b border-slate-800" data-act="selCust" data-name="${esc(name)}">
+                <td class="p-3 font-semibold text-white"><i class="fa-solid fa-hand-pointer text-amber-500 text-xs ml-2"></i>${esc(name)}</td>
+                <td class="p-3 font-mono font-bold ${debt ? 'text-emerald-400' : 'text-red-400'}">${formatNum(Math.abs(net))} ج.م</td>
+                <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${debt ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${debt ? 'مبلغ لنا عنده' : 'مبلغ له عندنا'}</span></td>
+                <td class="p-3 text-center no-print"><span class="text-amber-400 text-xs font-semibold bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">سدد / كشف</span></td></tr>`;
+        }).join('');
+        renderStatement();
+    }
+    function selectCustomer(name) {
+        selectedCustomer = name;
+        $('custName').value = name; $('custType').value = 'repayment';
+        $('quickAlertMsg').classList.remove('hidden');
+        renderStatement();
+    }
+    function renderStatement() {
+        const box = $('customerStatementLogs');
+        if (!selectedCustomer) return;
+        $('selectedCustName').textContent = selectedCustomer;
+        const logs = window.appData.customers.filter(c => c.name === selectedCustomer).sort((a, b) => ts(b.date) - ts(a.date));
+        if (!logs.length) { box.innerHTML = '<p class="text-slate-500 text-center py-8">لا توجد حركات</p>'; return; }
+        box.innerHTML = logs.map(l => {
+            const txt = l.type === 'us' ? 'لنا عنده (+)' : l.type === 'them' ? 'له عندنا (-)' : 'تسديد من العميل (-)';
+            const cls = l.type === 'us' ? 'text-emerald-400' : l.type === 'them' ? 'text-red-400' : 'text-blue-400';
+            return `<div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
+                <div><span class="font-bold text-xs ${cls}">${txt}</span><p class="text-[10px] text-slate-500 font-mono">${esc(formatDateEn(l.date))}</p></div>
+                <div class="flex items-center space-x-2 space-x-reverse"><span class="font-bold font-mono text-white">${formatNum(l.amount)} ج.م</span>
+                <button data-act="delCust" data-id="${esc(l.id)}" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button></div></div>`;
+        }).join('');
+    }
+
+    // ---------- المصروفات ----------
+    function saveExpense(e) {
+        e.preventDefault();
+        const title = $('expTitle').value.trim(), amount = parseFloat($('expAmount').value) || 0, date = $('expDate').value;
+        if (!title || !date || amount <= 0) return;
+        window.appData.expenses.push({ id: 'exp_' + Date.now(), title, amount, date });
+        $('expTitle').value = ''; $('expAmount').value = '';
+        save(['expenses']);
+    }
+    function renderExpensesTable() {
+        $('expensesTableBody').innerHTML = window.appData.expenses.slice().sort((a, b) => ts(b.date) - ts(a.date)).map(x => `
+            <tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(x.date))}</td>
+            <td class="p-3 font-semibold text-white">${esc(x.title)}</td><td class="p-3 font-mono font-bold text-red-400">${formatNum(x.amount)} ج.م</td>
+            <td class="p-3 text-center no-print"><button data-act="delExp" data-id="${esc(x.id)}" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+    }
+
+    // ---------- رأس المال ----------
+    function saveCapital(e) {
+        e.preventDefault();
+        const investor = $('capInvestor').value.trim(), type = $('capType').value;
+        const amount = parseFloat($('capAmount').value) || 0, date = $('capDate').value;
+        if (!investor || !date || amount <= 0) return;
+        if (type === 'withdraw') {
+            const cur = window.appData.capitalLogs.filter(c => c.investor === investor).reduce((s, c) => s + (c.type === 'add' ? c.amount : -c.amount), 0);
+            if (amount > cur) { alert('المبلغ أكبر من رأس المال المتاح للمستثمر!'); return; }
+        }
+        window.appData.capitalLogs.push({ id: 'cap_' + Date.now(), investor, type, amount, date });
+        $('capAmount').value = '';
+        save(['capitalLogs']);
+    }
+    function renderCapitalTable() {
+        $('capitalTableBody').innerHTML = window.appData.capitalLogs.slice().sort((a, b) => ts(b.date) - ts(a.date)).map(c => `
+            <tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(c.date))}</td>
+            <td class="p-3 font-semibold text-white">${esc(c.investor)}</td>
+            <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
+            <td class="p-3 font-mono font-bold text-white">${formatNum(c.amount)} ج.م</td>
+            <td class="p-3 no-print"><button data-act="delCap" data-id="${esc(c.id)}" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+    }
+
+    function renderAccountsTable() {
+        $('accountsTableBody').innerHTML = window.appData.accounts.map(a => `
+            <tr class="hover:bg-slate-800/50"><td class="p-3 font-semibold text-white">${esc(a.name)}</td>
+            <td class="p-3"><span class="bg-slate-800 border border-slate-700 text-xs px-2.5 py-1 rounded-lg">${esc(typeLabel[a.type] || a.type)}</span></td>
+            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${a.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${a.status === 'active' ? 'نشط' : 'معطل'}</span></td>
+            <td class="p-3 text-center no-print space-x-2 space-x-reverse">
+                <button data-act="editAcc" data-id="${esc(a.id)}" class="text-indigo-400 p-1"><i class="fa-solid fa-pen"></i></button>
+                <button data-act="delAcc" data-id="${esc(a.id)}" class="text-red-400 p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+    }
+
+    // ---------- اللوحة والتقرير ----------
+    function updateDashboardCards() {
+        const snaps = sortedSnaps();
+        const latest = snaps.length ? snaps[snaps.length - 1] : null;
+        const cash = latest ? snapAccountsTotal(latest) : 0;
+        const cap = window.appData.capitalLogs.reduce((s, c) => s + (c.type === 'add' ? c.amount : -c.amount), 0);
+        const t = totalsFromMap(customersMap());
+        $('totalCapitalCard').innerHTML = money(cap);
+        $('netCustomersCard').innerHTML = money(t.net);
+        $('customersUsCard').textContent = formatNum(t.totalUs);
+        $('customersThemCard').textContent = formatNum(t.totalThem);
+        $('totalAssetsCard').innerHTML = money(cash + t.totalUs - t.totalThem);
+    }
+
+    function generateProfitReport() {
+        const snaps = sortedSnaps();
+        const exp = $('reportFormulaExplanation'), body = $('investorProfitBody');
+        const startIn = $('reportStartDate').value, endIn = $('reportEndDate').value;
+        if (snaps.length < 2) {
+            exp.innerHTML = '<p class="text-amber-400">يلزم تسجيل لقطتي رصيد على الأقل لحساب الأرباح.</p>';
+            $('calculatedProfitCard').innerHTML = money(0); body.innerHTML = ''; return;
+        }
+        const startSnap = startIn ? (snaps.find(s => ts(s.date) >= ts(startIn)) || snaps[0]) : snaps[0];
+        const endSnap = endIn ? ([...snaps].reverse().find(s => ts(s.date) <= ts(endIn)) || snaps[snaps.length - 1]) : snaps[snaps.length - 1];
+        if (ts(endSnap.date) <= ts(startSnap.date)) {
+            exp.innerHTML = '<p class="text-amber-400">لا توجد لقطتان ضمن الفترة المحددة.</p>';
+            $('calculatedProfitCard').innerHTML = money(0); body.innerHTML = ''; return;
+        }
+        const sT = ts(startSnap.date), eT = ts(endSnap.date);
+        const startAssets = snapNetAssets(startSnap), endAssets = snapNetAssets(endSnap);
+
+        let additions = 0, withdrawals = 0;
+        const inv = {};
+        window.appData.capitalLogs.forEach(c => {
+            const t = ts(c.date);
+            if (!inv[c.investor]) inv[c.investor] = { base: 0, add: 0, withdraw: 0 };
+            if (t < sT) inv[c.investor].base += (c.type === 'add' ? c.amount : -c.amount);
+            else if (t <= eT) {
+                if (c.type === 'add') { additions += c.amount; inv[c.investor].add += c.amount; }
+                else { withdrawals += c.amount; inv[c.investor].withdraw += c.amount; }
+            }
+        });
+        const expenses = window.appData.expenses.filter(x => ts(x.date) >= sT && ts(x.date) <= eT).reduce((s, x) => s + x.amount, 0);
+        const netProfit = (endAssets - startAssets - additions + withdrawals) - expenses;
+
+        $('calculatedProfitCard').innerHTML = money(netProfit);
+        exp.innerHTML = `
+            <p>• الفترة: <span class="font-mono">${esc(formatDateEn(startSnap.date))}</span> ← <span class="font-mono">${esc(formatDateEn(endSnap.date))}</span></p>
+            <p>• فرق الأصول: <strong class="text-emerald-400 font-mono">${formatNum(endAssets - startAssets)} ج.م</strong></p>
+            <p>• الإضافات: <span class="font-mono">${formatNum(additions)}</span> — المسحوبات: <span class="font-mono">${formatNum(withdrawals)}</span></p>
+            <p>• المصروفات المخصومة: <strong class="text-red-400 font-mono">-${formatNum(expenses)} ج.م</strong></p>
+            <p class="text-brand-400 font-bold mt-1">صافي الربح القابل للتوزيع = <span class="font-mono">${formatNum(netProfit)} ج.م</span></p>`;
+
+        const eff = n => Math.max(0, inv[n].base + inv[n].add - inv[n].withdraw);
+        const total = Object.keys(inv).reduce((s, n) => s + eff(n), 0);
+        body.innerHTML = Object.keys(inv).map(n => {
+            const d = inv[n], cap = eff(n), r = total > 0 ? cap / total : 0;
+            return `<tr class="hover:bg-slate-800/50"><td class="p-3 font-semibold text-white">${esc(n)}</td>
+                <td class="p-3 font-mono">${formatNum(d.base)}</td><td class="p-3 font-mono text-blue-400">+${formatNum(d.add)}</td>
+                <td class="p-3 font-mono text-red-400">-${formatNum(d.withdraw)}</td><td class="p-3 font-mono font-bold">${formatNum(cap)}</td>
+                <td class="p-3 font-mono text-indigo-400">${(r * 100).toFixed(2)}%</td>
+                <td class="p-3 font-mono font-bold text-brand-400">${formatNum(netProfit * r)} ج.م</td></tr>`;
+        }).join('');
+    }
+
+    function exportToExcel(tableId, filename) {
+        const t = $(tableId); if (!t) return;
+        XLSX.writeFile(XLSX.utils.table_to_book(t, { sheet: 'Sheet1' }), (filename || 'بيانات') + '.xlsx');
+    }
+
+    function renderAllViews() {
+        renderAccountsTable(); renderDynamicSnapshotInputs(); renderSnapshotsTable();
+        renderCustomers(); renderExpensesTable(); renderCapitalTable();
+        updateDashboardCards(); generateProfitReport();
+    }
+    window.renderAllViews = renderAllViews;
+
+    // ---------- الأحداث ----------
+    document.addEventListener('click', (e) => {
+        const tab = e.target.closest('.tab-btn'); if (tab) return switchTab(tab.dataset.tab);
+        const el = e.target.closest('[data-act]'); if (!el) return;
+        const id = el.dataset.id;
+        switch (el.dataset.act) {
+            case 'editAcc': editAccount(id); break;
+            case 'delAcc': deleteAccount(id); break;
+            case 'resetAccount': resetAccountForm(); break;
+            case 'delSnap': if (confirm('تأكيد الحذف؟')) { window.appData.snapshots = window.appData.snapshots.filter(s => s.id !== id); save(['snapshots']); } break;
+            case 'selCust': selectCustomer(el.dataset.name); break;
+            case 'delCust': if (confirm('تأكيد حذف الحركة؟')) { window.appData.customers = window.appData.customers.filter(c => c.id !== id); save(['customers']); } break;
+            case 'delExp': if (confirm('تأكيد الحذف؟')) { window.appData.expenses = window.appData.expenses.filter(x => x.id !== id); save(['expenses']); } break;
+            case 'delCap': if (confirm('تأكيد الحذف؟')) { window.appData.capitalLogs = window.appData.capitalLogs.filter(c => c.id !== id); save(['capitalLogs']); } break;
+            case 'export': exportToExcel(el.dataset.table, el.dataset.name); break;
+            case 'print': window.print(); break;
+            case 'report': generateProfitReport(); break;
+        }
+    });
+
+    $('accountForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = $('accEditId').value, name = $('accName').value.trim(), type = $('accType').value, status = $('accStatus').value;
+        if (!name) return;
+        if (id) { const a = window.appData.accounts.find(x => x.id === id); if (a) Object.assign(a, { name, type, status }); }
+        else window.appData.accounts.push({ id: 'acc_' + Date.now(), name, type, status });
+        resetAccountForm(); save(['accounts']);
+    });
+    $('snapshotForm').addEventListener('submit', saveSnapshot);
+    $('customerForm').addEventListener('submit', saveCustomerRecord);
+    $('expenseForm').addEventListener('submit', saveExpense);
+    $('capitalForm').addEventListener('submit', saveCapital);
+    $('customerSearch').addEventListener('input', renderCustomers);
+    $('reportStartDate').addEventListener('change', generateProfitReport);
+    $('reportEndDate').addEventListener('change', generateProfitReport);
+    $('btnConnect').addEventListener('click', () => {
+        const room = $('roomIdInput').value.trim();
+        if (room.length < 8) return alert('استخدم رمزاً لا يقل عن 8 أحرف (يفضّل رمز طويل عشوائي).');
+        if (!/^[A-Za-z0-9_\-]+$/.test(room)) return alert('الرمز يقبل حروفاً إنجليزية وأرقاماً و - و _ فقط.');
+        localStorage.setItem('app_sync_room_id', room);
+        localStorage.removeItem('app_linked_room');
+        if (window.initCloudSync) window.initCloudSync();
+    });
+
+    function init() {
+        const now = nowLocal();
+        ['snapDate', 'custDate', 'expDate', 'capDate'].forEach(id => $(id).value = now);
+        switchTab('snapshots');
+        renderAllViews();
+        if (window.firebaseReady) window.initCloudSync();
+        else window.addEventListener('firebase-ready', () => window.initCloudSync(), { once: true });
+    }
+    window.addEventListener('load', init);
+</script>
+</body>
+</html>
