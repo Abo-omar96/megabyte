@@ -2,52 +2,389 @@
 <html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="color-scheme" content="dark">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ميجا بايت">
     <title>نظام ميجا بايت للحسابات والشبكات</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { cairo: ['Cairo', 'sans-serif'] },
-            colors: { brand: { 400: '#4ade80', 500: '#22c55e', 600: '#16a34a' } } } } }
-    </script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #1f2937; }
-        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
-        .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
-        td, th { white-space: nowrap; }
-        .pw { cursor: pointer; }
-        @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
-    </style>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322c55e'/%3E%3Cpath d='M14 18h36v12H14zM14 34h36v12H14z' fill='%23052e16'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style id="app-css">*,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}
+::before,::after{--tw-content:''}
+html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;-webkit-tap-highlight-color:transparent}
+body{margin:0;line-height:inherit}
+hr{height:0;color:inherit;border-top-width:1px}
+h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}
+a{color:inherit;text-decoration:inherit}
+b,strong{font-weight:bolder}
+code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:1em}
+small{font-size:80%}
+table{text-indent:0;border-color:inherit;border-collapse:collapse}
+button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}
+button,select{text-transform:none}
+button,[type=button],[type=reset],[type=submit]{-webkit-appearance:button;background-color:transparent;background-image:none}
+:-moz-focusring{outline:auto}
+::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}
+[type=search]{-webkit-appearance:textfield;outline-offset:-2px}
+::-webkit-search-decoration{-webkit-appearance:none}
+::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}
+summary{display:list-item}
+blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}
+fieldset{margin:0;padding:0}
+legend{padding:0}
+ol,ul,menu{list-style:none;margin:0;padding:0}
+textarea{resize:vertical}
+input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}
+button,[role=button]{cursor:pointer}
+:disabled{cursor:default}
+img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}
+img,video{max-width:100%;height:auto}
+[hidden]{display:none}
+@keyframes pulse{50%{opacity:.5}}
+.fixed{position:fixed}
+.sticky{position:sticky}
+.inset-0{top:0;right:0;bottom:0;left:0}
+.top-0{top:0}
+.z-40{z-index:40}
+.z-50{z-index:50}
+.mt-0\.5{margin-top:0.125rem}
+.mt-1{margin-top:0.25rem}
+.mt-2{margin-top:0.5rem}
+.mb-1{margin-bottom:0.25rem}
+.mb-2{margin-bottom:0.5rem}
+.mb-3{margin-bottom:0.75rem}
+.mb-4{margin-bottom:1rem}
+.ml-1{margin-left:0.25rem}
+.ml-2{margin-left:0.5rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.block{display:block}
+.flex{display:flex}
+.grid{display:grid}
+.h-2{height:0.5rem}
+.min-h-screen{min-height:100vh}
+.min-w-0{min-width:0px}
+.min-w-\[260px\]{min-width:260px}
+.max-h-\[90vh\]{max-height:90vh}
+.max-w-7xl{max-width:80rem}
+.max-w-lg{max-width:32rem}
+.w-2{width:0.5rem}
+.w-40{width:10rem}
+.w-52{width:13rem}
+.w-full{width:100%}
+.flex-1{flex:1 1 0%}
+.shrink-0{flex-shrink:0}
+.col-span-2{grid-column:span 2 / span 2}
+.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+.flex-col{flex-direction:column}
+.flex-wrap{flex-wrap:wrap}
+.items-center{align-items:center}
+.items-end{align-items:flex-end}
+.justify-between{justify-content:space-between}
+.justify-center{justify-content:center}
+.justify-end{justify-content:flex-end}
+.gap-2{gap:0.5rem}
+.gap-3{gap:0.75rem}
+.gap-4{gap:1rem}
+.space-x-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.375rem * var(--tw-space-x-reverse));margin-left:calc(0.375rem * calc(1 - var(--tw-space-x-reverse)))}
+.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}
+.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}
+.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}
+.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}
+.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}
+.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}
+.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}
+.space-x-reverse > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:1}
+.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}
+.divide-slate-800 > :not([hidden]) ~ :not([hidden]){border-color:#1e293b}
+.overflow-x-auto{overflow-x:auto}
+.overflow-y-auto{overflow-y:auto}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.whitespace-nowrap{white-space:nowrap}
+.rounded-2xl{border-radius:1rem}
+.rounded-full{border-radius:9999px}
+.rounded-lg{border-radius:.5rem}
+.rounded-xl{border-radius:.75rem}
+.border{border-width:1px}
+.border-b{border-bottom-width:1px}
+.border-t{border-top-width:1px}
+.border-amber-500\/20{border-color:rgba(245,158,11,0.2)}
+.border-amber-500\/40{border-color:rgba(245,158,11,0.4)}
+.border-blue-500\/20{border-color:rgba(59,130,246,0.2)}
+.border-emerald-500\/20{border-color:rgba(16,185,129,0.2)}
+.border-emerald-500\/40{border-color:rgba(16,185,129,0.4)}
+.border-indigo-500\/30{border-color:rgba(99,102,241,0.3)}
+.border-indigo-500\/40{border-color:rgba(99,102,241,0.4)}
+.border-red-500\/20{border-color:rgba(239,68,68,0.2)}
+.border-red-500\/40{border-color:rgba(239,68,68,0.4)}
+.border-slate-600{border-color:#475569}
+.border-slate-700{border-color:#334155}
+.border-slate-700\/50{border-color:rgba(51,65,85,0.5)}
+.border-slate-700\/60{border-color:rgba(51,65,85,0.6)}
+.border-slate-700\/80{border-color:rgba(51,65,85,0.8)}
+.border-slate-800{border-color:#1e293b}
+.bg-amber-500{background-color:#f59e0b}
+.bg-amber-500\/10{background-color:rgba(245,158,11,0.1)}
+.bg-amber-600{background-color:#d97706}
+.bg-amber-600\/90{background-color:rgba(217,119,6,0.9)}
+.bg-black\/70{background-color:rgba(0,0,0,0.7)}
+.bg-blue-500\/10{background-color:rgba(59,130,246,0.1)}
+.bg-blue-600{background-color:#2563eb}
+.bg-brand-500{background-color:#22c55e}
+.bg-brand-600{background-color:#16a34a}
+.bg-emerald-500{background-color:#10b981}
+.bg-emerald-500\/10{background-color:rgba(16,185,129,0.1)}
+.bg-emerald-600{background-color:#059669}
+.bg-emerald-700{background-color:#047857}
+.bg-emerald-950\/60{background-color:rgba(2,44,34,0.6)}
+.bg-indigo-500\/20{background-color:rgba(99,102,241,0.2)}
+.bg-indigo-600{background-color:#4f46e5}
+.bg-red-500{background-color:#ef4444}
+.bg-red-500\/10{background-color:rgba(239,68,68,0.1)}
+.bg-red-950\/60{background-color:rgba(69,10,10,0.6)}
+.bg-rose-600{background-color:#e11d48}
+.bg-sky-600{background-color:#0284c7}
+.bg-slate-500{background-color:#64748b}
+.bg-slate-700{background-color:#334155}
+.bg-slate-800{background-color:#1e293b}
+.bg-slate-800\/80{background-color:rgba(30,41,59,0.8)}
+.bg-slate-900{background-color:#0f172a}
+.bg-slate-900\/60{background-color:rgba(15,23,42,0.6)}
+.bg-slate-900\/80{background-color:rgba(15,23,42,0.8)}
+.bg-slate-950{background-color:#020617}
+.p-2{padding:0.5rem}
+.p-2\.5{padding:0.625rem}
+.p-3{padding:0.75rem}
+.p-4{padding:1rem}
+.p-5{padding:1.25rem}
+.p-6{padding:1.5rem}
+.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}
+.px-3{padding-left:0.75rem;padding-right:0.75rem}
+.px-4{padding-left:1rem;padding-right:1rem}
+.px-5{padding-left:1.25rem;padding-right:1.25rem}
+.px-6{padding-left:1.5rem;padding-right:1.5rem}
+.py-1{padding-top:0.25rem;padding-bottom:0.25rem}
+.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}
+.py-2{padding-top:0.5rem;padding-bottom:0.5rem}
+.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}
+.py-4{padding-top:1rem;padding-bottom:1rem}
+.pt-4{padding-top:1rem}
+.pt-5{padding-top:1.25rem}
+.pt-6{padding-top:1.5rem}
+.pb-4{padding-bottom:1rem}
+.text-center{text-align:center}
+.text-right{text-align:right}
+.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+.font-bold{font-weight:700}
+.font-medium{font-weight:500}
+.font-semibold{font-weight:600}
+.text-\[11px\]{font-size:11px}
+.text-base{font-size:1rem;line-height:1.5rem}
+.text-lg{font-size:1.125rem;line-height:1.75rem}
+.text-sm{font-size:.875rem;line-height:1.25rem}
+.text-xl{font-size:1.25rem;line-height:1.75rem}
+.text-xs{font-size:.75rem;line-height:1rem}
+.leading-none{line-height:1}
+.leading-relaxed{line-height:1.625}
+.text-amber-200{color:#fde68a}
+.text-amber-300{color:#fcd34d}
+.text-amber-300\/90{color:rgba(252,211,77,0.9)}
+.text-amber-400{color:#fbbf24}
+.text-blue-400{color:#60a5fa}
+.text-brand-400{color:#4ade80}
+.text-brand-500{color:#22c55e}
+.text-emerald-300{color:#6ee7b7}
+.text-emerald-400{color:#34d399}
+.text-indigo-300{color:#a5b4fc}
+.text-indigo-400{color:#818cf8}
+.text-red-300{color:#fca5a5}
+.text-red-400{color:#f87171}
+.text-sky-500{color:#0ea5e9}
+.text-slate-100{color:#f1f5f9}
+.text-slate-200{color:#e2e8f0}
+.text-slate-300{color:#cbd5e1}
+.text-slate-400{color:#94a3b8}
+.text-slate-500{color:#64748b}
+.text-slate-950{color:#020617}
+.text-white{color:#ffffff}
+.shadow-xl{box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1)}
+.backdrop-blur{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.hidden{display:none}
+.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
+.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.hover\:bg-amber-500:hover{background-color:#f59e0b}
+.hover\:bg-blue-500:hover{background-color:#3b82f6}
+.hover\:bg-brand-500:hover{background-color:#22c55e}
+.hover\:bg-emerald-500:hover{background-color:#10b981}
+.hover\:bg-emerald-600:hover{background-color:#059669}
+.hover\:bg-indigo-500:hover{background-color:#6366f1}
+.hover\:bg-rose-500:hover{background-color:#f43f5e}
+.hover\:bg-sky-500:hover{background-color:#0ea5e9}
+.hover\:bg-slate-600:hover{background-color:#475569}
+.hover\:bg-slate-800\/50:hover{background-color:rgba(30,41,59,0.5)}
+.hover\:text-white:hover{color:#ffffff}
+.focus\:border-brand-500:focus{border-color:#22c55e}
+.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}
+@media (min-width:640px){
+.sm\:block{display:block}
+.sm\:flex{display:flex}
+.sm\:w-64{width:16rem}
+.sm\:w-auto{width:auto}
+.sm\:gap-4{gap:1rem}
+.sm\:space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}
+.sm\:p-2\.5{padding:0.625rem}
+.sm\:p-4{padding:1rem}
+.sm\:p-5{padding:1.25rem}
+.sm\:p-6{padding:1.5rem}
+.sm\:px-4{padding-left:1rem;padding-right:1rem}
+.sm\:py-3{padding-top:0.75rem;padding-bottom:0.75rem}
+.sm\:py-6{padding-top:1.5rem;padding-bottom:1.5rem}
+.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}
+.sm\:hidden{display:none}
+.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:768px){
+.md\:col-span-1{grid-column:span 1 / span 1}
+.md\:col-span-2{grid-column:span 2 / span 2}
+.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.md\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (min-width:1024px){
+.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+i.fa-solid{display:inline-block;width:1em;height:1em;vertical-align:-.125em;background-color:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat;font-style:normal;flex-shrink:0}
+.ico{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;background-color:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat;flex-shrink:0}
+i.fa-plus,.ico-plus{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cline x1=%2212%22 y1=%225%22 x2=%2212%22 y2=%2219%22/%3E%3Cline x1=%225%22 y1=%2212%22 x2=%2219%22 y2=%2212%22/%3E%3C/svg%3E")}
+i.fa-trash,.ico-trash{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%223 6 5 6 21 6%22/%3E%3Cpath d=%22M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6%22/%3E%3Cpath d=%22M10 11v6M14 11v6%22/%3E%3Cpath d=%22M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2%22/%3E%3C/svg%3E")}
+i.fa-pen,.ico-pen{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z%22/%3E%3C/svg%3E")}
+i.fa-xmark,.ico-xmark{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cline x1=%2218%22 y1=%226%22 x2=%226%22 y2=%2218%22/%3E%3Cline x1=%226%22 y1=%226%22 x2=%2218%22 y2=%2218%22/%3E%3C/svg%3E")}
+i.fa-phone,.ico-phone{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z%22/%3E%3C/svg%3E")}
+i.fa-camera,.ico-camera{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z%22/%3E%3Ccircle cx=%2212%22 cy=%2213%22 r=%224%22/%3E%3C/svg%3E")}
+i.fa-wallet,.ico-wallet{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h16v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7%22/%3E%3Ccircle cx=%2217%22 cy=%2214%22 r=%221%22/%3E%3C/svg%3E")}
+i.fa-address-book,.ico-address-book{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2%22/%3E%3Ccircle cx=%229%22 cy=%227%22 r=%224%22/%3E%3Cpath d=%22M23 21v-2a4 4 0 0 0-3-3.87%22/%3E%3Cpath d=%22M16 3.13a4 4 0 0 1 0 7.75%22/%3E%3C/svg%3E")}
+i.fa-hand-holding-dollar,.ico-hand-holding-dollar{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cline x1=%2212%22 y1=%221%22 x2=%2212%22 y2=%2223%22/%3E%3Cpath d=%22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6%22/%3E%3C/svg%3E")}
+i.fa-network-wired,.ico-network-wired{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M5 12.55a11 11 0 0 1 14.08 0%22/%3E%3Cpath d=%22M1.42 9a16 16 0 0 1 21.16 0%22/%3E%3Cpath d=%22M8.53 16.11a6 6 0 0 1 6.95 0%22/%3E%3Cline x1=%2212%22 y1=%2220%22 x2=%2212.01%22 y2=%2220%22/%3E%3C/svg%3E")}
+i.fa-list-check,.ico-list-check{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cline x1=%228%22 y1=%226%22 x2=%2221%22 y2=%226%22/%3E%3Cline x1=%228%22 y1=%2212%22 x2=%2221%22 y2=%2212%22/%3E%3Cline x1=%228%22 y1=%2218%22 x2=%2221%22 y2=%2218%22/%3E%3Cline x1=%223%22 y1=%226%22 x2=%223.01%22 y2=%226%22/%3E%3Cline x1=%223%22 y1=%2212%22 x2=%223.01%22 y2=%2212%22/%3E%3Cline x1=%223%22 y1=%2218%22 x2=%223.01%22 y2=%2218%22/%3E%3C/svg%3E")}
+i.fa-database,.ico-database{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cellipse cx=%2212%22 cy=%225%22 rx=%229%22 ry=%223%22/%3E%3Cpath d=%22M21 12c0 1.66-4 3-9 3s-9-1.34-9-3%22/%3E%3Cpath d=%22M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5%22/%3E%3C/svg%3E")}
+i.fa-download,.ico-download{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4%22/%3E%3Cpolyline points=%227 10 12 15 17 10%22/%3E%3Cline x1=%2212%22 y1=%2215%22 x2=%2212%22 y2=%223%22/%3E%3C/svg%3E")}
+i.fa-upload,.ico-upload{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4%22/%3E%3Cpolyline points=%2217 8 12 3 7 8%22/%3E%3Cline x1=%2212%22 y1=%223%22 x2=%2212%22 y2=%2215%22/%3E%3C/svg%3E")}
+i.fa-file-excel,.ico-file-excel{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z%22/%3E%3Cpolyline points=%2214 2 14 8 20 8%22/%3E%3Cline x1=%2216%22 y1=%2213%22 x2=%228%22 y2=%2213%22/%3E%3Cline x1=%2216%22 y1=%2217%22 x2=%228%22 y2=%2217%22/%3E%3Cpolyline points=%2210 9 9 9 8 9%22/%3E%3C/svg%3E")}
+i.fa-file-import,.ico-file-import{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z%22/%3E%3Cpolyline points=%2214 2 14 8 20 8%22/%3E%3Cline x1=%2212%22 y1=%2218%22 x2=%2212%22 y2=%2212%22/%3E%3Cpolyline points=%229 15 12 18 15 15%22/%3E%3C/svg%3E")}
+i.fa-circle-info,.ico-circle-info{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2210%22/%3E%3Cline x1=%2212%22 y1=%2216%22 x2=%2212%22 y2=%2212%22/%3E%3Cline x1=%2212%22 y1=%228%22 x2=%2212.01%22 y2=%228%22/%3E%3C/svg%3E")}
+i.fa-triangle-exclamation,.ico-triangle-exclamation{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z%22/%3E%3Cline x1=%2212%22 y1=%229%22 x2=%2212%22 y2=%2213%22/%3E%3Cline x1=%2212%22 y1=%2217%22 x2=%2212.01%22 y2=%2217%22/%3E%3C/svg%3E")}
+i.fa-cloud-arrow-up,.ico-cloud-arrow-up{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%2216 16 12 12 8 16%22/%3E%3Cline x1=%2212%22 y1=%2212%22 x2=%2212%22 y2=%2221%22/%3E%3Cpath d=%22M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3%22/%3E%3C/svg%3E")}
+i.fa-plug,.ico-plug{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M12 22v-5%22/%3E%3Cpath d=%22M9 8V2%22/%3E%3Cpath d=%22M15 8V2%22/%3E%3Cpath d=%22M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z%22/%3E%3C/svg%3E")}
+i.fa-calculator,.ico-calculator{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Crect x=%224%22 y=%222%22 width=%2216%22 height=%2220%22 rx=%222%22/%3E%3Cline x1=%228%22 y1=%226%22 x2=%2216%22 y2=%226%22/%3E%3Cline x1=%228%22 y1=%2210%22 x2=%228.01%22 y2=%2210%22/%3E%3Cline x1=%2212%22 y1=%2210%22 x2=%2212.01%22 y2=%2210%22/%3E%3Cline x1=%2216%22 y1=%2210%22 x2=%2216.01%22 y2=%2210%22/%3E%3Cline x1=%228%22 y1=%2214%22 x2=%228.01%22 y2=%2214%22/%3E%3Cline x1=%2212%22 y1=%2214%22 x2=%2212.01%22 y2=%2214%22/%3E%3Cline x1=%2216%22 y1=%2214%22 x2=%2216.01%22 y2=%2214%22/%3E%3Cline x1=%228%22 y1=%2218%22 x2=%228.01%22 y2=%2218%22/%3E%3Cline x1=%2212%22 y1=%2218%22 x2=%2212.01%22 y2=%2218%22/%3E%3Cline x1=%2216%22 y1=%2218%22 x2=%2216.01%22 y2=%2218%22/%3E%3C/svg%3E")}
+i.fa-server,.ico-server{--ico:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Crect x=%222%22 y=%222%22 width=%2220%22 height=%228%22 rx=%222%22 ry=%222%22/%3E%3Crect x=%222%22 y=%2214%22 width=%2220%22 height=%228%22 rx=%222%22 ry=%222%22/%3E%3Cline x1=%226%22 y1=%226%22 x2=%226.01%22 y2=%226%22/%3E%3Cline x1=%226%22 y1=%2218%22 x2=%226.01%22 y2=%2218%22/%3E%3C/svg%3E")}
+/* ===== تنسيقات التطبيق (فوق أصناف Tailwind المولّدة) ===== */
+:root{color-scheme:dark;--hdr:56px}
+html{scroll-padding-top:calc(var(--hdr) + 64px);scrollbar-color:#374151 #1f2937}
+body{font-family:'Cairo','Segoe UI',Tahoma,'Noto Sans Arabic','Noto Naskh Arabic',system-ui,-apple-system,Roboto,sans-serif;min-height:100vh;min-height:100dvh}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#1f2937}
+::-webkit-scrollbar-thumb{background:#374151;border-radius:3px}
+.font-mono,input[type=number]{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;font-variant-numeric:tabular-nums}
+td,th{white-space:nowrap}
+.pw{cursor:pointer}
+.clip{overflow:hidden;overflow:clip}
+button,a,select,input,textarea,label{touch-action:manipulation}
+input,select,textarea{min-width:0}
+input[type=datetime-local]{min-height:2.4rem}
+
+/* الترويسة وحواف الشاشات ذات النتوء */
+header.top{padding-top:env(safe-area-inset-top)}
+header .hdr-in,main.safe{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
+footer{padding-bottom:calc(1rem + env(safe-area-inset-bottom))}
+
+/* شريط التبويبات: يلتصق أسفل الترويسة ويُمرَّر أفقياً بدون شريط تمرير */
+.tabbar{position:sticky;top:var(--hdr);z-index:30;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.tabbar::-webkit-scrollbar{display:none}
+.tab-btn{transition:background-color .15s,color .15s}
+.tab-btn:not(.bg-brand-600):hover{background:#1e293b;color:#fff}
+
+/* بطاقات المؤشرات */
+.kpi-num{font-size:clamp(1rem,5.2vw,1.5rem);line-height:1.25;overflow-wrap:anywhere}
+
+/* أزرار الإجراءات (مناسبة للمس) */
+.act{display:inline-flex;align-items:center;justify-content:center;min-width:2.25rem;min-height:2.25rem;border-radius:.5rem;vertical-align:middle}
+.act:hover{background:rgba(148,163,184,.14)}
+.act-txt{display:inline-flex;align-items:center;min-height:2.25rem;padding:0 .7rem;border-radius:.5rem;font-size:.8rem;font-weight:600;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);margin-left:.25rem}
+.act-b{display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem}
+
+/* عمود التاريخ ثابت أثناء التمرير الأفقي للجداول العريضة */
+.stk th:first-child,.stk td:first-child{position:sticky;right:0;z-index:1}
+.stk td:first-child{background:#1e293b}
+.stk th:first-child{background:#162134}
+.stk tr:hover td:first-child{background:#243147}
+.xscroll{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+
+body.modal-open{overflow:hidden}
+#modalBox{max-height:90vh;max-height:90dvh}
+
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(1rem + env(safe-area-inset-bottom));z-index:60;max-width:90vw;background:#1e293b;border:1px solid #475569;color:#fff;padding:.6rem 1rem;border-radius:.75rem;font-size:.85rem;line-height:1.4;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+
+/* أجهزة اللمس: عناصر أكبر */
+@media (pointer:coarse){
+  button,select,input:not([type=checkbox]):not([type=hidden]),textarea{min-height:2.75rem}
+  .act{min-width:2.75rem;min-height:2.75rem}
+  .act-txt{min-height:2.75rem}
+  input[type=checkbox]{width:1.25rem;height:1.25rem}
+}
+/* منع تكبير iOS التلقائي عند الضغط على حقل */
+@media (max-width:767px){
+  input,select,textarea{font-size:16px!important}
+}
+
+/* الهاتف: الجداول تتحول إلى بطاقات، والنافذة تصعد من الأسفل */
+@media (max-width:639px){
+  .rt thead{display:none}
+  .rt,.rt tbody,.rt tr,.rt td{display:block;width:100%}
+  .rt tr{display:grid;grid-template-columns:1fr 1fr;gap:.45rem .75rem;padding:.75rem .85rem}
+  .rt td{padding:0!important;white-space:normal;min-width:0;overflow-wrap:anywhere;text-align:right}
+  .rt td::before{content:attr(data-label);display:block;font-size:.68rem;line-height:1.1rem;color:#94a3b8;font-weight:400}
+  .rt td:first-child{grid-column:1/-1;font-size:1rem;position:static;background:transparent}
+  .rt td:first-child::before{display:none}
+  .rt td:last-child{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:.4rem;padding-top:.15rem!important}
+  .rt td:last-child::before{display:none}
+  .rt td[colspan]{display:block;text-align:center;grid-column:1/-1}
+  .stk tr:hover td:first-child{background:transparent}
+  #modal{align-items:flex-end;padding:0}
+  #modalBox{max-width:none;border-radius:1rem 1rem 0 0;max-height:92vh;max-height:92dvh;padding-bottom:calc(1.25rem + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){.animate-pulse{animation:none}}
+@media print{.no-print{display:none!important}body{background:#fff!important;color:#000!important}}
+</style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+<noscript><p style="padding:1rem;color:#fca5a5">يلزم تفعيل JavaScript لتشغيل البرنامج.</p></noscript>
 <div class="w-full">
-    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-40 no-print">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-brand-500 text-slate-950 p-2.5 rounded-xl font-bold text-xl"><i class="fa-solid fa-server"></i></div>
-                <div>
-                    <h1 class="font-bold text-lg text-white leading-none">ميجا بايت — الحسابات والشبكات</h1>
-                    <p class="text-xs text-emerald-400 mt-1 font-semibold">نفس منطق ملف الإكسل (حساب الرصيد)</p>
+    <header class="top bg-slate-800/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-40 no-print">
+        <div class="hdr-in max-w-7xl mx-auto px-4 py-2 sm:py-3 flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 space-x-reverse min-w-0">
+                <div class="bg-brand-500 text-slate-950 p-2 sm:p-2.5 rounded-xl font-bold text-xl shrink-0"><i class="fa-solid fa-server"></i></div>
+                <div class="min-w-0">
+                    <h1 class="font-bold text-base sm:text-lg text-white leading-none truncate">ميجا بايت<span class="hidden sm:inline"> — الحسابات والشبكات</span></h1>
+                    <p class="hidden sm:block text-xs text-emerald-400 mt-1 font-semibold">نفس منطق ملف الإكسل (حساب الرصيد)</p>
                 </div>
             </div>
-            <div id="syncStatus" class="flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400">
+            <div id="syncStatus" class="shrink-0 whitespace-nowrap flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400">
                 <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span><span id="syncText">جاري الاتصال...</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <main class="safe max-w-7xl mx-auto px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
         <div id="seedBanner" class="hidden bg-amber-500/10 border border-amber-500/40 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 no-print">
             <p class="text-sm text-amber-200"><i class="fa-solid fa-circle-info ml-1"></i> البرنامج فارغ. يمكنك استيراد بيانات ملف الإكسل الحالي (لقطات الرصيد، المحافظ، العملاء، الشركاء، الـ IP، خطوط WE، الأوردرات) بضغطة واحدة.</p>
             <button type="button" data-act="importSeed" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-bold">استيراد بيانات الإكسل</button>
         </div>
 
-        <div class="bg-slate-800/80 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print">
-            <div class="flex items-center space-x-3 space-x-reverse flex-1 min-w-[260px]">
+        <div class="bg-slate-800/80 border border-indigo-500/30 rounded-2xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 no-print">
+            <div class="hidden sm:flex items-center space-x-3 space-x-reverse flex-1 min-w-[260px]">
                 <div class="bg-indigo-500/20 text-indigo-400 p-3 rounded-xl border border-indigo-500/30"><i class="fa-solid fa-cloud-arrow-up text-xl"></i></div>
                 <div>
                     <h3 class="text-sm font-bold text-white">رمز المزامنة السري</h3>
@@ -55,50 +392,51 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
-                <input type="text" id="roomIdInput" placeholder="رمز المزامنة" class="bg-slate-900 border border-indigo-500/40 px-3 py-2 rounded-xl text-sm font-bold text-center font-mono w-full sm:w-64 text-indigo-300 focus:outline-none">
+                <input type="text" id="roomIdInput" dir="ltr" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="رمز المزامنة" class="bg-slate-900 border border-indigo-500/40 px-3 py-2 rounded-xl text-sm font-bold text-center font-mono w-full sm:w-64 text-indigo-300 focus:outline-none">
                 <button type="button" id="btnConnect" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold whitespace-nowrap"><i class="fa-solid fa-plug ml-1"></i> ربط</button>
             </div>
+            <p class="sm:hidden w-full text-[11px] text-slate-400"><i class="fa-solid fa-cloud-arrow-up ml-1"></i> رمز المزامنة السري: اكتب نفس الرمز في كل أجهزتك ولا تشاركه.</p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="bg-slate-800 border border-slate-700/80 p-3 sm:p-5 rounded-2xl">
                 <p class="text-xs text-slate-400 font-medium">صافي الأصول الحالية (الإيراد − المنصرف)</p>
-                <h3 id="kpiNet" class="text-2xl font-bold text-white mt-2 font-mono">0</h3>
+                <h3 id="kpiNet" class="kpi-num font-bold text-white mt-2 font-mono">0</h3>
                 <p class="text-[11px] text-slate-500 mt-2">آخر لقطة نقدية + المحافظ + لنا عند العملاء − علينا</p>
             </div>
-            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+            <div class="bg-slate-800 border border-slate-700/80 p-3 sm:p-5 rounded-2xl">
                 <p class="text-xs text-slate-400 font-medium">مساهمات الشركاء (المدفوع)</p>
-                <h3 id="kpiCapital" class="text-2xl font-bold text-blue-400 mt-2 font-mono">0</h3>
+                <h3 id="kpiCapital" class="kpi-num font-bold text-blue-400 mt-2 font-mono">0</h3>
                 <p id="kpiSurplus" class="text-[11px] text-slate-500 mt-2">الربح المراد توزيعه: 0</p>
             </div>
-            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+            <div class="bg-slate-800 border border-slate-700/80 p-3 sm:p-5 rounded-2xl">
                 <p class="text-xs text-slate-400 font-medium">ديون العملاء</p>
-                <h3 id="kpiCust" class="text-2xl font-bold text-amber-400 mt-2 font-mono">0</h3>
+                <h3 id="kpiCust" class="kpi-num font-bold text-amber-400 mt-2 font-mono">0</h3>
                 <div class="flex justify-between text-[11px] mt-2 text-slate-400">
                     <span>لنا: <strong id="kpiUs" class="text-emerald-400 font-mono">0</strong></span>
                     <span>علينا: <strong id="kpiThem" class="text-red-400 font-mono">0</strong></span>
                 </div>
             </div>
-            <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
+            <div class="bg-slate-800 border border-slate-700/80 p-3 sm:p-5 rounded-2xl">
                 <p class="text-xs text-slate-400 font-medium">إجمالي المحافظ والماكينات</p>
-                <h3 id="kpiWallets" class="text-2xl font-bold text-emerald-400 mt-2 font-mono">0</h3>
+                <h3 id="kpiWallets" class="kpi-num font-bold text-emerald-400 mt-2 font-mono">0</h3>
                 <p class="text-[11px] text-slate-500 mt-2">مجموع أرصدة «محافظ كاش»</p>
             </div>
         </div>
 
-        <div class="bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-xl">
-            <div class="flex border-b border-slate-700/80 bg-slate-900/50 p-2 overflow-x-auto space-x-2 space-x-reverse no-print">
-                <button type="button" data-tab="snapshots" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-camera"></i> <span>حساب (لقطات الرصيد)</span></button>
-                <button type="button" data-tab="wallets" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-wallet"></i> <span>محافظ كاش</span></button>
-                <button type="button" data-tab="customers" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-address-book"></i> <span>الخرج (العملاء)</span></button>
-                <button type="button" data-tab="partners" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-hand-holding-dollar"></i> <span>الشركاء والأرباح</span></button>
-                <button type="button" data-tab="devices" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-network-wired"></i> <span>IP Address</span></button>
-                <button type="button" data-tab="we" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-phone"></i> <span>Client WE</span></button>
-                <button type="button" data-tab="orders" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-list-check"></i> <span>الأوردرات</span></button>
-                <button type="button" data-tab="data" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-database"></i> <span>البيانات</span></button>
+        <div class="bg-slate-800 border border-slate-700/80 rounded-2xl clip shadow-xl">
+            <div class="tabbar xscroll flex border-b border-slate-700/80 bg-slate-900 p-2 overflow-x-auto space-x-2 space-x-reverse no-print" role="tablist">
+                <button type="button" data-tab="snapshots" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-camera"></i> <span>حساب (لقطات الرصيد)</span></button>
+                <button type="button" data-tab="wallets" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-wallet"></i> <span>محافظ كاش</span></button>
+                <button type="button" data-tab="customers" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-address-book"></i> <span>الخرج (العملاء)</span></button>
+                <button type="button" data-tab="partners" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-hand-holding-dollar"></i> <span>الشركاء والأرباح</span></button>
+                <button type="button" data-tab="devices" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-network-wired"></i> <span>IP Address</span></button>
+                <button type="button" data-tab="we" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-phone"></i> <span>Client WE</span></button>
+                <button type="button" data-tab="orders" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-list-check"></i> <span>الأوردرات</span></button>
+                <button type="button" data-tab="data" class="tab-btn shrink-0 whitespace-nowrap px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400" role="tab"><i class="fa-solid fa-database"></i> <span>البيانات</span></button>
             </div>
 
-            <div class="p-6">
+            <div class="p-3 sm:p-6">
                 <!-- Snapshots -->
                 <div id="content-snapshots" class="tab-content space-y-6">
                     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/60 pb-4">
@@ -109,15 +447,15 @@
                     <form id="snapshotForm" class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/50 space-y-4">
                         <input type="hidden" id="snapEditId">
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label><input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                            <div class="col-span-2 md:col-span-1"><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label><input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
                             
-                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فورى</label><input type="number" step="0.01" id="snapFawry" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">أمان</label><input type="number" step="0.01" id="snapAman" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">مجمد</label><input type="number" step="0.01" id="snapFrozen" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فكة</label><input type="number" step="0.01" id="snapFakka" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فضية</label><input type="number" step="0.01" id="snapSilver" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فورى</label><input type="text" inputmode="decimal" autocomplete="off" id="snapFawry" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">أمان</label><input type="text" inputmode="decimal" autocomplete="off" id="snapAman" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">مجمد</label><input type="text" inputmode="decimal" autocomplete="off" id="snapFrozen" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فكة</label><input type="text" inputmode="decimal" autocomplete="off" id="snapFakka" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فضية</label><input type="text" inputmode="decimal" autocomplete="off" id="snapSilver" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
                             <div><label class="block text-xs font-semibold text-slate-300 mb-1">الوردية / ملاحظة</label><input type="text" id="snapShift" placeholder="محمد" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                            <div class="col-span-2 md:col-span-1"><label class="block text-xs font-semibold text-slate-300 mb-1">الزيادة المسجلة (يدوي، اختياري)</label><input type="number" step="0.01" id="snapK" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div class="col-span-2 md:col-span-1"><label class="block text-xs font-semibold text-slate-300 mb-1">الزيادة المسجلة (يدوي، اختياري)</label><input type="text" inputmode="decimal" autocomplete="off" id="snapK" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
                             <label id="snapRefreshWrap" class="hidden col-span-2 items-center gap-2 text-xs text-amber-300 pt-6"><input type="checkbox" id="snapRefresh"> تحديث المحافظ والعملاء بالقيم الحالية</label>
                         </div>
                         <div id="snapPreview" class="text-xs text-slate-300 bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono"></div>
@@ -126,8 +464,8 @@
                             <button type="submit" id="snapSubmit" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm"><i class="fa-solid fa-plus ml-1"></i> حفظ اللقطة</button>
                         </div>
                     </form>
-                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
-                        <table class="w-full text-right text-sm text-slate-300">
+                    <div class="xscroll overflow-x-auto border border-slate-700/80 rounded-xl">
+                        <table class="rt stk w-full text-right text-sm text-slate-300">
                             <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
                                 <th class="p-3">التاريخ</th><th class="p-3 font-bold">رأس المال (= الإيراد − المنصرف)</th><th class="p-3">فورى</th><th class="p-3">أمان</th><th class="p-3">مجمد</th><th class="p-3">فكة</th><th class="p-3">فضية</th>
                                 <th class="p-3 text-emerald-400">إجمالي إيراد</th><th class="p-3 text-red-400">إجمالي منصرف</th>
@@ -163,7 +501,7 @@
                         </div>
                         <div class="flex flex-wrap items-end gap-3">
                             <div><label class="block text-xs font-semibold text-slate-300 mb-1">الربح المستحق للتوزيع (ج.م)</label>
-                                <input type="number" step="0.01" data-setting="partnerProfit" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white w-52"></div>
+                                <input type="text" inputmode="decimal" autocomplete="off" data-num="1" data-setting="partnerProfit" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white w-52"></div>
                             <button type="button" data-act="useK" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-xl text-xs font-semibold">استخدم مجموع الزيادات المسجلة</button>
                             <button type="button" data-act="useDelta" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold">استخدم فرق الصافي</button>
                         </div>
@@ -196,12 +534,13 @@
             </div>
         </div>
     </main>
-    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print"><p>نظام ميجا بايت © 2026</p></footer>
+    <footer class="bg-slate-950 border-t border-slate-800 pt-4 text-center text-xs text-slate-500 no-print"><p>نظام ميجا بايت © 2026</p></footer>
 </div>
 
-<div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+<div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true">
     <div id="modalBox" class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-5"></div>
 </div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <!-- Firebase -->
 <script type="module">
@@ -220,11 +559,11 @@
     let unsubscribe = null, currentRoom = null;
 
     function getRoom() {
-        let r = localStorage.getItem('app_sync_room_id');
+        let r = LS.get('app_sync_room_id');
         if (!r) {
             const a = new Uint8Array(16); crypto.getRandomValues(a);
             r = 'R-' + Array.from(a, b => b.toString(16).padStart(2, '0')).join('');
-            localStorage.setItem('app_sync_room_id', r);
+            LS.set('app_sync_room_id', r);
         }
         return r;
     }
@@ -241,7 +580,7 @@
         window.setStatus('wait', 'جاري الاتصال...');
         unsubscribe = onValue(ref(db, 'rooms/' + roomId), (snap) => {
             const data = snap.val();
-            const linked = localStorage.getItem('app_linked_room');
+            const linked = LS.get('app_linked_room');
             if (!data) {
                 window.pushSections(window.SECTIONS);
             } else {
@@ -249,12 +588,12 @@
                 window.SECTIONS.forEach(s => { incoming[s] = window.normSection(s, data[s]); });
                 if (linked !== roomId && window.localHasData()) {
                     const useCloud = confirm('هذه الغرفة فيها بيانات سحابية، وجهازك فيه بيانات محلية.\n\nموافق = استخدام بيانات السحابة (تُستبدل بيانات الجهاز)\nإلغاء = رفع بيانات هذا الجهاز مكان بيانات السحابة');
-                    if (!useCloud) { localStorage.setItem('app_linked_room', roomId); window.pushSections(window.SECTIONS); window.setStatus('ok', 'متصل سحابياً'); return; }
+                    if (!useCloud) { LS.set('app_linked_room', roomId); window.pushSections(window.SECTIONS); window.setStatus('ok', 'متصل سحابياً'); return; }
                 }
                 window.appData = incoming;
-                localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+                LS.set('app_accounting_db', JSON.stringify(window.appData));
             }
-            localStorage.setItem('app_linked_room', roomId);
+            LS.set('app_linked_room', roomId);
             window.renderAllViews();
             window.setStatus('ok', 'متصل سحابياً');
         }, (error) => { console.error(error); window.setStatus('err', 'خطأ في الاتصال (راجع قواعد الأمان)'); });
@@ -269,7 +608,29 @@
     window.SECTIONS = SECTIONS;
 
     const $ = id => document.getElementById(id);
-    const num = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
+    // تخزين آمن: يعمل حتى لو كان التخزين محجوباً (وضع التصفح الخاص في سفاري مثلاً)
+    window.LS = {
+        get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+        set(k, v) { try { localStorage.setItem(k, v); } catch (e) { } },
+        del(k) { try { localStorage.removeItem(k); } catch (e) { } }
+    };
+    // يقبل الأرقام العربية والفارسية والفاصلة العشرية العربية وفاصل الآلاف
+    function normNum(v) {
+        let s = String(v ?? '').trim()
+            .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+            .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0))
+            .replace(/\u066B/g, '.').replace(/[\u066C\u00A0\s]/g, '').replace(/[\u2212\u2013]/g, '-');
+        if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, '');
+        else s = s.replace(/,/g, '.');
+        return s;
+    }
+    const num = v => { const x = parseFloat(normNum(v)); return isNaN(x) ? 0 : x; };
+    let toastTimer = null;
+    function toast(msg) {
+        const el = $('toast'); if (!el) return;
+        el.textContent = msg; el.classList.add('show');
+        clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+    }
     const sum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
     const r2 = v => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
     function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -286,10 +647,10 @@
 
     window.setStatus = function (kind, text) {
         const map = {
-            ok: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300'],
-            err: ['w-2 h-2 rounded-full bg-red-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-red-950/60 border border-red-500/40 px-3 py-1.5 rounded-lg text-red-300'],
-            wait: ['w-2 h-2 rounded-full bg-amber-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400'],
-            local: ['w-2 h-2 rounded-full bg-slate-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400']
+            ok: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'shrink-0 whitespace-nowrap flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300'],
+            err: ['w-2 h-2 rounded-full bg-red-500', 'shrink-0 whitespace-nowrap flex items-center space-x-1.5 space-x-reverse text-xs bg-red-950/60 border border-red-500/40 px-3 py-1.5 rounded-lg text-red-300'],
+            wait: ['w-2 h-2 rounded-full bg-amber-500', 'shrink-0 whitespace-nowrap flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400'],
+            local: ['w-2 h-2 rounded-full bg-slate-500', 'shrink-0 whitespace-nowrap flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400']
         };
         $('syncDot').className = map[kind][0]; $('syncStatus').className = map[kind][1]; $('syncText').textContent = text;
     };
@@ -301,7 +662,7 @@
         return arr.filter(Boolean);
     };
     (function loadLocal() {
-        let p = null; try { p = JSON.parse(localStorage.getItem('app_accounting_db')); } catch (e) {}
+        let p = null; try { p = JSON.parse(LS.get('app_accounting_db')); } catch (e) {}
         window.appData = {}; SECTIONS.forEach(s => { window.appData[s] = window.normSection(s, p && p[s]); });
     })();
     window.localHasData = () => SECTIONS.some(s => s !== 'settings' && window.appData[s].length);
@@ -309,9 +670,9 @@
     const logOf = c => Array.isArray(c.log) ? c.log : (c.log ? Object.values(c.log) : []);
 
     function save(sections) {
-        localStorage.setItem('app_accounting_db', JSON.stringify(D()));
+        LS.set('app_accounting_db', JSON.stringify(D()));
         if (window.pushSections) window.pushSections(sections);
-        renderAllViews();
+        renderAllViews(); toast('تم الحفظ');
     }
 
     // ---------- الحسابات (نفس معادلات الإكسل) ----------
@@ -332,6 +693,10 @@
             b.classList.toggle('bg-brand-600', on); b.classList.toggle('text-white', on); b.classList.toggle('text-slate-400', !on);
         });
         $('content-' + tab).classList.remove('hidden');
+        LS.set('app_tab', tab);
+        const btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+        document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+        if (btn && btn.scrollIntoView) { try { btn.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) { } }
     }
 
     // ---------- لقطات الرصيد ----------
@@ -394,16 +759,16 @@
             const days = prevT === null ? '' : Math.round((t - prevT) / 86400000);
             prevNet = net; prevT = t;
             return `<tr class="hover:bg-slate-800/50">
-                <td class="p-3 font-mono text-xs text-slate-400">${esc(fmtDate(s.date))}</td>
-                <td class="p-3 font-mono font-bold">${formatNum(net)}</td>
-                <td class="p-3 font-mono">${formatNum(s.fawry)}</td><td class="p-3 font-mono">${formatNum(s.aman)}</td>
-                <td class="p-3 font-mono">${formatNum(s.frozen)}</td><td class="p-3 font-mono">${formatNum(s.fakka)}</td><td class="p-3 font-mono">${formatNum(s.silver)}</td>
-                <td class="p-3 font-mono text-emerald-400">${formatNum(snapRevenue(s))}</td><td class="p-3 font-mono text-red-400">${formatNum(snapExpense(s))}</td>
-                <td class="p-3 font-mono ${delta === null ? 'text-slate-500' : colorOf(delta)}">${delta === null ? '—' : (delta > 0 ? '+' : '') + formatNum(delta)}</td>
-                <td class="p-3 font-mono text-amber-400">${s.k == null ? '' : formatNum(s.k)}</td>
-                <td class="p-3 text-xs">${esc(s.shift || '')}</td><td class="p-3 font-mono text-xs">${days}</td>
-                <td class="p-3 no-print"><button data-act="editSnap" data-id="${esc(s.id)}" class="text-indigo-400 p-1"><i class="fa-solid fa-pen"></i></button>
-                <button data-act="delSnap" data-id="${esc(s.id)}" class="text-red-400 p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                <td data-label="التاريخ" class="p-3 font-mono text-xs text-slate-400">${esc(fmtDate(s.date))}</td>
+                <td data-label="رأس المال" class="p-3 font-mono font-bold">${formatNum(net)}</td>
+                <td data-label="فورى" class="p-3 font-mono">${formatNum(s.fawry)}</td><td data-label="أمان" class="p-3 font-mono">${formatNum(s.aman)}</td>
+                <td data-label="مجمد" class="p-3 font-mono">${formatNum(s.frozen)}</td><td data-label="فكة" class="p-3 font-mono">${formatNum(s.fakka)}</td><td data-label="فضية" class="p-3 font-mono">${formatNum(s.silver)}</td>
+                <td data-label="إجمالي إيراد" class="p-3 font-mono text-emerald-400">${formatNum(snapRevenue(s))}</td><td data-label="إجمالي منصرف" class="p-3 font-mono text-red-400">${formatNum(snapExpense(s))}</td>
+                <td data-label="فرق عن السابقة" class="p-3 font-mono ${delta === null ? 'text-slate-500' : colorOf(delta)}">${delta === null ? '—' : (delta > 0 ? '+' : '') + formatNum(delta)}</td>
+                <td data-label="الزيادة المسجلة" class="p-3 font-mono text-amber-400">${s.k == null ? '—' : formatNum(s.k)}</td>
+                <td data-label="الوردية" class="p-3 text-xs">${esc(s.shift || '—')}</td><td data-label="المدة (يوم)" class="p-3 font-mono text-xs">${days === '' ? '—' : days}</td>
+                <td class="p-3 no-print"><button data-act="editSnap" data-id="${esc(s.id)}" aria-label="تعديل" class="act text-indigo-400"><i class="fa-solid fa-pen"></i></button>
+                <button data-act="delSnap" data-id="${esc(s.id)}" aria-label="حذف" class="act text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>`;
         }).reverse();
         $('snapshotsBody').innerHTML = rows.join('') || '<tr><td colspan="14" class="p-6 text-center text-slate-500">لا توجد لقطات</td></tr>';
     }
@@ -429,7 +794,7 @@
             cols: [{ l: 'اسم العميل', r: i => esc(i.name), cls: 'font-semibold text-white' }, { l: 'عليه', r: i => formatNum(i.owes), cls: 'font-mono text-emerald-400' },
                 { l: 'له', r: i => formatNum(i.due), cls: 'font-mono text-red-400' },
                 { l: 'الصافي (لنا +)', r: i => formatNum(num(i.owes) - num(i.due)), cls: 'font-mono font-bold', dyn: i => colorOf(num(i.owes) - num(i.due)) }],
-            extra: [{ act: 'custOpen', icon: 'fa-hand-holding-dollar', cls: 'text-amber-400', title: 'حركة / كشف' }],
+            extra: [{ act: 'custOpen', icon: 'fa-hand-holding-dollar', cls: 'text-amber-400', title: 'حركة وكشف' }],
             summary: () => `لنا (عليه): <b class="text-emerald-400 font-mono">${formatNum(custUsTotal())}</b> &nbsp;|&nbsp; علينا (له): <b class="text-red-400 font-mono">${formatNum(custThemTotal())}</b> &nbsp;|&nbsp; الصافي: <b class="font-mono">${formatNum(custUsTotal() - custThemTotal())}</b>`,
             xl: i => ({ 'اسم العميل': i.name, 'عليه': num(i.owes), 'له': num(i.due) }), keys: ['name'] },
         partners: { title: 'الشركاء وتوزيع الأرباح', hint: 'نسبة المساهمة = المبلغ المدفوع ÷ إجمالي المدفوع. الربح = النسبة × مبلغ الربح أدناه.', btn: 'blue',
@@ -462,7 +827,7 @@
             fields: [{ k: 'title', l: 'البيان', t: 'text', req: 1 }, { k: 'notes', l: 'ملاحظات', t: 'text' }, { k: 'phone', l: 'رقم موبايل', t: 'text' },
                 { k: 'status', l: 'الحالة', t: 'select', opts: ['جديد', 'جاري', 'تم', 'ملغي'] }, { k: 'price', l: 'السعر', t: 'number' }],
             cols: [{ l: 'رقم المهمة', r: i => esc(i.no), cls: 'font-mono' }, { l: 'البيان', r: i => esc(i.title), cls: 'font-semibold text-white' }, { l: 'ملاحظات', r: i => esc(i.notes), cls: 'text-xs' },
-                { l: 'موبايل', r: i => esc(i.phone), cls: 'font-mono text-xs' },
+                { l: 'موبايل', r: i => i.phone ? `<a href="tel:${esc(i.phone)}" class="act-b text-sky-500">${esc(i.phone)}</a>` : '', cls: 'font-mono text-xs' },
                 { l: 'الحالة', r: i => `<span class="text-xs px-2.5 py-1 rounded-full border ${STATUS_CLS[i.status] || 'border-slate-600'}">${esc(i.status)}</span>` },
                 { l: 'السعر', r: i => formatNum(i.price), cls: 'font-mono' }],
             summary: () => { const open = D().orders.filter(o => o.status !== 'تم' && o.status !== 'ملغي'); return `مفتوحة: <b>${open.length}</b> من ${D().orders.length} &nbsp;|&nbsp; قيمة المفتوح: <b class="font-mono">${formatNum(sum(open, o => num(o.price)))}</b>`; },
@@ -476,7 +841,7 @@
         const fields = E.fields.map(f => {
             const input = f.t === 'select'
                 ? `<select name="${f.k}" class="${INP}">${f.opts.map(o => `<option value="${esc(o)}">${esc(o || '—')}</option>`).join('')}</select>`
-                : `<input name="${f.k}" type="${f.t === 'number' ? 'number' : 'text'}" ${f.t === 'number' ? 'step="0.01"' : ''} ${f.req ? 'required' : ''} placeholder="${esc(f.ph || '')}" class="${INP}">`;
+                : `<input name="${f.k}" type="text" ${f.t === 'number' ? 'inputmode="decimal" autocomplete="off"' : 'autocomplete="off"'} ${f.req ? 'required' : ''} placeholder="${esc(f.ph || '')}" class="${INP}">`;
             return `<div><label class="block text-xs font-semibold text-slate-300 mb-1">${f.l}</label>${input}</div>`;
         }).join('');
         $('crud-' + name).innerHTML = `
@@ -495,7 +860,7 @@
                 </div>
             </form>
             <div data-summary="${name}" class="text-sm text-slate-300"></div>
-            <div class="overflow-x-auto border border-slate-700/80 rounded-xl"><table class="w-full text-right text-sm text-slate-300">
+            <div class="xscroll overflow-x-auto border border-slate-700/80 rounded-xl"><table class="rt stk w-full text-right text-sm text-slate-300">
                 <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>${E.cols.map(c => `<th class="p-3">${c.l}</th>`).join('')}<th class="p-3 no-print text-center">إجراء</th></tr></thead>
                 <tbody data-body="${name}" class="divide-y divide-slate-800"></tbody></table></div>`;
     }
@@ -503,12 +868,12 @@
         const E = ENT[name], q = (document.querySelector(`[data-search="${name}"]`)?.value || '').toLowerCase().trim();
         let items = D()[name];
         if (q) items = items.filter(i => E.keys.some(k => String(i[k] ?? '').toLowerCase().includes(q)));
-        const extra = (E.extra || []).map(x => it => `<button data-act="${x.act}" data-id="${esc(it.id)}" title="${x.title}" class="${x.cls} p-1"><i class="fa-solid ${x.icon}"></i></button>`);
+        const extra = (E.extra || []).map(x => it => `<button data-act="${x.act}" data-id="${esc(it.id)}" title="${x.title}" class="act-txt ${x.cls}"><i class="fa-solid ${x.icon}"></i><span style="margin-right:.35rem">${x.title}</span></button>`);
         document.querySelector(`[data-body="${name}"]`).innerHTML = items.map(it => `<tr class="hover:bg-slate-800/50">
-            ${E.cols.map(c => `<td class="p-3 ${c.cls || ''} ${c.dyn ? c.dyn(it) : ''}">${c.r(it)}</td>`).join('')}
+            ${E.cols.map(c => `<td data-label="${esc(c.l)}" class="p-3 ${c.cls || ''} ${c.dyn ? c.dyn(it) : ''}">${c.r(it)}</td>`).join('')}
             <td class="p-3 text-center no-print">${extra.map(f => f(it)).join('')}
-                <button data-act="crudEdit" data-ent="${name}" data-id="${esc(it.id)}" class="text-indigo-400 p-1"><i class="fa-solid fa-pen"></i></button>
-                <button data-act="crudDel" data-ent="${name}" data-id="${esc(it.id)}" class="text-red-400 p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')
+                <button data-act="crudEdit" data-ent="${name}" data-id="${esc(it.id)}" aria-label="تعديل" class="act text-indigo-400"><i class="fa-solid fa-pen"></i></button>
+                <button data-act="crudDel" data-ent="${name}" data-id="${esc(it.id)}" aria-label="حذف" class="act text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')
             || `<tr><td colspan="${E.cols.length + 1}" class="p-6 text-center text-slate-500">لا توجد بيانات</td></tr>`;
         document.querySelector(`[data-summary="${name}"]`).innerHTML = E.summary();
     }
@@ -540,18 +905,18 @@
     // ---------- العملاء: حركة وكشف حساب ----------
     let modalCust = null;
     const MOVES = { repay: 'تسديد منه (ينقص «عليه»)', addOwes: 'مبلغ جديد لنا عنده (يزيد «عليه»)', payout: 'سداد منا له (ينقص «له»)', addDue: 'مبلغ جديد له عندنا (يزيد «له»)' };
-    function openCustomer(id) { modalCust = id; renderModal(); const m = $('modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
-    function closeModal() { modalCust = null; const m = $('modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+    function openCustomer(id) { modalCust = id; renderModal(); const m = $('modal'); m.classList.remove('hidden'); m.classList.add('flex'); document.body.classList.add('modal-open'); }
+    function closeModal() { modalCust = null; const m = $('modal'); m.classList.add('hidden'); m.classList.remove('flex'); document.body.classList.remove('modal-open'); }
     function renderModal() {
         if (!modalCust) return;
         const c = D().customers.find(x => x.id === modalCust); if (!c) return closeModal();
         const log = logOf(c).slice().sort((a, b) => ts(b.d) - ts(a.d));
         $('modalBox').innerHTML = `
-            <div class="flex items-center justify-between mb-3"><h3 class="font-bold text-white text-lg">${esc(c.name)}</h3><button data-act="modalClose" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+            <div class="flex items-center justify-between mb-3"><h3 class="font-bold text-white text-lg">${esc(c.name)}</h3><button data-act="modalClose" aria-label="إغلاق" class="act text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button></div>
             <div class="grid grid-cols-2 gap-3 mb-4 text-sm"><div class="bg-slate-900 rounded-xl p-3">عليه: <b class="text-emerald-400 font-mono">${formatNum(c.owes)}</b></div><div class="bg-slate-900 rounded-xl p-3">له: <b class="text-red-400 font-mono">${formatNum(c.due)}</b></div></div>
             <form data-form="custMove" class="space-y-3 bg-slate-900/60 border border-slate-700/50 rounded-xl p-4 mb-4">
                 <select name="type" class="${INP}">${Object.entries(MOVES).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>
-                <div class="grid grid-cols-2 gap-3"><input name="amount" type="number" step="0.01" min="0.01" required placeholder="المبلغ" class="${INP}"><input name="note" type="text" placeholder="ملاحظة (اختياري)" class="${INP}"></div>
+                <div class="grid grid-cols-2 gap-3"><input name="amount" type="text" inputmode="decimal" autocomplete="off" required placeholder="المبلغ" class="${INP}"><input name="note" type="text" placeholder="ملاحظة (اختياري)" class="${INP}"></div>
                 <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-2 rounded-xl text-sm font-semibold">تسجيل الحركة</button>
             </form>
             <h4 class="text-sm font-bold text-white mb-2">كشف الحساب</h4>
@@ -561,7 +926,7 @@
     function custMove(f) {
         const c = D().customers.find(x => x.id === modalCust); if (!c) return;
         const type = f.elements.type.value, a = num(f.elements.amount.value), note = f.elements.note.value.trim();
-        if (a <= 0) return;
+        if (a <= 0) return toast('أدخل مبلغاً صحيحاً أكبر من صفر');
         if (type === 'repay' && a > num(c.owes)) return alert('المبلغ أكبر من «عليه» (' + formatNum(c.owes) + ')');
         if (type === 'payout' && a > num(c.due)) return alert('المبلغ أكبر من «له» (' + formatNum(c.due) + ')');
         if (type === 'repay') c.owes = r2(num(c.owes) - a); else if (type === 'addOwes') c.owes = r2(num(c.owes) + a);
@@ -619,18 +984,37 @@
         return D()[sec].map(ENT[sec].xl);
     }
     const SHEET_NAMES = { snapshots: 'حساب', wallets: 'محافظ كاش', customers: 'الخرج', partners: 'الشركاء', devices: 'IP Adress', we: 'Client WE', orders: 'اوردرات' };
+    // مكتبة Excel تُحمَّل عند الحاجة فقط (تحتاج إنترنت عند أول تصدير)
+    function loadXlsx() {
+        return new Promise((res, rej) => {
+            if (window.XLSX) return res();
+            const s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+            s.onload = () => res(); s.onerror = () => rej(new Error('xlsx'));
+            document.head.appendChild(s);
+        });
+    }
+    function withXlsx(fn) {
+        toast('جاري تجهيز الملف...');
+        loadXlsx().then(fn).catch(() => alert('تعذّر تحميل مكتبة Excel. تأكد من اتصال الإنترنت ثم أعد المحاولة، أو استخدم «نسخة احتياطية JSON».'));
+    }
     function exportSec(sec) {
-        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sheetRows(sec)), SHEET_NAMES[sec]);
-        XLSX.writeFile(wb, SHEET_NAMES[sec] + '.xlsx');
+        withXlsx(() => {
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sheetRows(sec)), SHEET_NAMES[sec]);
+            XLSX.writeFile(wb, SHEET_NAMES[sec] + '.xlsx');
+        });
     }
     function exportAll() {
-        const wb = XLSX.utils.book_new();
-        Object.keys(SHEET_NAMES).forEach(s => XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sheetRows(s)), SHEET_NAMES[s]));
-        XLSX.writeFile(wb, 'megabyte-all.xlsx');
+        withXlsx(() => {
+            const wb = XLSX.utils.book_new();
+            Object.keys(SHEET_NAMES).forEach(s => XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sheetRows(s)), SHEET_NAMES[s]));
+            XLSX.writeFile(wb, 'megabyte-all.xlsx');
+        });
     }
     function exportJson() {
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(D())], { type: 'application/json' }));
-        a.download = 'megabyte-backup-' + nowLocal().slice(0, 10) + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        a.download = 'megabyte-backup-' + nowLocal().slice(0, 10) + '.json'; a.style.display = 'none'; document.body.appendChild(a); a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
     }
 
     // ---------- الأحداث ----------
@@ -669,7 +1053,7 @@
     });
     document.addEventListener('change', (e) => {
         const el = e.target;
-        if (el.matches('[data-setting]')) { D().settings[el.dataset.setting] = el.type === 'number' ? num(el.value) : el.value; save(['settings']); }
+        if (el.matches('[data-setting]')) { D().settings[el.dataset.setting] = el.dataset.num ? num(el.value) : el.value; save(['settings']); }
         if (el.id === 'ppFrom' || el.id === 'ppTo') renderPartnerCalc();
         if (el.id === 'jsonFile' && el.files[0]) {
             const rd = new FileReader();
@@ -683,13 +1067,20 @@
         const room = $('roomIdInput').value.trim();
         if (room.length < 8) return alert('استخدم رمزاً لا يقل عن 8 أحرف (يفضّل رمز طويل عشوائي).');
         if (!/^[A-Za-z0-9_\-]+$/.test(room)) return alert('الرمز يقبل حروفاً إنجليزية وأرقاماً و - و _ فقط.');
-        localStorage.setItem('app_sync_room_id', room); localStorage.removeItem('app_linked_room');
+        LS.set('app_sync_room_id', room); LS.del('app_linked_room');
         if (window.initCloudSync) window.initCloudSync();
     });
 
+    function fitHeader() {
+        const h = document.querySelector('header.top'); if (h) document.documentElement.style.setProperty('--hdr', h.offsetHeight + 'px');
+    }
     function init() {
         Object.keys(ENT).forEach(buildCrud);
-        switchTab('snapshots'); resetSnapForm(); renderAllViews();
+        if (!SEED) document.querySelectorAll('[data-act=importSeed]').forEach(b => b.classList.add('hidden'));
+        const saved = LS.get('app_tab');
+        switchTab(saved && $('content-' + saved) ? saved : 'snapshots'); resetSnapForm(); renderAllViews();
+        fitHeader(); window.addEventListener('resize', fitHeader); window.addEventListener('orientationchange', fitHeader);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeader);
         if (window.firebaseReady) window.initCloudSync();
         else {
             window.addEventListener('firebase-ready', () => window.initCloudSync(), { once: true });
