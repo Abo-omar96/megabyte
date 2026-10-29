@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الحسابات المتكامل</title>
+    <title>نظام ميجا بايت للحسابات والشبكات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { fontFamily: { cairo: ['Cairo', 'sans-serif'] },
-                colors: { brand: { 50: '#f0fdf4', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' } } } }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+            colors: { brand: { 400: '#4ade80', 500: '#22c55e', 600: '#16a34a' } } } } }
     </script>
     <style>
         body { font-family: 'Cairo', sans-serif; }
@@ -21,282 +18,194 @@
         ::-webkit-scrollbar-track { background: #1f2937; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
         .font-mono, td, th, input[type="number"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
+        td, th { white-space: nowrap; }
+        .pw { cursor: pointer; }
         @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
-<div id="appContent" class="w-full">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+<div class="w-full">
     <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-40 no-print">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-brand-500 text-slate-950 p-2.5 rounded-xl font-bold text-xl shadow-lg shadow-brand-500/20"><i class="fa-solid fa-calculator"></i></div>
+                <div class="bg-brand-500 text-slate-950 p-2.5 rounded-xl font-bold text-xl"><i class="fa-solid fa-server"></i></div>
                 <div>
-                    <h1 class="font-bold text-lg text-white leading-none">نظام الحسابات المحاسبي</h1>
-                    <p class="text-xs text-emerald-400 mt-1 font-semibold">مدير النظام (صلاحيات كاملة)</p>
+                    <h1 class="font-bold text-lg text-white leading-none">ميجا بايت — الحسابات والشبكات</h1>
+                    <p class="text-xs text-emerald-400 mt-1 font-semibold">نفس منطق ملف الإكسل (حساب الرصيد)</p>
                 </div>
             </div>
             <div id="syncStatus" class="flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400">
-                <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span id="syncText">جاري الاتصال بالسحابة...</span>
+                <span id="syncDot" class="w-2 h-2 rounded-full bg-amber-500"></span><span id="syncText">جاري الاتصال...</span>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        <div class="bg-slate-800/80 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print shadow-lg">
-            <div class="flex items-center space-x-3 space-x-reverse flex-1 min-w-[280px]">
+        <div id="seedBanner" class="hidden bg-amber-500/10 border border-amber-500/40 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 no-print">
+            <p class="text-sm text-amber-200"><i class="fa-solid fa-circle-info ml-1"></i> البرنامج فارغ. يمكنك استيراد بيانات ملف الإكسل الحالي (لقطات الرصيد، المحافظ، العملاء، الشركاء، الـ IP، خطوط WE، الأوردرات) بضغطة واحدة.</p>
+            <button type="button" data-act="importSeed" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-bold">استيراد بيانات الإكسل</button>
+        </div>
+
+        <div class="bg-slate-800/80 border border-indigo-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 no-print">
+            <div class="flex items-center space-x-3 space-x-reverse flex-1 min-w-[260px]">
                 <div class="bg-indigo-500/20 text-indigo-400 p-3 rounded-xl border border-indigo-500/30"><i class="fa-solid fa-cloud-arrow-up text-xl"></i></div>
                 <div>
-                    <h3 class="text-sm font-bold text-white">رمز المزامنة السري (Sync ID)</h3>
-                    <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز في كل أجهزتك. استخدم رمزاً <strong class="text-amber-400">طويلاً وعشوائياً</strong> ولا تشاركه، فهو الحماية الوحيدة لبياناتك.</p>
+                    <h3 class="text-sm font-bold text-white">رمز المزامنة السري</h3>
+                    <p class="text-xs text-slate-300 mt-0.5">اكتب نفس الرمز في كل أجهزتك. استخدم رمزاً <strong class="text-amber-400">طويلاً وعشوائياً</strong> ولا تشاركه.</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 space-x-reverse w-full sm:w-auto">
-                <input type="text" id="roomIdInput" placeholder="رمز المزامنة" class="bg-slate-900 border border-indigo-500/40 px-3 py-2 rounded-xl text-sm font-bold text-center font-mono w-full sm:w-64 text-indigo-300 focus:outline-none focus:border-indigo-400">
-                <button type="button" id="btnConnect" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold transition whitespace-nowrap"><i class="fa-solid fa-plug ml-1"></i> ربط</button>
+                <input type="text" id="roomIdInput" placeholder="رمز المزامنة" class="bg-slate-900 border border-indigo-500/40 px-3 py-2 rounded-xl text-sm font-bold text-center font-mono w-full sm:w-64 text-indigo-300 focus:outline-none">
+                <button type="button" id="btnConnect" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold whitespace-nowrap"><i class="fa-solid fa-plug ml-1"></i> ربط</button>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
-                <div class="flex justify-between items-start">
-                    <div><p class="text-xs text-slate-400 font-medium">إجمالي الأصول الحالية</p>
-                    <h3 id="totalAssetsCard" class="text-2xl font-bold text-white mt-2 font-mono">0.00</h3></div>
-                    <div class="p-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-vault text-xl"></i></div>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-3">(آخر لقطة للصناديق + لنا عند العملاء) − علينا للعملاء</p>
+                <p class="text-xs text-slate-400 font-medium">صافي الأصول الحالية (الإيراد − المنصرف)</p>
+                <h3 id="kpiNet" class="text-2xl font-bold text-white mt-2 font-mono">0</h3>
+                <p class="text-[11px] text-slate-500 mt-2">آخر لقطة نقدية + المحافظ + لنا عند العملاء − علينا</p>
             </div>
             <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
-                <div class="flex justify-between items-start">
-                    <div><p class="text-xs text-slate-400 font-medium">إجمالي رأس المال</p>
-                    <h3 id="totalCapitalCard" class="text-2xl font-bold text-blue-400 mt-2 font-mono">0.00</h3></div>
-                    <div class="p-3 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl"><i class="fa-solid fa-piggy-bank text-xl"></i></div>
-                </div>
-                <p id="capitalNote" class="text-[11px] text-slate-500 mt-3">إجمالي مساهمات المستثمرين المسجلة</p>
+                <p class="text-xs text-slate-400 font-medium">رأس المال (آخر لقطة)</p>
+                <h3 id="kpiCapital" class="text-2xl font-bold text-blue-400 mt-2 font-mono">0</h3>
+                <p id="kpiSurplus" class="text-[11px] text-slate-500 mt-2">الزيادة فوق رأس المال: 0</p>
             </div>
             <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
-                <div class="flex justify-between items-start">
-                    <div><p class="text-xs text-slate-400 font-medium">ديون العملاء (صافي)</p>
-                    <h3 id="netCustomersCard" class="text-2xl font-bold text-amber-400 mt-2 font-mono">0.00</h3></div>
-                    <div class="p-3 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl"><i class="fa-solid fa-users text-xl"></i></div>
-                </div>
-                <div class="flex justify-between text-[11px] mt-3 text-slate-400">
-                    <span>لنا: <strong id="customersUsCard" class="text-emerald-400 font-mono">0.00</strong></span>
-                    <span>علينا: <strong id="customersThemCard" class="text-red-400 font-mono">0.00</strong></span>
+                <p class="text-xs text-slate-400 font-medium">ديون العملاء</p>
+                <h3 id="kpiCust" class="text-2xl font-bold text-amber-400 mt-2 font-mono">0</h3>
+                <div class="flex justify-between text-[11px] mt-2 text-slate-400">
+                    <span>لنا: <strong id="kpiUs" class="text-emerald-400 font-mono">0</strong></span>
+                    <span>علينا: <strong id="kpiThem" class="text-red-400 font-mono">0</strong></span>
                 </div>
             </div>
             <div class="bg-slate-800 border border-slate-700/80 p-5 rounded-2xl">
-                <div class="flex justify-between items-start">
-                    <div><p class="text-xs text-slate-400 font-medium">صافي أرباح الفترة</p>
-                    <h3 id="calculatedProfitCard" class="text-2xl font-bold text-brand-500 mt-2 font-mono">0.00</h3></div>
-                    <div class="p-3 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-xl"><i class="fa-solid fa-chart-line text-xl"></i></div>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-3">المصروفات مشمولة أصلاً في الأرصدة</p>
+                <p class="text-xs text-slate-400 font-medium">إجمالي المحافظ والماكينات</p>
+                <h3 id="kpiWallets" class="text-2xl font-bold text-emerald-400 mt-2 font-mono">0</h3>
+                <p class="text-[11px] text-slate-500 mt-2">مجموع أرصدة «محافظ كاش»</p>
             </div>
         </div>
 
         <div class="bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-xl">
-            <div class="flex border-b border-slate-700/80 bg-slate-900/50 p-2 overflow-x-auto space-x-2 space-x-reverse no-print" id="tabBar">
-                <button type="button" data-tab="accounts" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-building-columns"></i> <span>الصناديق والماكينات</span></button>
-                <button type="button" data-tab="snapshots" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-camera"></i> <span>لقطات الرصيد</span></button>
-                <button type="button" data-tab="customers" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-user-group"></i> <span>العملاء والديون</span></button>
-                <button type="button" data-tab="expenses" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-receipt"></i> <span>المصروفات</span></button>
-                <button type="button" data-tab="capital" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-hand-holding-dollar"></i> <span>رأس المال</span></button>
-                <button type="button" data-tab="reports" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-chart-pie"></i> <span>الأرباح والتوزيع</span></button>
+            <div class="flex border-b border-slate-700/80 bg-slate-900/50 p-2 overflow-x-auto space-x-2 space-x-reverse no-print">
+                <button type="button" data-tab="snapshots" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-camera"></i> <span>حساب (لقطات الرصيد)</span></button>
+                <button type="button" data-tab="wallets" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-wallet"></i> <span>محافظ كاش</span></button>
+                <button type="button" data-tab="customers" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-address-book"></i> <span>الخرج (العملاء)</span></button>
+                <button type="button" data-tab="partners" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-hand-holding-dollar"></i> <span>الشركاء والأرباح</span></button>
+                <button type="button" data-tab="devices" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-network-wired"></i> <span>IP Address</span></button>
+                <button type="button" data-tab="we" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-phone"></i> <span>Client WE</span></button>
+                <button type="button" data-tab="orders" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-list-check"></i> <span>الأوردرات</span></button>
+                <button type="button" data-tab="data" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 space-x-reverse text-slate-400"><i class="fa-solid fa-database"></i> <span>البيانات</span></button>
             </div>
 
             <div class="p-6">
-                <!-- Accounts -->
-                <div id="content-accounts" class="tab-content space-y-6 hidden">
-                    <div class="border-b border-slate-700/60 pb-4">
-                        <h3 class="text-lg font-bold text-white">إدارة الصناديق والمحافظ وماكينات الدفع</h3>
-                        <p class="text-xs text-slate-400">إضافة أو تعديل أو حذف أي محفظة أو ماكينة</p>
-                    </div>
-                    <form id="accountForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
-                        <input type="hidden" id="accEditId" value="">
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">اسم الحساب / الماكينة</label>
-                            <input type="text" id="accName" required placeholder="مثال: خزينة، فوري..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">النوع</label>
-                            <select id="accType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
-                                <option value="cash">صندوق نقدي (خزينة)</option><option value="ewallet">محفظة إلكترونية</option>
-                                <option value="pos">ماكينة دفع</option><option value="bank">حساب بنكي</option></select></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">الحالة</label>
-                            <select id="accStatus" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
-                                <option value="active">نشط</option><option value="inactive">معطل</option></select></div>
-                        <div class="flex items-end space-x-2 space-x-reverse">
-                            <button type="submit" id="accBtnText" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-sm font-semibold transition"><i class="fa-solid fa-plus ml-1"></i> حفظ</button>
-                            <button type="button" id="accCancelBtn" data-act="resetAccount" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold">إلغاء</button>
-                        </div>
-                    </form>
-                    <p class="text-xs text-amber-400">تنبيه: الحساب المعطّل لا يُحتسب في إجمالي الأصول ولا يظهر في اللقطات الجديدة.</p>
-                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
-                        <table class="w-full text-right text-sm text-slate-300">
-                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
-                                <th class="p-3">اسم الحساب</th><th class="p-3">النوع</th><th class="p-3">الحالة</th><th class="p-3 text-center no-print">إجراءات</th></tr></thead>
-                            <tbody id="accountsTableBody" class="divide-y divide-slate-800"></tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <!-- Snapshots -->
                 <div id="content-snapshots" class="tab-content space-y-6">
-                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
-                        <div><h3 class="text-lg font-bold text-white">تسجيل لقطة رصيد جديدة</h3>
-                        <p class="text-xs text-slate-400">سجل أرصدتك بتاريخ محدد لمعرفة ربح كل تسجيل تلقائياً</p></div>
-                        <button type="button" data-act="export" data-table="snapshotsTable" data-name="لقطات_الرصيد" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel</button>
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/60 pb-4">
+                        <div><h3 class="text-lg font-bold text-white">حساب — لقطات الرصيد</h3>
+                        <p class="text-xs text-slate-400">أدخل أرصدة النقد ورأس المال. المحافظ وديون العملاء تُؤخذ تلقائياً من حالتها وقت الحفظ.</p></div>
+                        <button type="button" data-act="exportSec" data-sec="snapshots" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> Excel</button>
                     </div>
                     <form id="snapshotForm" class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/50 space-y-4">
-                        <div class="max-w-xs"><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ والوقت</label>
-                            <input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div id="dynamicSnapshotInputs" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                        <div class="flex justify-end pt-2"><button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition"><i class="fa-solid fa-plus ml-1"></i> حفظ لقطة الرصيد</button></div>
-                    </form>
-                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
-                        <table id="snapshotsTable" class="w-full text-right text-sm text-slate-300">
-                            <thead id="snapshotsTableHeader" class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"></thead>
-                            <tbody id="snapshotsTableBody" class="divide-y divide-slate-800"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Customers -->
-                <div id="content-customers" class="tab-content space-y-6 hidden">
-                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
-                        <div><h3 class="text-lg font-bold text-white">قاعدة بيانات العملاء والديون</h3>
-                        <p class="text-xs text-slate-400">اضغط على أي عميل لتعبئة اسمه في النموذج وتسديد حسابه فوراً</p></div>
-                        <div class="relative min-w-[240px]"><i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
-                            <input type="text" id="customerSearch" placeholder="بحث باسم العميل..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pr-9 pl-3 py-2 text-xs text-white"></div>
-                    </div>
-                    <form id="customerForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-amber-500/30">
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">اسم العميل</label>
-                            <input type="text" id="custName" required placeholder="اسم العميل" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
-                            <input type="datetime-local" id="custDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
-                            <select id="custType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
-                                <option value="repayment">تسديد من العميل (خصم الدين)</option>
-                                <option value="us">مبلغ لنا عند العميل (+ دين عليه)</option>
-                                <option value="them">مبلغ علينا للعميل (- له عندنا)</option>
-                                <option value="payout">سداد منا للعميل (نخصم ما له عندنا)</option></select></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                            <input type="number" step="0.01" id="custAmount" min="0.01" required placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div class="md:col-span-4 flex justify-between items-center pt-1">
-                            <span id="quickAlertMsg" class="text-xs text-amber-400 font-semibold hidden"><i class="fa-solid fa-circle-info ml-1"></i> تم اختيار العميل، أدخل المبلغ واضغط حفظ.</span>
-                            <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm mr-auto"><i class="fa-solid fa-user-plus ml-1"></i> تسجيل الحركة / التسديد</button>
+                        <input type="hidden" id="snapEditId">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label><input type="datetime-local" id="snapDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">رأس المال</label><input type="number" step="0.01" id="snapCapital" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فورى</label><input type="number" step="0.01" id="snapFawry" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">أمان</label><input type="number" step="0.01" id="snapAman" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">مجمد</label><input type="number" step="0.01" id="snapFrozen" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فكة</label><input type="number" step="0.01" id="snapFakka" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">فضية</label><input type="number" step="0.01" id="snapSilver" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">الوردية / ملاحظة</label><input type="text" id="snapShift" placeholder="محمد" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div class="col-span-2 md:col-span-1"><label class="block text-xs font-semibold text-slate-300 mb-1">الزيادة المسجلة (يدوي، اختياري)</label><input type="number" step="0.01" id="snapK" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <label id="snapRefreshWrap" class="hidden col-span-2 items-center gap-2 text-xs text-amber-300 pt-6"><input type="checkbox" id="snapRefresh"> تحديث المحافظ والعملاء بالقيم الحالية</label>
                         </div>
-                    </form>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 border border-slate-700/80 rounded-xl overflow-hidden">
-                            <table class="w-full text-right text-sm text-slate-300">
-                                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
-                                    <th class="p-3">اسم العميل</th><th class="p-3">الرصيد</th><th class="p-3">الحالة</th><th class="p-3 no-print text-center">كشف</th></tr></thead>
-                                <tbody id="customersDirectoryBody" class="divide-y divide-slate-800"></tbody>
-                            </table>
+                        <div id="snapPreview" class="text-xs text-slate-300 bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono"></div>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" id="snapCancel" data-act="snapCancel" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold">إلغاء</button>
+                            <button type="submit" id="snapSubmit" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm"><i class="fa-solid fa-plus ml-1"></i> حفظ اللقطة</button>
                         </div>
-                        <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4">
-                            <h4 class="font-bold text-white text-base border-b border-slate-700/60 pb-2 mb-3 flex items-center justify-between">
-                                <span><i class="fa-solid fa-file-invoice-dollar text-amber-500 ml-1"></i> كشف حساب</span>
-                                <span id="selectedCustName" class="text-xs font-normal text-slate-400">اختر عميلاً</span></h4>
-                            <div id="customerStatementLogs" class="space-y-2 max-h-72 overflow-y-auto text-xs text-slate-300 pr-1">
-                                <p class="text-slate-500 text-center py-8">اضغط على أي عميل لعرض سجل حركاته</p></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Expenses -->
-                <div id="content-expenses" class="tab-content space-y-6 hidden">
-                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
-                        <div><h3 class="text-lg font-bold text-white">المصروفات التشغيلية</h3><p class="text-xs text-slate-400">للمتابعة والتحليل فقط — لا تُخصم ثانية من الربح لأنها منعكسة في أرصدة الصناديق</p></div>
-                        <button type="button" data-act="export" data-table="expensesTable" data-name="المصروفات" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold no-print"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> تصدير Excel</button>
-                    </div>
-                    <form id="expenseForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">بند المصروف</label>
-                            <input type="text" id="expTitle" required placeholder="كهرباء، إيجار..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                            <input type="number" step="0.01" id="expAmount" min="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
-                            <input type="datetime-local" id="expDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div class="flex items-end"><button type="submit" class="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus ml-1"></i> إضافة</button></div>
-                    </form>
-                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
-                        <table id="expensesTable" class="w-full text-right text-sm text-slate-300">
-                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
-                                <th class="p-3">التاريخ</th><th class="p-3">البند</th><th class="p-3">المبلغ</th><th class="p-3 text-center no-print">حذف</th></tr></thead>
-                            <tbody id="expensesTableBody" class="divide-y divide-slate-800"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Capital -->
-                <div id="content-capital" class="tab-content space-y-6 hidden">
-                    <div class="border-b border-slate-700/60 pb-4"><h3 class="text-lg font-bold text-white">حركة رأس المال والمستثمرين</h3>
-                        <p class="text-xs text-slate-400">تسجيل إضافات ومسحوبات المستثمرين</p></div>
-                    <form id="capitalForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">اسم المستثمر</label>
-                            <input type="text" id="capInvestor" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">نوع الحركة</label>
-                            <select id="capType" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
-                                <option value="add">إضافة رأس مال (+)</option><option value="withdraw">سحب رأس مال (-)</option></select></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">المبلغ (ج.م)</label>
-                            <input type="number" step="0.01" id="capAmount" min="0.01" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">التاريخ</label>
-                            <input type="datetime-local" id="capDate" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div class="md:col-span-4 flex justify-end"><button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold text-sm"><i class="fa-solid fa-plus ml-1"></i> تسجيل الحركة</button></div>
                     </form>
                     <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
                         <table class="w-full text-right text-sm text-slate-300">
                             <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
-                                <th class="p-3">التاريخ</th><th class="p-3">المستثمر</th><th class="p-3">النوع</th><th class="p-3">المبلغ</th><th class="p-3 no-print">حذف</th></tr></thead>
-                            <tbody id="capitalTableBody" class="divide-y divide-slate-800"></tbody>
+                                <th class="p-3">التاريخ</th><th class="p-3">رأس المال</th><th class="p-3">فورى</th><th class="p-3">أمان</th><th class="p-3">مجمد</th><th class="p-3">فكة</th><th class="p-3">فضية</th>
+                                <th class="p-3 text-emerald-400">إجمالي إيراد</th><th class="p-3 text-red-400">إجمالي منصرف</th><th class="p-3">الصافي</th>
+                                <th class="p-3 text-brand-400">الزيادة فوق رأس المال</th><th class="p-3 text-brand-400">ربح محسوب عن السابقة</th><th class="p-3 text-amber-400">الزيادة المسجلة</th>
+                                <th class="p-3">الوردية</th><th class="p-3">المدة (يوم)</th><th class="p-3 no-print">إجراء</th></tr></thead>
+                            <tbody id="snapshotsBody" class="divide-y divide-slate-800"></tbody>
                         </table>
+                    </div>
+                    <div class="text-xs text-slate-400 bg-slate-900/60 border border-slate-700/50 rounded-xl p-4 space-y-1 leading-relaxed">
+                        <p><strong class="text-slate-200">إجمالي إيراد</strong> = فورى + أمان + مجمد + فكة + فضية + أرصدة المحافظ + «عليه» (لنا عند العملاء) &nbsp;— نفس معادلة عمود H في الإكسل.</p>
+                        <p><strong class="text-slate-200">إجمالي منصرف</strong> = مجموع «له» (علينا للعملاء) &nbsp;— عمود I.</p>
+                        <p><strong class="text-slate-200">الزيادة فوق رأس المال</strong> = الإيراد − المنصرف − رأس المال. &nbsp;<strong class="text-slate-200">الربح المحسوب</strong> = فرق هذه الزيادة عن اللقطة السابقة. إن غيّرت «رأس المال» دون حركة فعلية في الأصول فسيظهر الربح المحسوب مضخماً، فاعتمد حينها على «الزيادة المسجلة».</p>
                     </div>
                 </div>
 
-                <!-- Reports -->
-                <div id="content-reports" class="tab-content space-y-6 hidden">
-                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
-                        <div><h3 class="text-lg font-bold text-white">تقرير الأرباح وتوزيعها على المستثمرين</h3>
-                        <p class="text-xs text-slate-400">الفترة من أول لقطة إلى آخر لقطة ضمن التاريخين المحددين</p></div>
-                        <div class="flex items-center space-x-2 space-x-reverse no-print">
-                            <button type="button" data-act="export" data-table="investorProfitTable" data-name="تقرير_الأرباح" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-file-excel ml-1"></i> Excel</button>
-                            <button type="button" data-act="print" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold"><i class="fa-solid fa-print ml-1"></i> طباعة</button>
+                <div id="content-wallets" class="tab-content space-y-6 hidden"><div id="crud-wallets" class="space-y-6"></div></div>
+
+                <div id="content-customers" class="tab-content space-y-6 hidden">
+                    <div id="crud-customers" class="space-y-6"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">ملاحظات الخرج</label>
+                        <textarea data-setting="custNotes" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"></textarea></div>
+                </div>
+
+                <div id="content-partners" class="tab-content space-y-6 hidden">
+                    <div id="crud-partners" class="space-y-6"></div>
+                    <div class="bg-slate-900/60 border border-slate-700/50 rounded-xl p-5 space-y-4">
+                        <h4 class="font-bold text-white text-sm"><i class="fa-solid fa-calculator text-brand-500 ml-1"></i> مبلغ الربح المراد توزيعه</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">من لقطة</label><select id="ppFrom" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select></div>
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">إلى لقطة</label><select id="ppTo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"></select></div>
+                            <div class="md:col-span-2 text-xs text-slate-300 space-y-1 pt-5" id="ppInfo"></div>
+                        </div>
+                        <div class="flex flex-wrap items-end gap-3">
+                            <div><label class="block text-xs font-semibold text-slate-300 mb-1">الربح المستحق للتوزيع (ج.م)</label>
+                                <input type="number" step="0.01" data-setting="partnerProfit" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white w-52"></div>
+                            <button type="button" data-act="useK" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-xl text-xs font-semibold">استخدم مجموع الزيادات المسجلة</button>
+                            <button type="button" data-act="useDelta" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold">استخدم الربح المحسوب</button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">من تاريخ</label>
-                            <input type="datetime-local" id="reportStartDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div><label class="block text-xs font-semibold text-slate-300 mb-1">إلى تاريخ</label>
-                            <input type="datetime-local" id="reportEndDate" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>
-                        <div class="flex items-end"><button type="button" data-act="report" class="w-full bg-brand-600 hover:bg-brand-500 text-white py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-calculator ml-1"></i> حساب النتائج</button></div>
+                </div>
+
+                <div id="content-devices" class="tab-content space-y-6 hidden">
+                    <div id="crud-devices" class="space-y-6"></div>
+                    <div><label class="block text-xs font-semibold text-slate-300 mb-1">ملاحظات الشبكة (كلمات سر الراوترات وروابط الإعداد)</label>
+                        <textarea data-setting="ipNotes" rows="5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></textarea></div>
+                </div>
+
+                <div id="content-we" class="tab-content space-y-6 hidden">
+                    <p class="text-xs text-amber-400"><i class="fa-solid fa-triangle-exclamation ml-1"></i> كلمات المرور هنا محفوظة كنص. لا تشارك رمز المزامنة، وفعّل قواعد الأمان في Firebase.</p>
+                    <div id="crud-we" class="space-y-6"></div>
+                </div>
+
+                <div id="content-orders" class="tab-content space-y-6 hidden"><div id="crud-orders" class="space-y-6"></div></div>
+
+                <div id="content-data" class="tab-content space-y-6 hidden">
+                    <div class="border-b border-slate-700/60 pb-4"><h3 class="text-lg font-bold text-white">إدارة البيانات</h3><p class="text-xs text-slate-400">استيراد، نسخ احتياطي، وتصدير إلى Excel</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button type="button" data-act="importSeed" class="bg-amber-600/90 hover:bg-amber-500 text-white p-4 rounded-xl text-sm font-bold text-right"><i class="fa-solid fa-file-import ml-2"></i> استيراد بيانات ملف الإكسل الحالي (يستبدل ما في البرنامج)</button>
+                        <button type="button" data-act="exportAll" class="bg-emerald-700 hover:bg-emerald-600 text-white p-4 rounded-xl text-sm font-bold text-right"><i class="fa-solid fa-file-excel ml-2"></i> تصدير كل الأوراق إلى Excel</button>
+                        <button type="button" data-act="exportJson" class="bg-slate-700 hover:bg-slate-600 text-white p-4 rounded-xl text-sm font-bold text-right"><i class="fa-solid fa-download ml-2"></i> نسخة احتياطية (JSON)</button>
+                        <button type="button" data-act="importJson" class="bg-slate-700 hover:bg-slate-600 text-white p-4 rounded-xl text-sm font-bold text-right"><i class="fa-solid fa-upload ml-2"></i> استرجاع نسخة احتياطية (JSON)</button>
                     </div>
-                    <div class="bg-slate-900/80 border border-slate-700 p-5 rounded-xl space-y-3">
-                        <h4 class="text-xs font-bold text-slate-400"><i class="fa-solid fa-square-root-variable text-brand-500 ml-1"></i> معادلة الربح</h4>
-                        <div class="text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto">
-                            صافي الربح = فرق الأصول − الإضافات + المسحوبات &nbsp;(المصروفات مشمولة في الأرصدة فلا تُخصم ثانية)</div>
-                        <div id="reportFormulaExplanation" class="text-xs text-slate-300 space-y-1"></div>
-                    </div>
-                    <div class="overflow-x-auto border border-slate-700/80 rounded-xl">
-                        <table id="investorProfitTable" class="w-full text-right text-sm text-slate-300">
-                            <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>
-                                <th class="p-3">المستثمر</th><th class="p-3">رأس المال بداية الفترة</th><th class="p-3">الإضافات</th>
-                                <th class="p-3">المسحوبات</th><th class="p-3">رأس المال الحالي</th><th class="p-3">المتوسط المرجّح بالزمن</th><th class="p-3">النسبة %</th><th class="p-3 text-brand-400 font-bold">الربح المستحق</th></tr></thead>
-                            <tbody id="investorProfitBody" class="divide-y divide-slate-800"></tbody>
-                        </table>
-                    </div>
+                    <input type="file" id="jsonFile" accept="application/json,.json" class="hidden">
                 </div>
             </div>
         </div>
     </main>
-    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print">
-        <p>نظام الحسابات المحاسبي © 2026</p>
-    </footer>
+    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print"><p>نظام ميجا بايت © 2026</p></footer>
+</div>
+
+<div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div id="modalBox" class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-5"></div>
 </div>
 
 <!-- Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
     const firebaseConfig = {
         apiKey: "AIzaSyDq8CwbN4ii_PfioOcWpLdozBGldSEOGNg",
         authDomain: "megabytefawry.firebaseapp.com",
@@ -306,50 +215,29 @@
         appId: "1:832804585797:web:00637871be12c00157fe2c",
         measurementId: "G-75PB78K0F4"
     };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    let unsubscribe = null;
-    let currentRoom = null;
-
-    function setStatus(kind, text) {
-        const dot = document.getElementById('syncDot'), txt = document.getElementById('syncText'), box = document.getElementById('syncStatus');
-        const map = {
-            ok: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300'],
-            err: ['w-2 h-2 rounded-full bg-red-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-red-950/60 border border-red-500/40 px-3 py-1.5 rounded-lg text-red-300'],
-            wait: ['w-2 h-2 rounded-full bg-amber-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400']
-        };
-        dot.className = map[kind][0]; box.className = map[kind][1]; txt.textContent = text;
-    }
+    const db = getDatabase(initializeApp(firebaseConfig));
+    let unsubscribe = null, currentRoom = null;
 
     function getRoom() {
         let r = localStorage.getItem('app_sync_room_id');
         if (!r) {
-            // رمز عشوائي طويل بدل رمز افتراضي معروف
             const a = new Uint8Array(16); crypto.getRandomValues(a);
             r = 'R-' + Array.from(a, b => b.toString(16).padStart(2, '0')).join('');
             localStorage.setItem('app_sync_room_id', r);
         }
         return r;
     }
-
-    // الكتابة لأقسام محددة فقط (وليس الغرفة كلها)
     window.pushSections = function (sections) {
         if (!currentRoom) return;
         const payload = {};
-        sections.forEach(s => { payload[s] = JSON.parse(JSON.stringify(window.appData[s] ?? [])); });
-        update(ref(db, 'rooms/' + currentRoom), payload).catch(err => {
-            console.error('Cloud push failed:', err);
-            setStatus('err', 'فشل الحفظ السحابي');
-        });
+        sections.forEach(s => { payload[s] = JSON.parse(JSON.stringify(window.appData[s])); });
+        update(ref(db, 'rooms/' + currentRoom), payload).catch(err => { console.error(err); window.setStatus('err', 'فشل الحفظ السحابي'); });
     };
-
     window.initCloudSync = function () {
-        const roomId = getRoom();
-        currentRoom = roomId;
+        const roomId = getRoom(); currentRoom = roomId;
         document.getElementById('roomIdInput').value = roomId;
         if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-        setStatus('wait', 'جاري الاتصال...');
-
+        window.setStatus('wait', 'جاري الاتصال...');
         unsubscribe = onValue(ref(db, 'rooms/' + roomId), (snap) => {
             const data = snap.val();
             const linked = localStorage.getItem('app_linked_room');
@@ -357,420 +245,453 @@
                 window.pushSections(window.SECTIONS);
             } else {
                 const incoming = {};
-                window.SECTIONS.forEach(s => { incoming[s] = Array.isArray(data[s]) ? data[s] : (data[s] ? Object.values(data[s]) : []); });
-                if (!incoming.accounts.length) incoming.accounts = window.defaultAccounts();
+                window.SECTIONS.forEach(s => { incoming[s] = window.normSection(s, data[s]); });
                 if (linked !== roomId && window.localHasData()) {
-                    const useCloud = confirm('هذه الغرفة تحتوي بيانات سحابية، وجهازك فيه بيانات محلية مختلفة.\n\nموافق = استخدام بيانات السحابة (تُستبدل بيانات الجهاز)\nإلغاء = رفع بيانات هذا الجهاز مكان بيانات السحابة');
-                    if (!useCloud) { localStorage.setItem('app_linked_room', roomId); window.pushSections(window.SECTIONS); setStatus('ok', 'متصل سحابياً'); return; }
+                    const useCloud = confirm('هذه الغرفة فيها بيانات سحابية، وجهازك فيه بيانات محلية.\n\nموافق = استخدام بيانات السحابة (تُستبدل بيانات الجهاز)\nإلغاء = رفع بيانات هذا الجهاز مكان بيانات السحابة');
+                    if (!useCloud) { localStorage.setItem('app_linked_room', roomId); window.pushSections(window.SECTIONS); window.setStatus('ok', 'متصل سحابياً'); return; }
                 }
                 window.appData = incoming;
                 localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
             }
             localStorage.setItem('app_linked_room', roomId);
             window.renderAllViews();
-            setStatus('ok', 'متصل سحابياً');
-        }, (error) => {
-            console.error('Firebase Read Error:', error);
-            setStatus('err', 'خطأ في الاتصال (راجع قواعد الأمان)');
-        });
+            window.setStatus('ok', 'متصل سحابياً');
+        }, (error) => { console.error(error); window.setStatus('err', 'خطأ في الاتصال (راجع قواعد الأمان)'); });
     };
-    window.dispatchEvent(new Event('firebase-ready'));
     window.firebaseReady = true;
+    window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
 <script>
-    const SECTIONS = ['accounts', 'snapshots', 'customers', 'capitalLogs', 'expenses'];
+    const SEED = {"snapshots": [{"id": "s2", "seq": 2000, "date": "2025-05-05", "capital": 61903, "fawry": 10876, "aman": 2619, "frozen": 4000, "fakka": 495, "silver": 35, "shift": "محمد", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 140}, {"id": "s3", "seq": 3000, "date": "2025-11-29", "capital": 56878, "fawry": 3843, "aman": 1749, "frozen": 43150, "fakka": 870, "silver": 40, "shift": "", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2422}, {"id": "s4", "seq": 4000, "date": "2025-12-03", "capital": 54277, "fawry": 899, "aman": 2876, "frozen": 42600, "fakka": 1180, "silver": 30, "shift": "", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -2601}, {"id": "s5", "seq": 5000, "date": "2025-12-22", "capital": 60802, "fawry": 5031, "aman": 3258, "frozen": 48850, "fakka": 845, "silver": 30, "shift": "19 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 6525}, {"id": "s6", "seq": 6000, "date": "2026-01-03", "capital": 61316, "fawry": 8558, "aman": 1704, "frozen": 7300, "fakka": 180, "silver": 20, "shift": "", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 514}, {"id": "s7", "seq": 7000, "date": "2026-01-03", "capital": 59066, "fawry": 8558, "aman": 1704, "frozen": 7300, "fakka": 180, "silver": 20, "shift": "", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -2250}, {"id": "s8", "seq": 8000, "date": "2026-01-10", "capital": 61758, "fawry": 2471, "aman": 2671, "frozen": 10250, "fakka": 350, "silver": 20, "shift": "7 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2512}, {"id": "s9", "seq": 9000, "date": "2026-01-15", "capital": 62650, "fawry": 18, "aman": 6, "frozen": 33000, "fakka": 85, "silver": 20, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 892}, {"id": "s10", "seq": 10000, "date": "2026-01-22", "capital": 61478, "fawry": 3445, "aman": 156, "frozen": 21000, "fakka": 340, "silver": 20, "shift": "7 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -1172}, {"id": "s11", "seq": 11000, "date": "2026-01-25", "capital": 62100, "fawry": 162, "aman": 707, "frozen": 35900, "fakka": 295, "silver": 20, "shift": "3 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 622}, {"id": "s12", "seq": 12000, "date": "2026-02-01", "capital": 61585, "fawry": 4339, "aman": 1467, "frozen": 24950, "fakka": 150, "silver": 20, "shift": "6 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 885}, {"id": "s13", "seq": 13000, "date": "2026-02-07", "capital": 62654, "fawry": 5342, "aman": 667, "frozen": 2050, "fakka": 390, "silver": 20, "shift": "7 اياام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 1069}, {"id": "s14", "seq": 14000, "date": "2026-02-26", "capital": 65483, "fawry": 1887, "aman": 3717, "frozen": 4350, "fakka": 515, "silver": 20, "shift": "19 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2829}, {"id": "s15", "seq": 15000, "date": "2026-03-01", "capital": 65607, "fawry": 54, "aman": 187, "frozen": 10150, "fakka": 675, "silver": 20, "shift": "4 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 739}, {"id": "s16", "seq": 16000, "date": "2026-03-18", "capital": 68153, "fawry": 1196, "aman": 71, "frozen": 16800, "fakka": 890, "silver": 20, "shift": "18 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2546}, {"id": "s17", "seq": 17000, "date": "2026-04-02", "capital": 68946, "fawry": 3956, "aman": 5209, "frozen": 11300, "fakka": 795, "silver": 140, "shift": "14 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2233}, {"id": "s18", "seq": 18000, "date": "2026-04-08", "capital": 70480, "fawry": 1134, "aman": 3925, "frozen": 15250, "fakka": 710, "silver": 130, "shift": "6 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 1534}, {"id": "s19", "seq": 19000, "date": "2026-04-22", "capital": 75271, "fawry": 2488, "aman": 3149, "frozen": 15400, "fakka": 550, "silver": 120, "shift": "14 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 4791}, {"id": "s20", "seq": 20000, "date": "2026-04-27", "capital": 75470, "fawry": 1186, "aman": 2852, "frozen": 20950, "fakka": 970, "silver": 110, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 199}, {"id": "s21", "seq": 21000, "date": "2026-05-02", "capital": 69854, "fawry": 141, "aman": 1560, "frozen": 46350, "fakka": 2575, "silver": 100, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 1849}, {"id": "s22", "seq": 22000, "date": "2026-05-12", "capital": 72128, "fawry": 2148, "aman": 3113, "frozen": 48400, "fakka": 3380, "silver": 100, "shift": "10 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2274}, {"id": "s23", "seq": 23000, "date": "2026-05-31", "capital": 75159, "fawry": 3902, "aman": 1829, "frozen": 14500, "fakka": 845, "silver": 100, "shift": "19 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 3031}, {"id": "s24", "seq": 24000, "date": "2026-06-04", "capital": 73266, "fawry": 2167, "aman": 3088, "frozen": 33800, "fakka": 1225, "silver": 100, "shift": "4 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 150}, {"id": "s25", "seq": 25000, "date": "2026-06-07", "capital": 73986, "fawry": 1954, "aman": 857, "frozen": 2450, "fakka": 1515, "silver": 100, "shift": "3 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 720}, {"id": "s26", "seq": 26000, "date": "2026-06-25", "capital": 22405, "fawry": 4808, "aman": 1634, "frozen": 100, "fakka": 875, "silver": 80, "shift": "18 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2724}, {"id": "s27", "seq": 27000, "date": "2026-07-19", "capital": 29998, "fawry": 3976, "aman": 2542, "frozen": 150, "fakka": 1445, "silver": 50, "shift": "24 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 7593}, {"id": "s28", "seq": 28000, "date": "2026-07-29", "capital": 27748, "fawry": 1716, "aman": 1307, "frozen": 26450, "fakka": 1205, "silver": 40, "shift": "10 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 983}, {"id": "s29", "seq": 29000, "date": "2026-08-06", "capital": 29887, "fawry": 5071, "aman": 274, "frozen": 7000, "fakka": 265, "silver": 30, "shift": "8 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2139}, {"id": "s30", "seq": 30000, "date": "2026-08-11", "capital": 29891, "fawry": 1175, "aman": 25, "frozen": 19050, "fakka": 475, "silver": 25, "shift": "4 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 4}, {"id": "s31", "seq": 31000, "date": "2026-08-12", "capital": 32325, "fawry": 5509, "aman": 839, "frozen": 14750, "fakka": 325, "silver": 25, "shift": "يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2434}, {"id": "s32", "seq": 32000, "date": "2026-08-15", "capital": 31817, "fawry": 2374, "aman": 1024, "frozen": 6050, "fakka": 45, "silver": 20, "shift": "3 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -508}, {"id": "s33", "seq": 33000, "date": "2026-08-26", "capital": 30965, "fawry": 566, "aman": 1306, "frozen": 28850, "fakka": 515, "silver": 20, "shift": "11 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -852}, {"id": "s34", "seq": 34000, "date": "2026-09-06", "capital": 30621, "fawry": 3241, "aman": 3562, "frozen": 30950, "fakka": 755, "silver": 20, "shift": "11 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 1600}, {"id": "s35", "seq": 35000, "date": "2026-09-12", "capital": 35764, "fawry": 3082, "aman": 76, "frozen": 61600, "fakka": 865, "silver": 10, "shift": "6 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 5143}, {"id": "s36", "seq": 36000, "date": "2026-09-17", "capital": 37998, "fawry": 53, "aman": 1912, "frozen": 33650, "fakka": 580, "silver": 10, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2234}, {"id": "s37", "seq": 37000, "date": "2026-09-22", "capital": 40054, "fawry": 3623, "aman": 1919, "frozen": 36150, "fakka": 815, "silver": 10, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2056}, {"id": "s38", "seq": 38000, "date": "2026-09-26", "capital": 40529, "fawry": 3706, "aman": 559, "frozen": 24750, "fakka": 490, "silver": 10, "shift": "4ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 475}, {"id": "s39", "seq": 39000, "date": "2026-10-01", "capital": 36346, "fawry": 5365, "aman": 2390, "frozen": 28900, "fakka": 4165, "silver": 10, "shift": "4 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -2913}, {"id": "s40", "seq": 40000, "date": "2026-10-05", "capital": 36041, "fawry": 9030, "aman": 3777, "frozen": 21450, "fakka": 1335, "silver": 10, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": -305}, {"id": "s41", "seq": 41000, "date": "2026-10-10", "capital": 36820, "fawry": 9030, "aman": 3777, "frozen": 21450, "fakka": 1335, "silver": 10, "shift": "5 ايام", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 779}, {"id": "s42", "seq": 42000, "date": "2026-10-21", "capital": 39244, "fawry": 5562, "aman": 2044, "frozen": 17305, "fakka": 0, "silver": 0, "shift": "11 يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 2000}, {"id": "s43", "seq": 43000, "date": "2026-10-21", "capital": 39000, "fawry": 5417, "aman": 1671, "frozen": 15905, "fakka": 0, "silver": 0, "shift": "يوم", "wallets": 48388, "custUs": 19008, "custThem": 51455, "k": 0}], "wallets": [{"id": "w2", "name": "محمد = 01029160001", "balance": 25686}, {"id": "w3", "name": "محمود= 01094621233", "balance": 3554}, {"id": "w4", "name": "بنك مصر", "balance": 13890}, {"id": "w5", "name": "كارت فورى", "balance": 4542}, {"id": "w6", "name": "فورى اندرويد", "balance": 626}, {"id": "w7", "name": "اوباى", "balance": 90}], "customers": [{"id": "c2", "name": "فورى", "owes": 0, "due": 0, "log": []}, {"id": "c3", "name": "امان", "owes": 473, "due": 0, "log": []}, {"id": "c4", "name": "كهرباء", "owes": 0, "due": 0, "log": []}, {"id": "c5", "name": "صندوق النت", "owes": 0, "due": 21205, "log": []}, {"id": "c6", "name": "عمر & حور & امهم", "owes": 0, "due": 2000, "log": []}, {"id": "c7", "name": "نجش", "owes": 6500, "due": 0, "log": []}, {"id": "c8", "name": "محمد حربى", "owes": 2500, "due": 0, "log": []}, {"id": "c9", "name": "درش", "owes": 150, "due": 600, "log": []}, {"id": "c10", "name": "ام عاصم", "owes": 0, "due": 17500, "log": []}, {"id": "c11", "name": "الدرج", "owes": 0, "due": 0, "log": []}, {"id": "c12", "name": "احمد ايوب", "owes": 930, "due": 0, "log": []}, {"id": "c13", "name": "الشنوانى", "owes": 350, "due": 0, "log": []}, {"id": "c14", "name": "ام سلمى", "owes": 0, "due": 120, "log": []}, {"id": "c15", "name": "فوزى السعيد", "owes": 120, "due": 0, "log": []}, {"id": "c16", "name": "احمد حمدى", "owes": 1100, "due": 0, "log": []}, {"id": "c17", "name": "نهال", "owes": 30, "due": 0, "log": []}, {"id": "c18", "name": "منال", "owes": 1295, "due": 0, "log": []}, {"id": "c19", "name": "وسام", "owes": 265, "due": 0, "log": []}, {"id": "c20", "name": "على موسى", "owes": 500, "due": 0, "log": []}, {"id": "c21", "name": "ايوب", "owes": 150, "due": 0, "log": []}, {"id": "c22", "name": "سماح", "owes": 25, "due": 0, "log": []}, {"id": "c23", "name": "جمعيه", "owes": 0, "due": 10000, "log": []}, {"id": "c24", "name": "براده", "owes": 2020, "due": 0, "log": []}, {"id": "c25", "name": "العسال", "owes": 685, "due": 0, "log": []}, {"id": "c26", "name": "ماجده", "owes": 0, "due": 30, "log": []}, {"id": "c27", "name": "امينه", "owes": 50, "due": 0, "log": []}, {"id": "c28", "name": "زيزو", "owes": 30, "due": 0, "log": []}, {"id": "c29", "name": "رامى", "owes": 1010, "due": 0, "log": []}, {"id": "c30", "name": "كمال", "owes": 595, "due": 0, "log": []}, {"id": "c31", "name": "ام حور", "owes": 30, "due": 0, "log": []}, {"id": "c32", "name": "محمود 200", "owes": 200, "due": 0, "log": []}], "partners": [{"id": "p2", "name": "الرصيد + النت + انا", "paid": 72761}, {"id": "p3", "name": "اختى", "paid": 14267}, {"id": "p4", "name": "عمر & حور", "paid": 1855}], "devices": [{"id": "d2", "name": "لوكو الدسوقى", "ssid": "ZLOC", "stationIp": "192.168.100.22", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d3", "name": "لوكو دينا التلت", "ssid": "ZLOC", "stationIp": "192.168.100.23", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d4", "name": "بيكو المحل", "ssid": "TP-LINK_5228", "stationIp": "192.168.100.24", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d5", "name": "البولت m3", "ssid": "4G ((b2hp))7r", "stationIp": "192.168.100.30", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d6", "name": "بيم كافيه الخال", "ssid": "MB((PB400)) M5", "stationIp": "192.168.100.32", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d7", "name": "بيم البيت ارسال", "ssid": "MB((PB400)) M5", "stationIp": "192.168.100.33", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d8", "name": "نانو عامر", "ssid": "MegaByte((NH2)) M5", "stationIp": "192.168.100.34", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d9", "name": "نانو البيت الى القشطى", "ssid": "2SHTM5", "stationIp": "192.168.100.35", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d10", "name": "نانو السلام", "ssid": "MEGABYTE((NM5))", "stationIp": "192.168.100.36", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d11", "name": "نانو البيت (عامر-لطفى)", "ssid": "MegaByte((NH2)) M5", "stationIp": "192.168.100.37", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d12", "name": "نانو بستو", "ssid": "MEGABYTE((NM5))", "stationIp": "192.168.100.38", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d13", "name": "نانو القشطى", "ssid": "MEGABYTE((NM5))", "stationIp": "192.168.100.39", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d14", "name": "لايت سيكتور", "ssid": "ZLOC", "stationIp": "192.168.100.21", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d15", "name": "لوكو القشطى اى سى", "ssid": "ZLOCH", "stationIp": "192.168.100.25", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d16", "name": "لوكو السلام اى سى", "ssid": "ZLOC", "stationIp": "192.168.100.26", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d17", "name": "لوكو ميجا اى سى", "ssid": "ZLOCH", "stationIp": "192.168.100.27", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d18", "name": "لايت بيم زيدان", "ssid": "ZLOCH", "stationIp": "192.168.100.28", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d19", "name": "لايت بيم البيت", "ssid": "ZLOCH", "stationIp": "192.168.100.29", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d22", "name": "الدسوقى", "ssid": "KT((M5))", "stationIp": "192.168.100.40", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d23", "name": "زيدان", "ssid": "ZED1", "stationIp": "192.168.100.41", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d24", "name": "صبرى حسونه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.42", "note": ""}, {"id": "d25", "name": "على موسي", "ssid": "4G((3li))", "stationIp": "192.168.100.43", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d27", "name": "القشطى", "ssid": "2SHTTY", "stationIp": "192.168.100.45", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d29", "name": "ابو عمو", "ssid": "", "stationIp": "192.168.100.47", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d30", "name": "ابراهيم حمدى السلام", "ssid": "2SLM", "stationIp": "192.168.100.48", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d31", "name": "على موسي", "ssid": "ASH3", "stationIp": "192.168.100.49", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d32", "name": "محمود حسن", "ssid": "1EZA", "stationIp": "192.168.100.50", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d33", "name": "لطفى", "ssid": "LOT3", "stationIp": "192.168.100.51", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d34", "name": "", "ssid": "", "stationIp": "192.168.100.52", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d35", "name": "البيت", "ssid": "4g asho 001", "stationIp": "192.168.100.53", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d36", "name": "الوصيف", "ssid": "4g asho 001", "stationIp": "192.168.100.54", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d37", "name": "المحل", "ssid": "Mega", "stationIp": "192.168.100.56", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d38", "name": "سلمى ايوب", "ssid": "Mega", "stationIp": "192.168.100.55", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d39", "name": "الحرته زيدان", "ssid": "7RTA", "stationIp": "192.168.100.58", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d41", "name": "البيت الطريق", "ssid": "HOM7", "stationIp": "192.168.100.61", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d42", "name": "قهوه زعبوله", "ssid": "HOM7", "stationIp": "192.168.100.62", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d43", "name": "المحل", "ssid": "AYO5", "stationIp": "192.168.100.63", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d44", "name": "دينا زيدان ارسال", "ssid": "MZED", "stationIp": "192.168.100.64", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d45", "name": "ابو جبل", "ssid": "2SLM", "stationIp": "192.168.100.65", "kind": "ST", "clientIp": "", "note": ""}, {"id": "d46", "name": "عامر 7200", "ssid": "3AMR", "stationIp": "192.168.100.66", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d47", "name": "سويتش زيدان", "ssid": "ZEDS", "stationIp": "192.168.100.67", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d52", "name": "محمد عماد", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.109", "note": ""}, {"id": "d53", "name": "محمد عقل", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.110", "note": ""}, {"id": "d54", "name": "هانم يحى حمزه الشاعر", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.111", "note": ""}, {"id": "d55", "name": "شادى محمود", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.112", "note": ""}, {"id": "d56", "name": "حمدى المرسى", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.113", "note": ""}, {"id": "d57", "name": "سعد عنتر حضانه", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.114", "note": ""}, {"id": "d58", "name": "اميمه ثروت", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.115", "note": ""}, {"id": "d59", "name": "عماد هانى ابراهيم", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.116", "note": ""}, {"id": "d60", "name": "محمود البيومى", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.117", "note": ""}, {"id": "d61", "name": "صابر محسن الطنطاوى", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.118", "note": ""}, {"id": "d62", "name": "المسيو احمد ابراهيم", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.119", "note": ""}, {"id": "d63", "name": "حسن محمد السعيد", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.120", "note": ""}, {"id": "d64", "name": "محمد ابو زينب", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.121", "note": ""}, {"id": "d65", "name": "محمود خالد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.123", "note": ""}, {"id": "d66", "name": "محمد عامر", "ssid": "3AMR72", "stationIp": "192.168.100.124", "kind": "AP", "clientIp": "", "note": ""}, {"id": "d67", "name": "بركات عبدالحى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.126", "note": ""}, {"id": "d68", "name": "طارق عبدالخالق", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.128", "note": ""}, {"id": "d69", "name": "احمد عبدالوهاب", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.130", "note": ""}, {"id": "d70", "name": "مروه الدهشان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.132", "note": ""}, {"id": "d71", "name": "احمد اسماعيل", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.134", "note": ""}, {"id": "d72", "name": "مصطفى عبده", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.135", "note": ""}, {"id": "d73", "name": "عماد العسال", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.136", "note": ""}, {"id": "d74", "name": "ايه القصبى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.137", "note": ""}, {"id": "d75", "name": "محمد سوسته", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.138", "note": ""}, {"id": "d76", "name": "عابد عبدالرسول", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.139", "note": ""}, {"id": "d77", "name": "على حامد طه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.140", "note": ""}, {"id": "d78", "name": "غاده كمال", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.143", "note": ""}, {"id": "d79", "name": "محمد الصاوى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.144", "note": ""}, {"id": "d80", "name": "جابر زيدان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.145", "note": ""}, {"id": "d81", "name": "ادم عبدالعزيز الفخراني", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.146", "note": ""}, {"id": "d82", "name": "موسى حمدى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.147", "note": ""}, {"id": "d83", "name": "تامر عنتر شحاته", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.149", "note": ""}, {"id": "d84", "name": "شوقى ربيع", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.150", "note": ""}, {"id": "d85", "name": "محمود حامد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.152", "note": ""}, {"id": "d86", "name": "محمد احمد المرسى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.153", "note": ""}, {"id": "d87", "name": "خالد عبد العزيز", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.154", "note": ""}, {"id": "d88", "name": "السيد عبدالعزيز", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.155", "note": ""}, {"id": "d89", "name": "حسين عبدالله", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.156", "note": ""}, {"id": "d90", "name": "فتحى السيد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.157", "note": ""}, {"id": "d91", "name": "محسن اسامه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.158", "note": ""}, {"id": "d92", "name": "محمد ثروت", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.159", "note": ""}, {"id": "d93", "name": "محمد عبدالنبي", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.160", "note": ""}, {"id": "d94", "name": "ابراهيم ياسر", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.161", "note": ""}, {"id": "d95", "name": "امل علاء (الصيدليه)", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.162", "note": ""}, {"id": "d96", "name": "فرج محمد فرج", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.163", "note": ""}, {"id": "d97", "name": "احمد الزناتى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.164", "note": ""}, {"id": "d98", "name": "على السيد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.165", "note": ""}, {"id": "d99", "name": "محمود انور", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.166", "note": ""}, {"id": "d100", "name": "يوسف موسي", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.167", "note": ""}, {"id": "d101", "name": "مجدى اليمانى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.168", "note": ""}, {"id": "d102", "name": "عبدالهادى النحاس", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.169", "note": ""}, {"id": "d103", "name": "نجيب محمد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.170", "note": ""}, {"id": "d104", "name": "احمد ايمن", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.171", "note": ""}, {"id": "d105", "name": "احمد الفخرانى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.172", "note": ""}, {"id": "d106", "name": "محمد خليفه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.173", "note": ""}, {"id": "d107", "name": "امل حمدان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.174", "note": ""}, {"id": "d108", "name": "عبدالعزيز عبدالله", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.175", "note": ""}, {"id": "d109", "name": "اسلام السيد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.176", "note": ""}, {"id": "d110", "name": "حسين ابو جنا", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.177", "note": ""}, {"id": "d111", "name": "عماد الهادى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.178", "note": ""}, {"id": "d112", "name": "عثمان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.179", "note": ""}, {"id": "d113", "name": "محمد عادل محمد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.180", "note": ""}, {"id": "d114", "name": "صبرى حباجه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.181", "note": ""}, {"id": "d115", "name": "هيثم عبدالقادر", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.182", "note": ""}, {"id": "d116", "name": "على سلامه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.183", "note": ""}, {"id": "d117", "name": "بسام محمد سليمان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.184", "note": ""}, {"id": "d118", "name": "حسين محمد رجب", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.185", "note": ""}, {"id": "d119", "name": "على ابو عماد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.186", "note": ""}, {"id": "d120", "name": "محمد جمعه عزحون", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.187", "note": ""}, {"id": "d121", "name": "حسين البيومى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.188", "note": ""}, {"id": "d122", "name": "حمدى الششتاوى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.189", "note": ""}, {"id": "d123", "name": "محمد حمدى شعبان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.190", "note": ""}, {"id": "d124", "name": "صلاح عنتر شحاته", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.191", "note": ""}, {"id": "d125", "name": "السعيد المعداوى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.192", "note": ""}, {"id": "d126", "name": "احمد قنديل", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.193", "note": ""}, {"id": "d127", "name": "احمد مسعد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.193", "note": ""}, {"id": "d128", "name": "النجش", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.194", "note": ""}, {"id": "d129", "name": "محمود حجاج", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.195", "note": ""}, {"id": "d130", "name": "صابر احمد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.196", "note": ""}, {"id": "d131", "name": "محمد زاهر", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.197", "note": ""}, {"id": "d132", "name": "معرض البهنسي", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.198", "note": ""}, {"id": "d133", "name": "عبدالغفار", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.199", "note": ""}, {"id": "d134", "name": "هناء حسين", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.200", "note": ""}, {"id": "d135", "name": "محمود منصور", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.201", "note": ""}, {"id": "d136", "name": "شحاته ذكى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.202", "note": ""}, {"id": "d137", "name": "محمود مرعى الجن", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.203", "note": ""}, {"id": "d138", "name": "احمد و محمد المنسي", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.204", "note": ""}, {"id": "d139", "name": "محمد قنديل", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.205", "note": ""}, {"id": "d140", "name": "محمد فوزى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.206", "note": ""}, {"id": "d141", "name": "ام يوسف", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.207", "note": ""}, {"id": "d142", "name": "ام جنات", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.208", "note": ""}, {"id": "d143", "name": "يوسف السيد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.209", "note": ""}, {"id": "d144", "name": "احمد عبدالله على", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.210", "note": ""}, {"id": "d145", "name": "سعد عنتر البيت", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.211", "note": ""}, {"id": "d146", "name": "بوجى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.212", "note": ""}, {"id": "d147", "name": "محمد محمود عبدالحى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.213", "note": ""}, {"id": "d148", "name": "وحيده ممدوح", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.214", "note": ""}, {"id": "d149", "name": "اسامه سعد محمد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.215", "note": ""}, {"id": "d150", "name": "جمعه السعيد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.216", "note": ""}, {"id": "d151", "name": "طه حسين", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.217", "note": ""}, {"id": "d152", "name": "السيد ابوزياده", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.218", "note": ""}, {"id": "d153", "name": "محمد حسن موسى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.219", "note": ""}, {"id": "d154", "name": "حنان رفعت", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.220", "note": ""}, {"id": "d155", "name": "صلاح الغريب", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.221", "note": ""}, {"id": "d156", "name": "محمد صبرى عبده", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.222", "note": ""}, {"id": "d157", "name": "السعيد عطوان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.223", "note": ""}, {"id": "d158", "name": "ابراهيم عبده محمد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.224", "note": ""}, {"id": "d159", "name": "صدقى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.225", "note": ""}, {"id": "d160", "name": "احمد & مياده", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.226", "note": ""}, {"id": "d161", "name": "محمد الهادى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.227", "note": ""}, {"id": "d162", "name": "اشرف السعيد وهبه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.228", "note": ""}, {"id": "d163", "name": "سالم مصباح البعضشى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.229", "note": ""}, {"id": "d164", "name": "خالد حامد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.230", "note": ""}, {"id": "d165", "name": "هشام عطوه", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.231", "note": ""}, {"id": "d166", "name": "السعيد عبده", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.232", "note": ""}, {"id": "d167", "name": "محمد رباح", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.233", "note": ""}, {"id": "d168", "name": "محمد ناصر", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.234", "note": ""}, {"id": "d169", "name": "ام لبنا", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.235", "note": ""}, {"id": "d170", "name": "اشرف شعبان", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.236", "note": ""}, {"id": "d171", "name": "هانى عماد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.237", "note": ""}, {"id": "d172", "name": "السيد ابو الصمد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.238", "note": ""}, {"id": "d173", "name": "خالد محمد خالد", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.239", "note": ""}, {"id": "d174", "name": "منصور سامى", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.240", "note": ""}, {"id": "d175", "name": "مى السيد رياض", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.241", "note": ""}, {"id": "d176", "name": "ماهر ماهر", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.242", "note": ""}, {"id": "d177", "name": "كمال صلاح", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.243", "note": ""}, {"id": "d178", "name": "رضا شكر", "ssid": "", "stationIp": "", "kind": "ST", "clientIp": "192.168.100.244", "note": ""}, {"id": "d179", "name": "عبدالحميد حمدى", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.245", "note": ""}, {"id": "d180", "name": "ايمن الحسانى", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.246", "note": ""}, {"id": "d181", "name": "اشرف الحسانى", "ssid": "", "stationIp": "", "kind": "", "clientIp": "192.168.100.247", "note": ""}], "we": [{"id": "e2", "name": "ام شهاب (شيماء )", "landline": "0502460763", "password": "Mm22446688", "note": ""}, {"id": "e3", "name": "سرور", "landline": "0502460122", "password": "1234512312sS", "note": ""}, {"id": "e4", "name": "رضا بكر", "landline": "0502461814", "password": "Mm22446688", "note": ""}, {"id": "e5", "name": "محمد بكر", "landline": "0502463832", "password": "Mm22446689", "note": ""}, {"id": "e6", "name": "زوزو", "landline": "0502463323", "password": "Mm22446690", "note": ""}, {"id": "e7", "name": "صافى", "landline": "0502460516", "password": "Mm22446691", "note": ""}, {"id": "e8", "name": "شيماء السيد ( نوسه )", "landline": "0502464920", "password": "Mm22446692", "note": ""}, {"id": "e9", "name": "محمد العربى عز", "landline": "0502462536", "password": "Mm22446693", "note": ""}, {"id": "e10", "name": "هبه وجدى", "landline": "0502465416", "password": "Mm22446694", "note": ""}, {"id": "e11", "name": "صباح السعيد", "landline": "0502464882", "password": "Mm22446695", "note": ""}, {"id": "e12", "name": "شيماء اسماعيل سمعان", "landline": "01558295643", "password": "Mm22446696", "note": ""}, {"id": "e13", "name": "محمد السيد شاكر", "landline": "0502464854", "password": "Mm22446697", "note": ""}, {"id": "e14", "name": "حجاج الدكر", "landline": "0502465966", "password": "Mm22446698", "note": ""}, {"id": "e15", "name": "طارق حسين", "landline": "0502462418", "password": "Mm22446699", "note": ""}, {"id": "e16", "name": "ابو اليزيد", "landline": "0502461555", "password": "Mm22446700", "note": ""}, {"id": "e17", "name": "صباح العوضى احمد", "landline": "0502464913", "password": "Mm22446701", "note": ""}, {"id": "e18", "name": "ورده المتولى الطنطاوى", "landline": "0502464207", "password": "Mm22446702", "note": ""}, {"id": "e19", "name": "صافى", "landline": "0502460516", "password": "Mm22446703", "note": ""}, {"id": "e20", "name": "فاطمه عبدالخالق", "landline": "0502464354", "password": "Ff200400", "note": ""}, {"id": "e21", "name": "رضا سامى", "landline": "0502464025", "password": "Ff200401", "note": ""}, {"id": "e22", "name": "نعمات", "landline": "0502461826", "password": "Mm22446688", "note": ""}, {"id": "e23", "name": "محمد العربى", "landline": "0502462536", "password": "Mm22446689", "note": ""}, {"id": "e24", "name": "حجاج المتولى", "landline": "0502462183", "password": "Mm22446690", "note": ""}, {"id": "e25", "name": "السيد العارف", "landline": "0502461797", "password": "Mm22446691", "note": ""}, {"id": "e26", "name": "البدراوى", "landline": "0502462121", "password": "Mm22446692", "note": ""}, {"id": "e27", "name": "ثريا ابو اسلام", "landline": "0502464264", "password": "Mm22446693", "note": ""}, {"id": "e28", "name": "فايزه", "landline": "0502464024", "password": "Mm22446694", "note": ""}, {"id": "e29", "name": "حمدى محمد", "landline": "0502460307", "password": "Mm22446695", "note": ""}, {"id": "e30", "name": "هاله", "landline": "0502461725", "password": "Mm22446696", "note": ""}, {"id": "e31", "name": "صدام مأمون", "landline": "0502953545", "password": "Mm22446697", "note": ""}, {"id": "e32", "name": "حبيب السيد", "landline": "0502460198", "password": "Mm22446698", "note": ""}, {"id": "e33", "name": "سماح عبدالخالق", "landline": "0502464296", "password": "Mm22446699", "note": ""}, {"id": "e34", "name": "مصطفى رضا علام", "landline": "0502462548", "password": "Mm22446700", "note": ""}, {"id": "e35", "name": "عبوده", "landline": "0502464202", "password": "Mm22446701", "note": ""}, {"id": "e36", "name": "صباح عبداللطيف", "landline": "0502464051", "password": "Mm22446702", "note": ""}, {"id": "e37", "name": "ماجد شعيب", "landline": "0502461103", "password": "Mm22446703", "note": ""}, {"id": "e38", "name": "بكر وحيد", "landline": "0502461837", "password": "Mm22446704", "note": ""}, {"id": "e39", "name": "هدير هنادى", "landline": "01501404649", "password": "Mm22446705", "note": ""}, {"id": "e40", "name": "هانى الششتاوى", "landline": "0502463344", "password": "Mm22446706", "note": ""}, {"id": "e41", "name": "عفاف اشرف عبداللطيف", "landline": "0502463518", "password": "Mm22446707", "note": ""}, {"id": "e42", "name": "السعيد عبدالفتاح", "landline": "0502463231", "password": "Mm22446708", "note": ""}, {"id": "e43", "name": "محمد على عبدالحى", "landline": "0502460020", "password": "Mm22446709", "note": ""}, {"id": "e44", "name": "محمود موسى", "landline": "0502464979", "password": "Mm22446710", "note": ""}, {"id": "e45", "name": "المهدى محمد", "landline": "0502464967", "password": "Mm22446711", "note": ""}, {"id": "e46", "name": "كمال ابراهيم كمال", "landline": "0502460996", "password": "Mm22446712", "note": ""}, {"id": "e47", "name": "ابراهيم الشنوانى", "landline": "0502464623", "password": "Mm22446713", "note": ""}, {"id": "e48", "name": "ليلى راضى صبرى", "landline": "0502464975", "password": "Mm22446714", "note": ""}, {"id": "e49", "name": "محمد زنهم ابو العلا", "landline": "0502461798", "password": "Mm22446715", "note": ""}, {"id": "e50", "name": "ابراهيم مصطفى", "landline": "01550922393", "password": "Mm22446716", "note": "420 اجمالى"}, {"id": "e51", "name": "سميره السيد السيسى", "landline": "0502465216", "password": "Mm22446717", "note": ""}, {"id": "e52", "name": "اشرف عنتر", "landline": "0502464867", "password": "Mm22446718", "note": ""}, {"id": "e53", "name": "ماجده سعد", "landline": "0502464601", "password": "Mm22446719", "note": ""}, {"id": "e54", "name": "صبرى عبدالحميد", "landline": "0502462316", "password": "Mm22446720", "note": ""}, {"id": "e55", "name": "صابر طنيب", "landline": "0502465477", "password": "Mm22446721", "note": ""}, {"id": "e56", "name": "محمود السيد", "landline": "01515283496", "password": "Mm22446722", "note": "425 اجمالى"}, {"id": "e57", "name": "ولاء حربى", "landline": "0502464602", "password": "Mm22446723", "note": ""}, {"id": "e58", "name": "حمدى عماد نعيمه", "landline": "0502463927", "password": "Mm22446724", "note": ""}, {"id": "e59", "name": "السيده وفيق", "landline": "0502464952", "password": "Mm22446725", "note": ""}], "orders": [{"id": "o6", "no": 1, "title": "محمود حسين", "notes": "", "phone": "01017472659", "status": "جاري", "price": 0}, {"id": "o7", "no": 2, "title": "مرعى روتر فايبر", "notes": "", "phone": "01043313970", "status": "جاري", "price": 0}, {"id": "o8", "no": 3, "title": "محمود كمال", "notes": "فلاشه 32 كينج ماكس", "phone": "", "status": "جاري", "price": 0}, {"id": "o9", "no": 4, "title": "محمود زكريا", "notes": "", "phone": "01274348914", "status": "جاري", "price": 0}], "settings": {"partnerProfit": 6995, "ipNotes": "PASS | Router name\nM4T00097 | weza\nN5703188 | mega | AP\nhttps://show.smart-radius.com:9999/Wireless_Basic.asp | kt ddwrt\nhttps://show.smart-radius.com:9999/link.cgi | lg6000\nST", "custNotes": "k-22: 115\nan-1018: 175\nan-1185: 170"}};
+    const SECTIONS = ['snapshots', 'wallets', 'customers', 'partners', 'devices', 'we', 'orders', 'settings'];
     window.SECTIONS = SECTIONS;
-    window.defaultAccounts = () => [
-        { id: 'acc_cash', name: 'الصندوق النقدي (الخزينة)', type: 'cash', status: 'active' },
-        { id: 'acc_ewallet', name: 'المحافظ الإلكترونية', type: 'ewallet', status: 'active' },
-        { id: 'acc_fawry_android', name: 'فوري Android', type: 'pos', status: 'active' },
-        { id: 'acc_aman', name: 'ماكينة أمان', type: 'pos', status: 'active' },
-        { id: 'acc_fawry_std', name: 'فوري العادية', type: 'pos', status: 'active' }
-    ];
 
-    (function loadLocal() {
-        let parsed = null;
-        try { parsed = JSON.parse(localStorage.getItem('app_accounting_db')); } catch (e) {}
-        window.appData = parsed || {};
-        SECTIONS.forEach(s => { if (!Array.isArray(window.appData[s])) window.appData[s] = []; });
-        if (!window.appData.accounts.length) window.appData.accounts = window.defaultAccounts();
-    })();
+    const $ = id => document.getElementById(id);
+    const num = v => { const x = parseFloat(v); return isNaN(x) ? 0 : x; };
+    const sum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
+    const r2 = v => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
+    function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function formatNum(v) { return Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+    function ts(d) { const t = new Date(d).getTime(); return isNaN(t) ? 0 : t; }
+    function fmtDate(d) {
+        if (!d) return '';
+        if (/^\d{4}-\d\d-\d\d$/.test(d)) return d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
+        const x = new Date(d); return isNaN(x) ? d : x.toLocaleString('en-GB', { hour12: true });
+    }
+    function nowLocal() { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+    const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const colorOf = v => v > 0 ? 'text-emerald-400' : v < 0 ? 'text-red-400' : 'text-slate-400';
 
-    window.localHasData = function () {
-        const d = window.appData;
-        return d.snapshots.length || d.customers.length || d.capitalLogs.length || d.expenses.length;
+    window.setStatus = function (kind, text) {
+        const map = {
+            ok: ['w-2 h-2 rounded-full bg-emerald-500 animate-pulse', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-emerald-300'],
+            err: ['w-2 h-2 rounded-full bg-red-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-red-950/60 border border-red-500/40 px-3 py-1.5 rounded-lg text-red-300'],
+            wait: ['w-2 h-2 rounded-full bg-amber-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400'],
+            local: ['w-2 h-2 rounded-full bg-slate-500', 'flex items-center space-x-1.5 space-x-reverse text-xs bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-400']
+        };
+        $('syncDot').className = map[kind][0]; $('syncStatus').className = map[kind][1]; $('syncText').textContent = text;
     };
 
-    let selectedCustomer = null;
-
-    // ---------- أدوات ----------
-    const $ = id => document.getElementById(id);
-    function esc(s) {
-        return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    }
-    function formatNum(v) { return Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-    function ts(d) { const t = new Date(d).getTime(); return isNaN(t) ? 0 : t; }
-    const r2 = v => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
-    function formatDateEn(d) { return d ? new Date(d).toLocaleString('en-US', { hour12: true }) : ''; }
-    function money(v, cls = '') { return `${formatNum(v)} <span class="text-xs text-slate-400 font-normal ${cls}">ج.م</span>`; }
-    function nowLocal() {
-        const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-        return d.toISOString().slice(0, 16);
-    }
-    const typeLabel = { cash: 'صندوق نقدي', ewallet: 'محفظة إلكترونية', pos: 'ماكينة دفع', bank: 'حساب بنكي' };
+    // ---------- البيانات ----------
+    window.normSection = function (s, v) {
+        if (s === 'settings') return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+        const arr = Array.isArray(v) ? v : (v && typeof v === 'object' ? Object.values(v) : []);
+        return arr.filter(Boolean);
+    };
+    (function loadLocal() {
+        let p = null; try { p = JSON.parse(localStorage.getItem('app_accounting_db')); } catch (e) {}
+        window.appData = {}; SECTIONS.forEach(s => { window.appData[s] = window.normSection(s, p && p[s]); });
+    })();
+    window.localHasData = () => SECTIONS.some(s => s !== 'settings' && window.appData[s].length);
+    const D = () => window.appData;
+    const logOf = c => Array.isArray(c.log) ? c.log : (c.log ? Object.values(c.log) : []);
 
     function save(sections) {
-        localStorage.setItem('app_accounting_db', JSON.stringify(window.appData));
+        localStorage.setItem('app_accounting_db', JSON.stringify(D()));
         if (window.pushSections) window.pushSections(sections);
         renderAllViews();
     }
 
-    // ---------- التبويبات ----------
+    // ---------- الحسابات (نفس معادلات الإكسل) ----------
+    const walletsTotal = () => sum(D().wallets, w => num(w.balance));
+    const custUsTotal = () => sum(D().customers, c => num(c.owes));
+    const custThemTotal = () => sum(D().customers, c => num(c.due));
+    const snapCash = s => num(s.fawry) + num(s.aman) + num(s.frozen) + num(s.fakka) + num(s.silver);
+    const snapRevenue = s => snapCash(s) + num(s.wallets) + num(s.custUs);   // عمود H
+    const snapExpense = s => num(s.custThem);                                  // عمود I
+    const snapNet = s => snapRevenue(s) - snapExpense(s);
+    const snapSurplus = s => snapNet(s) - num(s.capital);
+    const sortedSnaps = () => D().snapshots.slice().sort((a, b) => (ts(a.date) - ts(b.date)) || (num(a.seq) - num(b.seq)));
+
+    // ---------- الواجهة العامة ----------
     function switchTab(tab) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(b => {
             const on = b.dataset.tab === tab;
-            b.classList.toggle('bg-brand-600', on); b.classList.toggle('text-white', on);
-            b.classList.toggle('text-slate-400', !on);
+            b.classList.toggle('bg-brand-600', on); b.classList.toggle('text-white', on); b.classList.toggle('text-slate-400', !on);
         });
         $('content-' + tab).classList.remove('hidden');
     }
 
-    // ---------- الحسابات ----------
-    function resetAccountForm() {
-        $('accEditId').value = ''; $('accName').value = '';
-        $('accBtnText').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> حفظ';
-        $('accCancelBtn').classList.add('hidden');
+    // ---------- لقطات الرصيد ----------
+    function snapFormValues() {
+        return { date: $('snapDate').value, capital: num($('snapCapital').value), fawry: num($('snapFawry').value), aman: num($('snapAman').value),
+            frozen: num($('snapFrozen').value), fakka: num($('snapFakka').value), silver: num($('snapSilver').value),
+            shift: $('snapShift').value.trim(), k: $('snapK').value === '' ? null : num($('snapK').value) };
     }
-    function editAccount(id) {
-        const a = window.appData.accounts.find(x => x.id === id); if (!a) return;
-        $('accEditId').value = a.id; $('accName').value = a.name; $('accType').value = a.type; $('accStatus').value = a.status;
-        $('accBtnText').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل';
-        $('accCancelBtn').classList.remove('hidden');
+    function renderSnapPreview() {
+        const id = $('snapEditId').value;
+        const orig = id ? D().snapshots.find(s => s.id === id) : null;
+        const useOrig = orig && !$('snapRefresh').checked;
+        const v = snapFormValues();
+        v.wallets = useOrig ? num(orig.wallets) : walletsTotal();
+        v.custUs = useOrig ? num(orig.custUs) : custUsTotal();
+        v.custThem = useOrig ? num(orig.custThem) : custThemTotal();
+        const net = snapNet(v);
+        $('snapPreview').innerHTML = `إيراد = ${formatNum(snapCash(v))} (نقد) + ${formatNum(v.wallets)} (محافظ) + ${formatNum(v.custUs)} (لنا) = <b class="text-emerald-400">${formatNum(snapRevenue(v))}</b>
+            &nbsp;|&nbsp; منصرف (علينا) = <b class="text-red-400">${formatNum(v.custThem)}</b>
+            &nbsp;|&nbsp; الصافي = <b>${formatNum(net)}</b> &nbsp;|&nbsp; الزيادة فوق رأس المال = <b class="${colorOf(net - v.capital)}">${formatNum(net - v.capital)}</b>`;
     }
-    function deleteAccount(id) {
-        if (!confirm('تأكيد الحذف؟ ستُحذف أرصدة هذا الحساب من اللقطات المعروضة.')) return;
-        window.appData.accounts = window.appData.accounts.filter(a => a.id !== id);
-        save(['accounts']);
+    function resetSnapForm() {
+        $('snapEditId').value = '';
+        ['snapCapital', 'snapFawry', 'snapAman', 'snapFrozen', 'snapFakka', 'snapSilver', 'snapShift', 'snapK'].forEach(i => $(i).value = '');
+        const last = sortedSnaps().pop(); if (last) $('snapCapital').value = last.capital;
+        $('snapDate').value = nowLocal(); $('snapRefresh').checked = false;
+        $('snapRefreshWrap').classList.add('hidden'); $('snapRefreshWrap').classList.remove('flex'); $('snapCancel').classList.add('hidden');
+        $('snapSubmit').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> حفظ اللقطة';
+        renderSnapPreview();
     }
-
-    // ---------- اللقطات ----------
-    function activeAccounts() { return window.appData.accounts.filter(a => a.status === 'active'); }
-    // دالة واحدة لحساب مجموع اللقطة (تُستخدم في الجدول والبطاقة والتقرير)
-    function snapAccountsTotal(snap) {
-        return activeAccounts().reduce((sum, a) => sum + (parseFloat(snap.balances?.[a.id]) || 0), 0);
+    function editSnapshot(id) {
+        const s = D().snapshots.find(x => x.id === id); if (!s) return;
+        $('snapEditId').value = s.id; $('snapDate').value = s.date;
+        $('snapCapital').value = s.capital; $('snapFawry').value = s.fawry; $('snapAman').value = s.aman; $('snapFrozen').value = s.frozen;
+        $('snapFakka').value = s.fakka; $('snapSilver').value = s.silver; $('snapShift').value = s.shift || ''; $('snapK').value = s.k == null ? '' : s.k;
+        $('snapRefresh').checked = false; $('snapRefreshWrap').classList.remove('hidden'); $('snapRefreshWrap').classList.add('flex');
+        $('snapCancel').classList.remove('hidden'); $('snapSubmit').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل اللقطة';
+        renderSnapPreview(); window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    // أثر الحركة على رصيد العميل: موجب = لنا عنده، سالب = له عندنا
-    function custDelta(c) { return (c.type === 'us' || c.type === 'payout') ? c.amount : -c.amount; }
-    // صافي حركة رأس المال (إضافات - مسحوبات) في الفترة (from, to]
-    function capitalNet(fromT, toT) {
-        return window.appData.capitalLogs.reduce((sum, c) => {
-            const t = ts(c.date);
-            return (t > fromT && t <= toT) ? sum + (c.type === 'add' ? c.amount : -c.amount) : sum;
-        }, 0);
-    }
-    function customerTotalsAt(target) {
-        const t = ts(target), map = {};
-        window.appData.customers.forEach(c => {
-            if (ts(c.date) <= t) map[c.name] = (map[c.name] || 0) + custDelta(c);
-        });
-        return totalsFromMap(map);
-    }
-    function totalsFromMap(map) {
-        let us = 0, them = 0;
-        Object.values(map).forEach(n => { if (n > 0) us += n; else if (n < 0) them += -n; });
-        return { totalUs: us, totalThem: them, net: us - them };
-    }
-    function snapNetAssets(snap) {
-        const c = customerTotalsAt(snap.date);
-        return snapAccountsTotal(snap) + c.totalUs - c.totalThem;
-    }
-    function sortedSnaps() { return window.appData.snapshots.slice().sort((a, b) => ts(a.date) - ts(b.date)); }
-
     function saveSnapshot(e) {
         e.preventDefault();
-        const date = $('snapDate').value; if (!date) return;
-        const balances = {};
-        activeAccounts().forEach(a => { balances[a.id] = parseFloat($('snap_acc_' + a.id)?.value) || 0; });
-        window.appData.snapshots.push({ id: 'snap_' + Date.now(), date, balances });
-        activeAccounts().forEach(a => { const i = $('snap_acc_' + a.id); if (i) i.value = ''; });
-        save(['snapshots']);
+        const v = snapFormValues(); if (!v.date) return;
+        const id = $('snapEditId').value;
+        if (id) {
+            const s = D().snapshots.find(x => x.id === id); if (!s) return;
+            if (v.k === null) delete s.k;
+            Object.assign(s, v); if (v.k === null) delete s.k;
+            if ($('snapRefresh').checked) { s.wallets = walletsTotal(); s.custUs = custUsTotal(); s.custThem = custThemTotal(); }
+        } else {
+            v.id = uid('s_'); v.seq = Date.now(); v.wallets = walletsTotal(); v.custUs = custUsTotal(); v.custThem = custThemTotal();
+            if (v.k === null) delete v.k;
+            D().snapshots.push(v);
+        }
+        resetSnapForm(); save(['snapshots']);
     }
-    function renderDynamicSnapshotInputs() {
-        const c = $('dynamicSnapshotInputs');
-        const old = {};
-        c.querySelectorAll('input').forEach(i => old[i.id] = i.value);
-        c.innerHTML = activeAccounts().map(a => `
-            <div><label class="block text-xs font-semibold text-slate-300 mb-1">${esc(a.name)}</label>
-            <input type="number" step="0.01" id="snap_acc_${esc(a.id)}" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-mono"></div>`).join('');
-        c.querySelectorAll('input').forEach(i => { if (old[i.id] !== undefined) i.value = old[i.id]; });
-    }
-    function renderSnapshotsTable() {
-        const accs = activeAccounts();
-        $('snapshotsTableHeader').innerHTML = `<tr><th class="p-3">التاريخ</th>${accs.map(a => `<th class="p-3">${esc(a.name)}</th>`).join('')}
-            <th class="p-3 font-bold text-emerald-400">إجمالي الأصول الصافية</th><th class="p-3 font-bold text-brand-400">ربح/خسارة التسجيل (بعد استبعاد رأس المال)</th><th class="p-3 text-center no-print">حذف</th></tr>`;
-        let prev = null, prevT = 0;
-        $('snapshotsTableBody').innerHTML = sortedSnaps().map(s => {
-            const cols = accs.map(a => `<td class="p-3 font-mono">${formatNum(s.balances?.[a.id])}</td>`).join('');
-            const total = snapNetAssets(s);
-            let diff;
-            if (prev === null) diff = '<span class="text-slate-500 text-xs">بداية الحسابات</span>';
-            else {
-                const d = r2(total - prev - capitalNet(prevT, ts(s.date)));
-                diff = `<span class="${d >= 0 ? 'text-emerald-400' : 'text-red-400'} font-bold font-mono">${d >= 0 ? '+' : ''}${formatNum(d)} ج.م</span>`;
-            }
-            prev = total; prevT = ts(s.date);
-            return `<tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(s.date))}</td>${cols}
-                <td class="p-3 font-bold font-mono text-emerald-400">${formatNum(total)} ج.م</td><td class="p-3">${diff}</td>
-                <td class="p-3 text-center no-print"><button data-act="delSnap" data-id="${esc(s.id)}" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td></tr>`;
-        }).join('');
+    function renderSnapshots() {
+        const list = sortedSnaps(); let prevSurplus = null, prevT = null;
+        const rows = list.map(s => {
+            const surplus = snapSurplus(s), t = ts(s.date);
+            const delta = prevSurplus === null ? null : r2(surplus - prevSurplus);
+            const days = prevT === null ? '' : Math.round((t - prevT) / 86400000);
+            prevSurplus = surplus; prevT = t;
+            return `<tr class="hover:bg-slate-800/50">
+                <td class="p-3 font-mono text-xs text-slate-400">${esc(fmtDate(s.date))}</td>
+                <td class="p-3 font-mono">${formatNum(s.capital)}</td><td class="p-3 font-mono">${formatNum(s.fawry)}</td><td class="p-3 font-mono">${formatNum(s.aman)}</td>
+                <td class="p-3 font-mono">${formatNum(s.frozen)}</td><td class="p-3 font-mono">${formatNum(s.fakka)}</td><td class="p-3 font-mono">${formatNum(s.silver)}</td>
+                <td class="p-3 font-mono text-emerald-400">${formatNum(snapRevenue(s))}</td><td class="p-3 font-mono text-red-400">${formatNum(snapExpense(s))}</td>
+                <td class="p-3 font-mono font-bold">${formatNum(snapNet(s))}</td>
+                <td class="p-3 font-mono font-bold ${colorOf(surplus)}">${formatNum(surplus)}</td>
+                <td class="p-3 font-mono ${delta === null ? 'text-slate-500' : colorOf(delta)}">${delta === null ? '—' : (delta > 0 ? '+' : '') + formatNum(delta)}</td>
+                <td class="p-3 font-mono text-amber-400">${s.k == null ? '' : formatNum(s.k)}</td>
+                <td class="p-3 text-xs">${esc(s.shift || '')}</td><td class="p-3 font-mono text-xs">${days}</td>
+                <td class="p-3 no-print"><button data-act="editSnap" data-id="${esc(s.id)}" class="text-indigo-400 p-1"><i class="fa-solid fa-pen"></i></button>
+                <button data-act="delSnap" data-id="${esc(s.id)}" class="text-red-400 p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+        }).reverse();
+        $('snapshotsBody').innerHTML = rows.join('') || '<tr><td colspan="16" class="p-6 text-center text-slate-500">لا توجد لقطات</td></tr>';
     }
 
-    // ---------- العملاء ----------
-    function customersMap() {
-        const m = {};
-        window.appData.customers.forEach(c => { m[c.name] = (m[c.name] || 0) + custDelta(c); });
-        return m;
+    // ---------- جداول CRUD العامة ----------
+    const STATUS_CLS = { 'جديد': 'bg-blue-500/10 text-blue-400 border-blue-500/20', 'جاري': 'bg-amber-500/10 text-amber-400 border-amber-500/20', 'تم': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', 'ملغي': 'bg-red-500/10 text-red-400 border-red-500/20' };
+    const partnersTotal = () => sum(D().partners, p => num(p.paid));
+    const partnerRatio = p => partnersTotal() > 0 ? num(p.paid) / partnersTotal() : 0;
+    const partnerProfit = p => r2(partnerRatio(p) * num(D().settings.partnerProfit));
+    function dupIps() {
+        const seen = {}, dups = new Set();
+        D().devices.forEach(d => [d.stationIp, d.clientIp].forEach(ip => { ip = (ip || '').trim(); if (!ip) return; if (seen[ip]) dups.add(ip); seen[ip] = 1; }));
+        return { dups: [...dups], used: seen };
     }
-    function saveCustomerRecord(e) {
-        e.preventDefault();
-        const name = $('custName').value.trim(), date = $('custDate').value, type = $('custType').value;
-        const amount = parseFloat($('custAmount').value) || 0;
-        if (!name || !date || amount <= 0) return;
-        window.appData.customers.push({ id: 'cust_' + Date.now(), name, date, type, amount });
-        $('custAmount').value = ''; $('quickAlertMsg').classList.add('hidden');
+    const ENT = {
+        wallets: { title: 'محافظ كاش', hint: 'أرصدة المحافظ الإلكترونية وماكينات الدفع — تدخل في إجمالي الإيراد', btn: 'emerald',
+            fields: [{ k: 'name', l: 'اسم المحفظة / الماكينة', t: 'text', req: 1, ph: 'محمد = 0102...' }, { k: 'balance', l: 'الرصيد في المحفظة (ج.م)', t: 'number' }],
+            cols: [{ l: 'المحفظة', r: i => esc(i.name), cls: 'font-semibold text-white' }, { l: 'الرصيد', r: i => formatNum(i.balance), cls: 'font-mono font-bold text-emerald-400' }],
+            summary: () => `الإجمالي: <b class="text-emerald-400 font-mono">${formatNum(walletsTotal())}</b> ج.م — ${D().wallets.length} محفظة`,
+            xl: i => ({ 'محافظ كاش': i.name, 'الرصيد فى المحفظه': num(i.balance) }), keys: ['name'] },
+        customers: { title: 'الخرج — العملاء والديون', hint: 'عليه = مبلغ لنا عند العميل | له = مبلغ علينا للعميل. زر الحركة للتسديد وكشف الحساب.', btn: 'amber',
+            fields: [{ k: 'name', l: 'اسم العميل', t: 'text', req: 1 }, { k: 'owes', l: 'عليه (لنا عنده)', t: 'number' }, { k: 'due', l: 'له (علينا له)', t: 'number' }],
+            cols: [{ l: 'اسم العميل', r: i => esc(i.name), cls: 'font-semibold text-white' }, { l: 'عليه', r: i => formatNum(i.owes), cls: 'font-mono text-emerald-400' },
+                { l: 'له', r: i => formatNum(i.due), cls: 'font-mono text-red-400' },
+                { l: 'الصافي (لنا +)', r: i => formatNum(num(i.owes) - num(i.due)), cls: 'font-mono font-bold', dyn: i => colorOf(num(i.owes) - num(i.due)) }],
+            extra: [{ act: 'custOpen', icon: 'fa-hand-holding-dollar', cls: 'text-amber-400', title: 'حركة / كشف' }],
+            summary: () => `لنا (عليه): <b class="text-emerald-400 font-mono">${formatNum(custUsTotal())}</b> &nbsp;|&nbsp; علينا (له): <b class="text-red-400 font-mono">${formatNum(custThemTotal())}</b> &nbsp;|&nbsp; الصافي: <b class="font-mono">${formatNum(custUsTotal() - custThemTotal())}</b>`,
+            xl: i => ({ 'اسم العميل': i.name, 'عليه': num(i.owes), 'له': num(i.due) }), keys: ['name'] },
+        partners: { title: 'الشركاء وتوزيع الأرباح', hint: 'نسبة المساهمة = المبلغ المدفوع ÷ إجمالي المدفوع. الربح = النسبة × مبلغ الربح أدناه.', btn: 'blue',
+            fields: [{ k: 'name', l: 'الشريك / الوصف', t: 'text', req: 1 }, { k: 'paid', l: 'المبلغ المدفوع (ج.م)', t: 'number' }],
+            cols: [{ l: 'الشريك', r: i => esc(i.name), cls: 'font-semibold text-white' }, { l: 'المبلغ المدفوع', r: i => formatNum(i.paid), cls: 'font-mono' },
+                { l: 'نسبة المساهمة', r: i => (partnerRatio(i) * 100).toFixed(2) + '%', cls: 'font-mono text-indigo-400' },
+                { l: 'الربح المستحق', r: i => formatNum(partnerProfit(i)), cls: 'font-mono font-bold text-brand-400' }],
+            summary: () => `إجمالي المدفوع: <b class="font-mono">${formatNum(partnersTotal())}</b> &nbsp;|&nbsp; الربح الموزّع: <b class="font-mono text-brand-400">${formatNum(num(D().settings.partnerProfit))}</b>`,
+            xl: i => ({ 'الشريك': i.name, 'المبلغ المدفوع': num(i.paid), 'نسبة المساهمة': r2(partnerRatio(i)), 'الربح المستحق': partnerProfit(i) }), keys: ['name'] },
+        devices: { title: 'IP Address — أجهزة الشبكة', hint: 'محطات الإرسال والاستقبال وعناوين IP', btn: 'indigo',
+            fields: [{ k: 'name', l: 'اسم المحطة / العميل', t: 'text', req: 1 }, { k: 'ssid', l: 'اسم الشبكة SSID', t: 'text' }, { k: 'stationIp', l: 'IP المحطة', t: 'text', ph: '192.168.100.' },
+                { k: 'kind', l: 'النوع', t: 'select', opts: ['', 'AP', 'ST'] }, { k: 'clientIp', l: 'IP العميل', t: 'text', ph: '192.168.100.' }, { k: 'note', l: 'ملاحظة', t: 'text' }],
+            cols: [{ l: 'الاسم', r: i => esc(i.name), cls: 'font-semibold text-white' }, { l: 'SSID', r: i => esc(i.ssid), cls: 'text-xs' },
+                { l: 'IP المحطة', r: i => esc(i.stationIp), cls: 'font-mono text-xs' }, { l: 'AP/ST', r: i => esc(i.kind), cls: 'font-bold text-indigo-300' },
+                { l: 'IP العميل', r: i => esc(i.clientIp), cls: 'font-mono text-xs' }, { l: 'ملاحظة', r: i => esc(i.note), cls: 'text-xs' }],
+            summary: () => {
+                const { dups, used } = dupIps(); let free = '', lo = 254; Object.keys(used).forEach(ip => { const m = /^192\.168\.100\.(\d+)$/.exec(ip); if (m) lo = Math.min(lo, +m[1]); });
+                for (let n = lo; n < 255; n++) { if (!used['192.168.100.' + n]) { free = '192.168.100.' + n; break; } }
+                return `${D().devices.length} جهاز &nbsp;|&nbsp; أول IP متاح: <b class="font-mono text-emerald-400">${free || '—'}</b>` +
+                    (dups.length ? ` &nbsp;|&nbsp; <span class="text-red-400">تكرار IP: ${dups.map(esc).join('، ')}</span>` : '');
+            },
+            xl: i => ({ 'Name Station': i.name, 'Name SSID': i.ssid, 'IP Adresses ( Station )': i.stationIp, 'AP & ST': i.kind, 'IP Adresses ( client )': i.clientIp, 'ملاحظة': i.note || '' }), keys: ['name', 'ssid', 'stationIp', 'kind', 'clientIp', 'note'] },
+        we: { title: 'Client WE — خطوط الأرضي', hint: 'بيانات الخطوط الأرضية وكلمات المرور (اضغط على النقاط لإظهار كلمة المرور)', btn: 'sky',
+            fields: [{ k: 'name', l: 'الاسم', t: 'text', req: 1 }, { k: 'landline', l: 'الرقم الأرضي', t: 'text' }, { k: 'password', l: 'الباسورد', t: 'text' }, { k: 'note', l: 'ملاحظة', t: 'text' }],
+            cols: [{ l: 'الاسم', r: i => esc(i.name), cls: 'font-semibold text-white' }, { l: 'الرقم الأرضي', r: i => esc(i.landline), cls: 'font-mono' },
+                { l: 'الباسورد', r: i => `<span class="pw font-mono" data-pw="${esc(i.password)}">${i.password ? '••••••••' : ''}</span>` }, { l: 'ملاحظة', r: i => esc(i.note), cls: 'text-xs' }],
+            summary: () => `${D().we.length} خط`,
+            xl: i => ({ 'الاسم': i.name, 'الرقم الارضى': i.landline, 'الباسورد': i.password, 'ملاحظة': i.note || '' }), keys: ['name', 'landline', 'note'] },
+        orders: { title: 'أوردرات جاري تنفيذها', hint: 'طلبات الصيانة والتنفيذ', btn: 'rose',
+            fields: [{ k: 'title', l: 'البيان', t: 'text', req: 1 }, { k: 'notes', l: 'ملاحظات', t: 'text' }, { k: 'phone', l: 'رقم موبايل', t: 'text' },
+                { k: 'status', l: 'الحالة', t: 'select', opts: ['جديد', 'جاري', 'تم', 'ملغي'] }, { k: 'price', l: 'السعر', t: 'number' }],
+            cols: [{ l: 'رقم المهمة', r: i => esc(i.no), cls: 'font-mono' }, { l: 'البيان', r: i => esc(i.title), cls: 'font-semibold text-white' }, { l: 'ملاحظات', r: i => esc(i.notes), cls: 'text-xs' },
+                { l: 'موبايل', r: i => esc(i.phone), cls: 'font-mono text-xs' },
+                { l: 'الحالة', r: i => `<span class="text-xs px-2.5 py-1 rounded-full border ${STATUS_CLS[i.status] || 'border-slate-600'}">${esc(i.status)}</span>` },
+                { l: 'السعر', r: i => formatNum(i.price), cls: 'font-mono' }],
+            summary: () => { const open = D().orders.filter(o => o.status !== 'تم' && o.status !== 'ملغي'); return `مفتوحة: <b>${open.length}</b> من ${D().orders.length} &nbsp;|&nbsp; قيمة المفتوح: <b class="font-mono">${formatNum(sum(open, o => num(o.price)))}</b>`; },
+            xl: i => ({ 'رقم المهمه': i.no, 'بيان': i.title, 'ملاحظات': i.notes, 'رقم موبايل': i.phone, 'الحاله': i.status, 'السعر': num(i.price) }), keys: ['title', 'notes', 'phone', 'status'] }
+    };
+    const BTN = { emerald: 'bg-emerald-600 hover:bg-emerald-500', amber: 'bg-amber-600 hover:bg-amber-500', blue: 'bg-blue-600 hover:bg-blue-500', indigo: 'bg-indigo-600 hover:bg-indigo-500', sky: 'bg-sky-600 hover:bg-sky-500', rose: 'bg-rose-600 hover:bg-rose-500' };
+    const INP = 'w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500';
+
+    function buildCrud(name) {
+        const E = ENT[name];
+        const fields = E.fields.map(f => {
+            const input = f.t === 'select'
+                ? `<select name="${f.k}" class="${INP}">${f.opts.map(o => `<option value="${esc(o)}">${esc(o || '—')}</option>`).join('')}</select>`
+                : `<input name="${f.k}" type="${f.t === 'number' ? 'number' : 'text'}" ${f.t === 'number' ? 'step="0.01"' : ''} ${f.req ? 'required' : ''} placeholder="${esc(f.ph || '')}" class="${INP}">`;
+            return `<div><label class="block text-xs font-semibold text-slate-300 mb-1">${f.l}</label>${input}</div>`;
+        }).join('');
+        $('crud-' + name).innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/60 pb-4">
+                <div><h3 class="text-lg font-bold text-white">${E.title}</h3><p class="text-xs text-slate-400">${E.hint}</p></div>
+                <div class="flex items-center gap-2 no-print">
+                    <input type="text" data-search="${name}" placeholder="بحث..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white w-40">
+                    <button type="button" data-act="exportSec" data-sec="${name}" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold"><i class="fa-solid fa-file-excel ml-1 text-emerald-400"></i> Excel</button>
+                </div>
+            </div>
+            <form data-form="${name}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700/50">
+                <input type="hidden" name="__id">${fields}
+                <div class="flex items-end gap-2">
+                    <button type="submit" data-submit class="flex-1 ${BTN[E.btn]} text-white py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus ml-1"></i> حفظ</button>
+                    <button type="button" data-act="crudCancel" data-ent="${name}" class="hidden bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-semibold">إلغاء</button>
+                </div>
+            </form>
+            <div data-summary="${name}" class="text-sm text-slate-300"></div>
+            <div class="overflow-x-auto border border-slate-700/80 rounded-xl"><table class="w-full text-right text-sm text-slate-300">
+                <thead class="bg-slate-900/80 text-xs text-slate-400 border-b border-slate-700"><tr>${E.cols.map(c => `<th class="p-3">${c.l}</th>`).join('')}<th class="p-3 no-print text-center">إجراء</th></tr></thead>
+                <tbody data-body="${name}" class="divide-y divide-slate-800"></tbody></table></div>`;
+    }
+    function renderCrudBody(name) {
+        const E = ENT[name], q = (document.querySelector(`[data-search="${name}"]`)?.value || '').toLowerCase().trim();
+        let items = D()[name];
+        if (q) items = items.filter(i => E.keys.some(k => String(i[k] ?? '').toLowerCase().includes(q)));
+        const extra = (E.extra || []).map(x => it => `<button data-act="${x.act}" data-id="${esc(it.id)}" title="${x.title}" class="${x.cls} p-1"><i class="fa-solid ${x.icon}"></i></button>`);
+        document.querySelector(`[data-body="${name}"]`).innerHTML = items.map(it => `<tr class="hover:bg-slate-800/50">
+            ${E.cols.map(c => `<td class="p-3 ${c.cls || ''} ${c.dyn ? c.dyn(it) : ''}">${c.r(it)}</td>`).join('')}
+            <td class="p-3 text-center no-print">${extra.map(f => f(it)).join('')}
+                <button data-act="crudEdit" data-ent="${name}" data-id="${esc(it.id)}" class="text-indigo-400 p-1"><i class="fa-solid fa-pen"></i></button>
+                <button data-act="crudDel" data-ent="${name}" data-id="${esc(it.id)}" class="text-red-400 p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')
+            || `<tr><td colspan="${E.cols.length + 1}" class="p-6 text-center text-slate-500">لا توجد بيانات</td></tr>`;
+        document.querySelector(`[data-summary="${name}"]`).innerHTML = E.summary();
+    }
+    function crudReset(name) {
+        const f = document.querySelector(`form[data-form="${name}"]`); f.reset(); f.elements['__id'].value = '';
+        f.querySelector('[data-submit]').innerHTML = '<i class="fa-solid fa-plus ml-1"></i> حفظ';
+        f.querySelector('[data-act="crudCancel"]').classList.add('hidden');
+    }
+    function crudSubmit(name, f) {
+        const E = ENT[name], id = f.elements['__id'].value, obj = {};
+        E.fields.forEach(fl => { const v = f.elements[fl.k].value; obj[fl.k] = fl.t === 'number' ? num(v) : v.trim(); });
+        if (id) { const it = D()[name].find(x => x.id === id); if (it) Object.assign(it, obj); }
+        else {
+            const it = Object.assign({ id: uid(name[0] + '_') }, obj);
+            if (name === 'orders') it.no = (D().orders.reduce((m, o) => Math.max(m, num(o.no)), 0)) + 1;
+            if (name === 'customers') it.log = [];
+            D()[name].push(it);
+        }
+        crudReset(name); save([name]);
+    }
+    function crudEdit(name, id) {
+        const it = D()[name].find(x => x.id === id); if (!it) return;
+        const f = document.querySelector(`form[data-form="${name}"]`); f.elements['__id'].value = id;
+        ENT[name].fields.forEach(fl => f.elements[fl.k].value = it[fl.k] ?? '');
+        f.querySelector('[data-submit]').innerHTML = '<i class="fa-solid fa-pen ml-1"></i> تعديل';
+        f.querySelector('[data-act="crudCancel"]').classList.remove('hidden'); f.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ---------- العملاء: حركة وكشف حساب ----------
+    let modalCust = null;
+    const MOVES = { repay: 'تسديد منه (ينقص «عليه»)', addOwes: 'مبلغ جديد لنا عنده (يزيد «عليه»)', payout: 'سداد منا له (ينقص «له»)', addDue: 'مبلغ جديد له عندنا (يزيد «له»)' };
+    function openCustomer(id) { modalCust = id; renderModal(); const m = $('modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+    function closeModal() { modalCust = null; const m = $('modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+    function renderModal() {
+        if (!modalCust) return;
+        const c = D().customers.find(x => x.id === modalCust); if (!c) return closeModal();
+        const log = logOf(c).slice().sort((a, b) => ts(b.d) - ts(a.d));
+        $('modalBox').innerHTML = `
+            <div class="flex items-center justify-between mb-3"><h3 class="font-bold text-white text-lg">${esc(c.name)}</h3><button data-act="modalClose" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+            <div class="grid grid-cols-2 gap-3 mb-4 text-sm"><div class="bg-slate-900 rounded-xl p-3">عليه: <b class="text-emerald-400 font-mono">${formatNum(c.owes)}</b></div><div class="bg-slate-900 rounded-xl p-3">له: <b class="text-red-400 font-mono">${formatNum(c.due)}</b></div></div>
+            <form data-form="custMove" class="space-y-3 bg-slate-900/60 border border-slate-700/50 rounded-xl p-4 mb-4">
+                <select name="type" class="${INP}">${Object.entries(MOVES).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>
+                <div class="grid grid-cols-2 gap-3"><input name="amount" type="number" step="0.01" min="0.01" required placeholder="المبلغ" class="${INP}"><input name="note" type="text" placeholder="ملاحظة (اختياري)" class="${INP}"></div>
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-2 rounded-xl text-sm font-semibold">تسجيل الحركة</button>
+            </form>
+            <h4 class="text-sm font-bold text-white mb-2">كشف الحساب</h4>
+            <div class="space-y-2 text-xs">${log.map(l => `<div class="bg-slate-900 rounded-lg p-2.5 flex items-center justify-between"><div><span class="font-bold">${esc(MOVES[l.t] || l.t)}</span>
+                <p class="text-slate-500 font-mono">${esc(fmtDate(l.d))}${l.n ? ' — ' + esc(l.n) : ''}</p></div><b class="font-mono text-white">${formatNum(l.a)}</b></div>`).join('') || '<p class="text-slate-500 text-center py-4">لا توجد حركات مسجلة بعد</p>'}</div>`;
+    }
+    function custMove(f) {
+        const c = D().customers.find(x => x.id === modalCust); if (!c) return;
+        const type = f.elements.type.value, a = num(f.elements.amount.value), note = f.elements.note.value.trim();
+        if (a <= 0) return;
+        if (type === 'repay' && a > num(c.owes)) return alert('المبلغ أكبر من «عليه» (' + formatNum(c.owes) + ')');
+        if (type === 'payout' && a > num(c.due)) return alert('المبلغ أكبر من «له» (' + formatNum(c.due) + ')');
+        if (type === 'repay') c.owes = r2(num(c.owes) - a); else if (type === 'addOwes') c.owes = r2(num(c.owes) + a);
+        else if (type === 'payout') c.due = r2(num(c.due) - a); else c.due = r2(num(c.due) + a);
+        c.log = logOf(c).concat([{ d: nowLocal(), t: type, a: a, n: note }]);
         save(['customers']);
     }
-    function renderCustomers() {
-        const search = ($('customerSearch').value || '').toLowerCase();
-        const map = customersMap();
-        $('customersDirectoryBody').innerHTML = Object.keys(map).filter(n => n.toLowerCase().includes(search)).map(name => {
-            const net = map[name], debt = net >= 0;
-            return `<tr class="hover:bg-slate-800/80 cursor-pointer border-b border-slate-800" data-act="selCust" data-name="${esc(name)}">
-                <td class="p-3 font-semibold text-white"><i class="fa-solid fa-hand-pointer text-amber-500 text-xs ml-2"></i>${esc(name)}</td>
-                <td class="p-3 font-mono font-bold ${debt ? 'text-emerald-400' : 'text-red-400'}">${formatNum(Math.abs(net))} ج.م</td>
-                <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${debt ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${debt ? 'مبلغ لنا عنده' : 'مبلغ له عندنا'}</span></td>
-                <td class="p-3 text-center no-print"><span class="text-amber-400 text-xs font-semibold bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">سدد / كشف</span></td></tr>`;
-        }).join('');
-        renderStatement();
-    }
-    function selectCustomer(name) {
-        selectedCustomer = name;
-        $('custName').value = name; $('custType').value = 'repayment';
-        $('quickAlertMsg').classList.remove('hidden');
-        renderStatement();
-    }
-    function renderStatement() {
-        const box = $('customerStatementLogs');
-        if (!selectedCustomer) return;
-        $('selectedCustName').textContent = selectedCustomer;
-        const logs = window.appData.customers.filter(c => c.name === selectedCustomer).sort((a, b) => ts(b.date) - ts(a.date));
-        if (!logs.length) { box.innerHTML = '<p class="text-slate-500 text-center py-8">لا توجد حركات</p>'; return; }
-        box.innerHTML = logs.map(l => {
-            const txt = { us: 'لنا عنده (+)', them: 'له عندنا (-)', repayment: 'تسديد من العميل (-)', payout: 'سداد منا للعميل (+)' }[l.type] || l.type;
-            const cls = { us: 'text-emerald-400', them: 'text-red-400', repayment: 'text-blue-400', payout: 'text-amber-400' }[l.type] || 'text-slate-300';
-            return `<div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 flex items-center justify-between">
-                <div><span class="font-bold text-xs ${cls}">${txt}</span><p class="text-[10px] text-slate-500 font-mono">${esc(formatDateEn(l.date))}</p></div>
-                <div class="flex items-center space-x-2 space-x-reverse"><span class="font-bold font-mono text-white">${formatNum(l.amount)} ج.م</span>
-                <button data-act="delCust" data-id="${esc(l.id)}" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button></div></div>`;
-        }).join('');
+
+    // ---------- الشركاء: حساب الربح ----------
+    function renderPartnerCalc() {
+        const snaps = sortedSnaps(), selF = $('ppFrom'), selT = $('ppTo');
+        const prevF = selF.value, prevT = selT.value;
+        const opts = snaps.map(s => `<option value="${esc(s.id)}">${esc(fmtDate(s.date))} — ${formatNum(snapSurplus(s))}</option>`).join('');
+        selF.innerHTML = opts; selT.innerHTML = opts;
+        const ids = snaps.map(s => s.id);
+        selF.value = ids.includes(prevF) ? prevF : (ids[ids.length - 2] || ids[0] || '');
+        selT.value = ids.includes(prevT) ? prevT : (ids[ids.length - 1] || '');
+        const i = ids.indexOf(selF.value), j = ids.indexOf(selT.value);
+        if (i < 0 || j <= i) { $('ppInfo').innerHTML = '<span class="text-amber-400">اختر لقطتين (البداية قبل النهاية)</span>'; window._pp = null; return; }
+        const kSum = sum(snaps.slice(i + 1, j + 1), s => num(s.k)), delta = r2(snapSurplus(snaps[j]) - snapSurplus(snaps[i]));
+        window._pp = { kSum, delta };
+        $('ppInfo').innerHTML = `مجموع الزيادات المسجلة في الفترة: <b class="font-mono text-amber-400">${formatNum(kSum)}</b><br>الربح المحسوب (فرق الزيادة فوق رأس المال): <b class="font-mono ${colorOf(delta)}">${formatNum(delta)}</b>`;
     }
 
-    // ---------- المصروفات ----------
-    function saveExpense(e) {
-        e.preventDefault();
-        const title = $('expTitle').value.trim(), amount = parseFloat($('expAmount').value) || 0, date = $('expDate').value;
-        if (!title || !date || amount <= 0) return;
-        window.appData.expenses.push({ id: 'exp_' + Date.now(), title, amount, date });
-        $('expTitle').value = ''; $('expAmount').value = '';
-        save(['expenses']);
+    // ---------- اللوحة العلوية ----------
+    function renderKpis() {
+        const last = sortedSnaps().pop();
+        const us = custUsTotal(), them = custThemTotal(), w = walletsTotal();
+        const net = (last ? snapCash(last) : 0) + w + us - them;
+        $('kpiNet').textContent = formatNum(net) + ' ج.م';
+        $('kpiCapital').textContent = formatNum(last ? last.capital : 0) + ' ج.م';
+        $('kpiSurplus').innerHTML = 'الزيادة فوق رأس المال: <b class="' + colorOf(net - (last ? num(last.capital) : 0)) + '">' + formatNum(net - (last ? num(last.capital) : 0)) + '</b>';
+        $('kpiCust').textContent = formatNum(us - them) + ' ج.م'; $('kpiUs').textContent = formatNum(us); $('kpiThem').textContent = formatNum(them);
+        $('kpiWallets').textContent = formatNum(w) + ' ج.م';
+        $('seedBanner').classList.toggle('hidden', window.localHasData() || !SEED);
     }
-    function renderExpensesTable() {
-        $('expensesTableBody').innerHTML = window.appData.expenses.slice().sort((a, b) => ts(b.date) - ts(a.date)).map(x => `
-            <tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(x.date))}</td>
-            <td class="p-3 font-semibold text-white">${esc(x.title)}</td><td class="p-3 font-mono font-bold text-red-400">${formatNum(x.amount)} ج.م</td>
-            <td class="p-3 text-center no-print"><button data-act="delExp" data-id="${esc(x.id)}" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+    function renderSettings() {
+        document.querySelectorAll('[data-setting]').forEach(el => { if (document.activeElement !== el) el.value = D().settings[el.dataset.setting] ?? ''; });
     }
-
-    // ---------- رأس المال ----------
-    function saveCapital(e) {
-        e.preventDefault();
-        const investor = $('capInvestor').value.trim(), type = $('capType').value;
-        const amount = parseFloat($('capAmount').value) || 0, date = $('capDate').value;
-        if (!investor || !date || amount <= 0) return;
-        if (type === 'withdraw') {
-            const cur = window.appData.capitalLogs.filter(c => c.investor === investor).reduce((s, c) => s + (c.type === 'add' ? c.amount : -c.amount), 0);
-            if (amount > cur) { alert('المبلغ أكبر من رأس المال المتاح للمستثمر!'); return; }
-        }
-        window.appData.capitalLogs.push({ id: 'cap_' + Date.now(), investor, type, amount, date });
-        $('capAmount').value = '';
-        save(['capitalLogs']);
-    }
-    function renderCapitalTable() {
-        $('capitalTableBody').innerHTML = window.appData.capitalLogs.slice().sort((a, b) => ts(b.date) - ts(a.date)).map(c => `
-            <tr class="hover:bg-slate-800/50"><td class="p-3 font-mono text-xs text-slate-400">${esc(formatDateEn(c.date))}</td>
-            <td class="p-3 font-semibold text-white">${esc(c.investor)}</td>
-            <td class="p-3"><span class="text-xs px-2.5 py-1 rounded-full ${c.type === 'add' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${c.type === 'add' ? 'إضافة (+)' : 'سحب (-)'}</span></td>
-            <td class="p-3 font-mono font-bold text-white">${formatNum(c.amount)} ج.م</td>
-            <td class="p-3 no-print"><button data-act="delCap" data-id="${esc(c.id)}" class="text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-    }
-
-    function renderAccountsTable() {
-        $('accountsTableBody').innerHTML = window.appData.accounts.map(a => `
-            <tr class="hover:bg-slate-800/50"><td class="p-3 font-semibold text-white">${esc(a.name)}</td>
-            <td class="p-3"><span class="bg-slate-800 border border-slate-700 text-xs px-2.5 py-1 rounded-lg">${esc(typeLabel[a.type] || a.type)}</span></td>
-            <td class="p-3"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${a.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${a.status === 'active' ? 'نشط' : 'معطل'}</span></td>
-            <td class="p-3 text-center no-print space-x-2 space-x-reverse">
-                <button data-act="editAcc" data-id="${esc(a.id)}" class="text-indigo-400 p-1"><i class="fa-solid fa-pen"></i></button>
-                <button data-act="delAcc" data-id="${esc(a.id)}" class="text-red-400 p-1"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
-    }
-
-    // ---------- اللوحة والتقرير ----------
-    function updateDashboardCards() {
-        const snaps = sortedSnaps();
-        const latest = snaps.length ? snaps[snaps.length - 1] : null;
-        
-        const cap = window.appData.capitalLogs.reduce((s, c) => s + (c.type === 'add' ? c.amount : -c.amount), 0);
-        const t = totalsFromMap(customersMap());
-        $('totalCapitalCard').innerHTML = money(cap);
-        $('netCustomersCard').innerHTML = money(t.net);
-        $('customersUsCard').textContent = formatNum(t.totalUs);
-        $('customersThemCard').textContent = formatNum(t.totalThem);
-        const assets = latest ? snapNetAssets(latest) : 0; // الصناديق والعملاء بنفس تاريخ آخر لقطة
-        $('totalAssetsCard').innerHTML = money(assets);
-        $('capitalNote').textContent = 'الأصول − رأس المال = ' + formatNum(r2(assets - cap)) + ' (أرباح غير موزعة / فروقات)';
-    }
-
-    function generateProfitReport() {
-        const snaps = sortedSnaps();
-        const exp = $('reportFormulaExplanation'), body = $('investorProfitBody');
-        const startIn = $('reportStartDate').value, endIn = $('reportEndDate').value;
-        const empty = (msg) => { exp.innerHTML = '<p class="text-amber-400">' + msg + '</p>'; $('calculatedProfitCard').innerHTML = money(0); body.innerHTML = ''; };
-        if (snaps.length < 2) return empty('يلزم تسجيل لقطتي رصيد على الأقل لحساب الأرباح.');
-        const startSnap = startIn ? (snaps.find(s => ts(s.date) >= ts(startIn)) || snaps[0]) : snaps[0];
-        const endSnap = endIn ? ([...snaps].reverse().find(s => ts(s.date) <= ts(endIn)) || snaps[snaps.length - 1]) : snaps[snaps.length - 1];
-        const sT = ts(startSnap.date), eT = ts(endSnap.date);
-        if (eT <= sT) return empty('لا توجد لقطتان ضمن الفترة المحددة.');
-
-        const startAssets = snapNetAssets(startSnap), endAssets = snapNetAssets(endSnap);
-        // اتفاق: حركة بتاريخ لقطة البداية تُعتبر قبلها (داخلة في الأساس)، وحركة بتاريخ لقطة النهاية داخل الفترة
-        const logs = window.appData.capitalLogs.slice().sort((a, b) => ts(a.date) - ts(b.date));
-        const sign = c => c.type === 'add' ? c.amount : -c.amount;
-        let additions = 0, withdrawals = 0;
-        const inv = {};
-        logs.forEach(c => {
-            const t = ts(c.date);
-            if (!inv[c.investor]) inv[c.investor] = { base: 0, add: 0, withdraw: 0, end: 0, avg: 0 };
-            if (t <= sT) inv[c.investor].base += sign(c);
-            else if (t <= eT) {
-                if (c.type === 'add') { additions += c.amount; inv[c.investor].add += c.amount; }
-                else { withdrawals += c.amount; inv[c.investor].withdraw += c.amount; }
-            }
-        });
-        // متوسط رأس المال المرجّح بالزمن لكل مستثمر
-        const span = eT - sT;
-        Object.keys(inv).forEach(name => {
-            let level = inv[name].base, last = sT, area = 0;
-            logs.filter(c => c.investor === name && ts(c.date) > sT && ts(c.date) <= eT).forEach(c => {
-                const t = ts(c.date);
-                area += Math.max(0, level) * (t - last);
-                level += sign(c); last = t;
-            });
-            area += Math.max(0, level) * (eT - last);
-            inv[name].avg = area / span;
-            inv[name].end = Math.max(0, level);
-        });
-
-        const expenses = window.appData.expenses.filter(x => ts(x.date) > sT && ts(x.date) <= eT).reduce((sum, x) => sum + x.amount, 0);
-        const netProfit = r2(endAssets - startAssets - additions + withdrawals);
-        const grossProfit = r2(netProfit + expenses);
-
-        $('calculatedProfitCard').innerHTML = money(netProfit);
-        exp.innerHTML = `
-            <p>• الفترة: <span class="font-mono">${esc(formatDateEn(startSnap.date))}</span> ← <span class="font-mono">${esc(formatDateEn(endSnap.date))}</span></p>
-            <p>• أصول البداية: <span class="font-mono">${formatNum(startAssets)}</span> — أصول النهاية: <span class="font-mono">${formatNum(endAssets)}</span> — الفرق: <strong class="text-emerald-400 font-mono">${formatNum(endAssets - startAssets)}</strong></p>
-            <p>• الإضافات: <span class="font-mono">${formatNum(additions)}</span> — المسحوبات: <span class="font-mono">${formatNum(withdrawals)}</span></p>
-            <p class="text-brand-400 font-bold mt-1">صافي الربح (بعد المصروفات) = <span class="font-mono">${formatNum(netProfit)} ج.م</span></p>
-            <p class="text-slate-400">للعلم: المصروفات المسجلة في الفترة <span class="font-mono">${formatNum(expenses)}</span> منعكسة أصلاً في الأرصدة، فالربح قبل المصروفات = <span class="font-mono">${formatNum(grossProfit)} ج.م</span></p>`;
-
-        const totalAvg = Object.values(inv).reduce((sum, d) => sum + d.avg, 0);
-        body.innerHTML = Object.keys(inv).map(n => {
-            const d = inv[n], r = totalAvg > 0 ? d.avg / totalAvg : 0;
-            return `<tr class="hover:bg-slate-800/50"><td class="p-3 font-semibold text-white">${esc(n)}</td>
-                <td class="p-3 font-mono">${formatNum(d.base)}</td><td class="p-3 font-mono text-blue-400">+${formatNum(d.add)}</td>
-                <td class="p-3 font-mono text-red-400">-${formatNum(d.withdraw)}</td><td class="p-3 font-mono font-bold">${formatNum(d.end)}</td>
-                <td class="p-3 font-mono">${formatNum(d.avg)}</td>
-                <td class="p-3 font-mono text-indigo-400">${(r * 100).toFixed(2)}%</td>
-                <td class="p-3 font-mono font-bold text-brand-400">${formatNum(r2(netProfit * r))} ج.م</td></tr>`;
-        }).join('');
-    }
-
-    function exportToExcel(tableId, filename) {
-        const t = $(tableId); if (!t) return;
-        XLSX.writeFile(XLSX.utils.table_to_book(t, { sheet: 'Sheet1' }), (filename || 'بيانات') + '.xlsx');
-    }
-
     function renderAllViews() {
-        renderAccountsTable(); renderDynamicSnapshotInputs(); renderSnapshotsTable();
-        renderCustomers(); renderExpensesTable(); renderCapitalTable();
-        updateDashboardCards(); generateProfitReport();
+        renderKpis(); renderSnapshots(); renderSnapPreview();
+        Object.keys(ENT).forEach(renderCrudBody);
+        renderPartnerCalc(); renderSettings(); renderModal();
     }
     window.renderAllViews = renderAllViews;
 
+    // ---------- استيراد / تصدير ----------
+    function importData(obj) {
+        SECTIONS.forEach(s => { D()[s] = window.normSection(s, obj[s]); });
+        save(SECTIONS);
+    }
+    function sheetRows(sec) {
+        if (sec === 'snapshots') return sortedSnaps().map(s => ({ 'التاريخ': s.date, 'رأس_المال': num(s.capital), 'فورى': num(s.fawry), 'امان': num(s.aman), 'مجمد': num(s.frozen), 'فكه': num(s.fakka), 'فضيه': num(s.silver),
+            'اجمالى_ايراد': snapRevenue(s), 'اجمالى_منصرف': snapExpense(s), 'الصافى': snapNet(s), 'الزيادة فوق رأس المال': snapSurplus(s), 'الزيادة المسجلة': s.k == null ? '' : num(s.k), 'الورديه': s.shift || '' }));
+        return D()[sec].map(ENT[sec].xl);
+    }
+    const SHEET_NAMES = { snapshots: 'حساب', wallets: 'محافظ كاش', customers: 'الخرج', partners: 'الشركاء', devices: 'IP Adress', we: 'Client WE', orders: 'اوردرات' };
+    function exportSec(sec) {
+        const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sheetRows(sec)), SHEET_NAMES[sec]);
+        XLSX.writeFile(wb, SHEET_NAMES[sec] + '.xlsx');
+    }
+    function exportAll() {
+        const wb = XLSX.utils.book_new();
+        Object.keys(SHEET_NAMES).forEach(s => XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sheetRows(s)), SHEET_NAMES[s]));
+        XLSX.writeFile(wb, 'megabyte-all.xlsx');
+    }
+    function exportJson() {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(D())], { type: 'application/json' }));
+        a.download = 'megabyte-backup-' + nowLocal().slice(0, 10) + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
     // ---------- الأحداث ----------
     document.addEventListener('click', (e) => {
+        if (e.target === $('modal')) return closeModal();
+        const pw = e.target.closest('.pw'); if (pw) { pw.textContent = pw.textContent.includes('•') ? pw.dataset.pw : (pw.dataset.pw ? '••••••••' : ''); return; }
         const tab = e.target.closest('.tab-btn'); if (tab) return switchTab(tab.dataset.tab);
         const el = e.target.closest('[data-act]'); if (!el) return;
-        const id = el.dataset.id;
+        const id = el.dataset.id, ent = el.dataset.ent;
         switch (el.dataset.act) {
-            case 'editAcc': editAccount(id); break;
-            case 'delAcc': deleteAccount(id); break;
-            case 'resetAccount': resetAccountForm(); break;
-            case 'delSnap': if (confirm('تأكيد الحذف؟')) { window.appData.snapshots = window.appData.snapshots.filter(s => s.id !== id); save(['snapshots']); } break;
-            case 'selCust': selectCustomer(el.dataset.name); break;
-            case 'delCust': if (confirm('تأكيد حذف الحركة؟')) { window.appData.customers = window.appData.customers.filter(c => c.id !== id); save(['customers']); } break;
-            case 'delExp': if (confirm('تأكيد الحذف؟')) { window.appData.expenses = window.appData.expenses.filter(x => x.id !== id); save(['expenses']); } break;
-            case 'delCap': if (confirm('تأكيد الحذف؟')) { window.appData.capitalLogs = window.appData.capitalLogs.filter(c => c.id !== id); save(['capitalLogs']); } break;
-            case 'export': exportToExcel(el.dataset.table, el.dataset.name); break;
-            case 'print': window.print(); break;
-            case 'report': generateProfitReport(); break;
+            case 'crudEdit': crudEdit(ent, id); break;
+            case 'crudDel': if (confirm('تأكيد الحذف؟')) { D()[ent] = D()[ent].filter(x => x.id !== id); save([ent]); } break;
+            case 'crudCancel': crudReset(ent); break;
+            case 'editSnap': editSnapshot(id); break;
+            case 'delSnap': if (confirm('تأكيد حذف اللقطة؟')) { D().snapshots = D().snapshots.filter(s => s.id !== id); save(['snapshots']); } break;
+            case 'snapCancel': resetSnapForm(); break;
+            case 'custOpen': openCustomer(id); break;
+            case 'modalClose': closeModal(); break;
+            case 'exportSec': exportSec(el.dataset.sec); break;
+            case 'exportAll': exportAll(); break;
+            case 'exportJson': exportJson(); break;
+            case 'importJson': $('jsonFile').click(); break;
+            case 'importSeed': if (SEED && confirm('سيتم استبدال كل البيانات الحالية في البرنامج (وفي السحابة) ببيانات ملف الإكسل. متابعة؟')) importData(JSON.parse(JSON.stringify(SEED))); break;
+            case 'useK': if (window._pp) { D().settings.partnerProfit = r2(window._pp.kSum); save(['settings']); } break;
+            case 'useDelta': if (window._pp) { D().settings.partnerProfit = r2(window._pp.delta); save(['settings']); } break;
         }
     });
-
-    $('accountForm').addEventListener('submit', (e) => {
+    document.addEventListener('submit', (e) => {
+        const f = e.target.closest('form[data-form]'); if (!f) return;
         e.preventDefault();
-        const id = $('accEditId').value, name = $('accName').value.trim(), type = $('accType').value, status = $('accStatus').value;
-        if (!name) return;
-        if (id) { const a = window.appData.accounts.find(x => x.id === id); if (a) Object.assign(a, { name, type, status }); }
-        else window.appData.accounts.push({ id: 'acc_' + Date.now(), name, type, status });
-        resetAccountForm(); save(['accounts']);
+        if (f.dataset.form === 'custMove') custMove(f); else crudSubmit(f.dataset.form, f);
     });
+    document.addEventListener('input', (e) => {
+        if (e.target.matches('[data-search]')) renderCrudBody(e.target.dataset.search);
+        if (e.target.closest('#snapshotForm')) renderSnapPreview();
+    });
+    document.addEventListener('change', (e) => {
+        const el = e.target;
+        if (el.matches('[data-setting]')) { D().settings[el.dataset.setting] = el.type === 'number' ? num(el.value) : el.value; save(['settings']); }
+        if (el.id === 'ppFrom' || el.id === 'ppTo') renderPartnerCalc();
+        if (el.id === 'jsonFile' && el.files[0]) {
+            const rd = new FileReader();
+            rd.onload = () => { try { const o = JSON.parse(rd.result); if (confirm('سيتم استبدال البيانات الحالية بالنسخة الاحتياطية. متابعة؟')) importData(o); } catch (err) { alert('الملف غير صالح'); } el.value = ''; };
+            rd.readAsText(el.files[0]);
+        }
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
     $('snapshotForm').addEventListener('submit', saveSnapshot);
-    $('customerForm').addEventListener('submit', saveCustomerRecord);
-    $('expenseForm').addEventListener('submit', saveExpense);
-    $('capitalForm').addEventListener('submit', saveCapital);
-    $('customerSearch').addEventListener('input', renderCustomers);
-    $('reportStartDate').addEventListener('change', generateProfitReport);
-    $('reportEndDate').addEventListener('change', generateProfitReport);
     $('btnConnect').addEventListener('click', () => {
         const room = $('roomIdInput').value.trim();
         if (room.length < 8) return alert('استخدم رمزاً لا يقل عن 8 أحرف (يفضّل رمز طويل عشوائي).');
         if (!/^[A-Za-z0-9_\-]+$/.test(room)) return alert('الرمز يقبل حروفاً إنجليزية وأرقاماً و - و _ فقط.');
-        localStorage.setItem('app_sync_room_id', room);
-        localStorage.removeItem('app_linked_room');
+        localStorage.setItem('app_sync_room_id', room); localStorage.removeItem('app_linked_room');
         if (window.initCloudSync) window.initCloudSync();
     });
 
     function init() {
-        const now = nowLocal();
-        ['snapDate', 'custDate', 'expDate', 'capDate'].forEach(id => $(id).value = now);
-        switchTab('snapshots');
-        renderAllViews();
+        Object.keys(ENT).forEach(buildCrud);
+        switchTab('snapshots'); resetSnapForm(); renderAllViews();
         if (window.firebaseReady) window.initCloudSync();
-        else window.addEventListener('firebase-ready', () => window.initCloudSync(), { once: true });
-    }
-    window.addEventListener('load', init);
-</script>
-</body>
-</html>
+        else {
+            window.addEventListener('fir
